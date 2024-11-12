@@ -2,23 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Checklist_result;
+use App\Models\line;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     /*
      * Dashboard Pages Routs
      */
-    public function index(Request $request)
-    {
-        $assets = ['chart', 'animation'];
-        return view('dashboards.dashboard', compact('assets'));
-    }
+    // public function index(Request $request)
+    // {
+    //     $assets = ['chart', 'animation'];
+    //     return view('dashboards.dashboard', compact('assets'));
+    // }
 
     public function home_index(Request $request)
     {
-        $assets = ['chart', 'animation'];
-        return view('ilsung.dashboards.Home_index', compact('assets'));
+        $assets = ['calender', 'animation'];
+        $line_search = 'Line 01';
+        $line_id = Line::where('Line_name', $line_search)->pluck('id')->first();
+        return view('ilsung.dashboards.Home_index', compact('assets', 'line_id'));
+    }
+
+    public function index()
+    {
+
+        return view('ilsung.pages.Overview-checklist');
+    }
+
+    public function index_checklist()
+    {
+
+        $line_search = 'Line 01';
+        $assets = [ 'animation'];
+        $line_id = line::where('Line_name', $line_search)->pluck('id')->first();
+        return view('ilsung.pages.Check-checklist', compact('line_id', 'assets'));
+    }
+
+
+    public function index_master()
+    {
+        return view('Checklist_EQM.pages.Master-checklist');
+    }
+
+    public function index_user()
+    {
+        return view('Checklist_EQM.pages.User-checklist');
+    }
+
+    public function overview_data(Request $request)
+    {
+        $shift = ($request->input('shift') == 'All') ? null : $request->input('shift');
+        $line = ($request->input('line') == '') ? null : $request->input('line');
+        $date_form = $request->input('date_form');
+        $progressData = Checklist_result::select(
+            'Locations',
+            \DB::raw('COUNT(*) as total_items'),
+            \DB::raw('SUM(CASE WHEN Check_status = "Completed" THEN 1 ELSE 0 END) as completed_count')
+        )
+            ->where('Shift', 'LIKE', '%' . $shift . '%')
+            ->where('Locations', 'LIKE', '%' . $line . '%')
+            ->where('Date_check', $date_form)
+            ->groupBy('Locations')
+            ->get()
+            ->map(function ($item) {
+                $item->completion_percentage = $item->total_items > 0 ? round((($item->completed_count / $item->total_items) * 100), 0) : 0;
+                return $item;
+            });
+
+        $totalChecklists = $progressData->sum('total_items');
+        $completedChecklists = $progressData->sum('completed_count');
+
+        return response()->json([
+            'progressData' => $progressData,
+            'total_checklists' => $totalChecklists,
+            'completed_checklists' => $completedChecklists,
+        ]);
     }
 
     /*
@@ -27,27 +88,27 @@ class HomeController extends Controller
     public function horizontal(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.horizontal',compact('assets'));
+        return view('menu-style.horizontal', compact('assets'));
     }
     public function dualhorizontal(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.dual-horizontal',compact('assets'));
+        return view('menu-style.dual-horizontal', compact('assets'));
     }
     public function dualcompact(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.dual-compact',compact('assets'));
+        return view('menu-style.dual-compact', compact('assets'));
     }
     public function boxed(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.boxed',compact('assets'));
+        return view('menu-style.boxed', compact('assets'));
     }
     public function boxedfancy(Request $request)
     {
         $assets = ['chart', 'animation'];
-        return view('menu-style.boxed-fancy',compact('assets'));
+        return view('menu-style.boxed-fancy', compact('assets'));
     }
 
     /*
@@ -61,7 +122,7 @@ class HomeController extends Controller
     public function calender(Request $request)
     {
         $assets = ['calender'];
-        return view('special-pages.calender',compact('assets'));
+        return view('special-pages.calender', compact('assets'));
     }
 
     public function kanban(Request $request)
@@ -186,7 +247,7 @@ class HomeController extends Controller
         return view('forms.validation');
     }
 
-     /*
+    /*
      * Table Page Routs
      */
     public function bootstraptable(Request $request)

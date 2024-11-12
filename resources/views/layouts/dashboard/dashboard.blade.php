@@ -23,7 +23,6 @@
     <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/list/main.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/Leaflet/leaflet.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/vanillajs-datepicker/dist/css/datepicker.min.css') }}" />
-
     <link rel="stylesheet" href="{{ asset('vendor/aos/dist/aos.css') }}" />
 
     <style>
@@ -33,7 +32,7 @@
     </style>
 
 
-    {{-- @include('partials.dashboard._head') --}}
+    @include('partials.dashboard._head')
 </head>
 
 <body class="">

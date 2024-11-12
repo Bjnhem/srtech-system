@@ -1,7 +1,7 @@
 {{-- @props(['dir']) --}}
 <!DOCTYPE html>
 {{-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $dir ? 'rtl' : 'ltr' }}"> --}}
-    <html lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -17,15 +17,35 @@
     <link rel="stylesheet" href="{{ asset('css/rtl.css?v=1.1.0') }}">
     <link rel="stylesheet" href="{{ asset('css/customizer.css?v=1.1.0') }}">
 
+
     <!-- Fullcalender CSS -->
-    <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/core/main.css') }}" />
+     <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/core/main.css') }}" />
     <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/daygrid/main.css') }}" />
     <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/timegrid/main.css') }}" />
     <link rel='stylesheet' href="{{ asset('vendor/fullcalendar/list/main.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/Leaflet/leaflet.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/vanillajs-datepicker/dist/css/datepicker.min.css') }}" />
-
     <link rel="stylesheet" href="{{ asset('vendor/aos/dist/aos.css') }}" />
+
+
+
+
+
+    {{-- <link rel="stylesheet" href="{{asset('vendor/aos/dist/aos.css')}}" /> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('laravel-filemanager/css/lfm.css') }}" /> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/custom-admin.css') }}" /> --}}
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/overview.css') }}" />
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/icon.css') }}" />
+
+    {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
+    <link rel="stylesheet"
+        href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Select-1.7.0/css/select.dataTables.min.css') }}" /> --}}
+    <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/datatables.min.css') }}" />
+    {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/css/components/datepicker.css') }}" type="text/css" /> --}}
+    {{-- {{-- <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/toastr.min.css') }}" type="text/css" /> --}}
+
 
     <style>
         th.hide-search input {
@@ -42,49 +62,48 @@
         <div class="loader simple-loader">
             <div class="loader-body"></div>
         </div>
-        
+
     </div>
     {{-- @include('partials.dashboard._body_sidebar') --}}
     <aside class="sidebar sidebar-default navs-rounded-all">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
-            <a href="{{route('dashboard')}}" class="navbar-brand">
-                <svg width="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2" transform="rotate(-45 -0.757324 19.2427)" fill="currentColor"/>
-                    <rect x="7.72803" y="27.728" width="28" height="4" rx="2" transform="rotate(-45 7.72803 27.728)" fill="currentColor"/>
-                    <rect x="10.5366" y="16.3945" width="16" height="4" rx="2" transform="rotate(45 10.5366 16.3945)" fill="currentColor"/>
-                    <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2" transform="rotate(45 10.5562 -0.556152)" fill="currentColor"/>
-                </svg>
-                <h4 class="logo-title">{{env('APP_NAME')}}</h4>
+            <a href="{{ route('index') }}" class="navbar-brand">
+                <img src="{{ asset('checklist-ilsung/icon/logo_ilsung.png') }}" style="height: 30px">
+                <h4 class="logo-title">{{ env('APP_NAME') }}</h4>
             </a>
             <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
                 <i class="icon">
                     <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4.25 12.2744L19.25 12.2744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M10.2998 18.2988L4.2498 12.2748L10.2998 6.24976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M4.25 12.2744L19.25 12.2744" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M10.2998 18.2988L4.2498 12.2748L10.2998 6.24976" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </i>
             </div>
         </div>
         <div class="sidebar-body pt-0 data-scrollbar">
             <div class="sidebar-list" id="sidebar">
-            @include('ilsung.layouts.menu') 
+                @include('ilsung.layouts.menu')
+
+                {{-- @include('partials.dashboard.sub-header') --}}
             </div>
         </div>
         <div class="sidebar-footer"></div>
     </aside>
     <main class="main-content">
         <div class="position-relative">
-            @include('partials.dashboard._body_header')
-            @include('partials.dashboard.sub-header')
+            @include('ilsung.layouts._body_header')
+            {{-- @include('partials.dashboard.sub-header') --}}
         </div>
 
-        <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div class="conatiner-fluid content-inner mt-4 py-0">
             @yield('content')
 
             {{-- {{ $slot }} --}}
         </div>
 
-        @include('partials.dashboard._body_footer')
+        @include('ilsung.partials.dashboard._body_footer')
     </main>
     <a class="btn btn-fixed-end btn-warning btn-icon btn-setting" data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasExample" role="button" aria-controls="offcanvasExample">
@@ -97,9 +116,12 @@
                 stroke-linecap="round" stroke-linejoin="round"></circle>
         </svg>
     </a>
-    @include('partials.components.setting-offcanvas')
-    @include('partials.dashboard._scripts')
-    @include('partials.dashboard._app_toast')
+
+    @include('ilsung.partials.components.setting-offcanvas')
+    @include('ilsung.layouts._scripts')
+    @include('ilsung.partials.dashboard._app_toast')
+    <!-- Backend Bundle JavaScript -->
+
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -113,7 +135,67 @@
             </div>
         </div>
     </div>
+    {{-- <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
+    <script src="{{ asset('jquery-ui/auto.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/pdfmake-0.2.7/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/jszip-3.10.1/jszip.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/pdfmake-0.2.7/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/js/dataTables.rowGroup.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/Select-1.7.0/js/dataTables.select.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/jquery-tabledit/jquery.tabledit.js') }}"></script> --}}
 
+
+    {{-- <script src="{{ asset('smart-ver2/js/plugins.min.js') }}"></script> --}}
+
+    <!-- Footer Scripts============================================= -->
+    {{--    <script src="{{ asset('smart-ver2/js/plugins.bootstrap.js') }}"></script> --}}
+
+    {{-- <script src="{{ asset('smart-ver2/js/functions.js') }}"></script>
+    <script src="{{ asset('smart-ver2/js/chart.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/js/chartjs-plugin-datalabels-v1.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/tinymce/tinymce.min.js') }}"></script>
+
+    <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
+    <script src="{{ asset('smart-ver2/js/components/select-boxes.js') }}"></script>
+    <script src="{{ asset('smart-ver2/js/components/selectsplitter.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/hope-ui.js') }}"></script> --}}
+    <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
+
+    @yield('admin-js')
+
+    {{-- <script>
+        $(document).ready(function() {
+            $('.component-datepicker.input-daterange').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+
+            var activeItem = localStorage.getItem('activeItem');
+
+            if (activeItem) {
+                var selectedItem = document.getElementById(activeItem);
+                if (selectedItem) {
+                    selectedItem.classList.add('active');
+                }
+            }
+
+            function activeLink() {
+                var itemId = this.id;
+                list.forEach((item) => {
+                    item.classList.remove("active");
+                });
+                this.classList.add("active");
+                localStorage.setItem('activeItem', itemId);
+            }
+
+            let list = document.querySelectorAll(".sidebar-body-menu a");
+            list.forEach((item) => item.addEventListener('click', activeLink));
+        });
+    </script> --}}
 </body>
 
 </html>

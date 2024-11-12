@@ -1,0 +1,326 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: 'Samsung One';
+    font-weight: 300;
+    src: local("SamsungOne"),
+    url("{{asset('/smart.tab/public/smart-ver2/font/SamsungOne/SamsungOne-300.woff')}}") format("woff");
+
+}
+
+@font-face {
+    font-family: 'Samsung One';
+    font-weight: 400;
+    src: local("SamsungOne"), url("/smart.tab/public/smart-ver2/font/SamsungOne/SamsungOne-400.woff") format("woff");
+
+}
+
+
+@font-face {
+    font-family: 'Samsung One';
+    font-weight: 700;
+    src: local("SamsungOne"), url("/smart.tab/public/smart-ver2/font/SamsungOne/SamsungOne-700.woff") format("woff");
+
+}
+
+
+@font-face {
+    font-family: 'Samsung Sharp';
+    font-weight: 700;
+    src: local("SamsungSharp"), url("/smart.tab/public/smart-ver2/font/samsungsharp/iCiel Samsung Sharp Sans Bold.woff2") format("woff");
+
+}
+
+@font-face {
+    font-family: 'Samsung Sharp';
+    font-weight: 400;
+    src: local("SamsungSharp"), url("/smart.tab/public/smart-ver2/font/samsungsharp/SamsungSharpSans-Medium.woff2") format("woff");
+}
+
+
+
+.main {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 60px;
+    background-color: white !important;
+}
+
+.carousel-control-prev {
+    justify-content: left;
+}
+
+.carousel-control-next {
+    justify-content: right;
+
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: black;
+}
+
+button.carousel-control-next,
+button.carousel-control-prev {
+    border: none !important;
+}
+
+.stretched #wrapper {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    /* background-color: #f2f2f7; */
+
+}
+
+#table-limit .table-active {
+    background-color: #03A9F4;
+    color: white;
+}
+
+    
+.modal_image_slider {
+    display: flex;
+    justify-content: center;
+}
+
+.modal_image_slider img {
+    width: 100%;
+    display: block;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal_image_slider .carousel-inner {
+    height: 100%;
+}
+
+
+@media (min-width:800px) and (max-width:1200px) {
+
+    .card-limit {
+        height: 450px;
+    }
+
+    .card-limit .card-body {
+        height: 400px;
+    }
+
+    .card-limit .card-header {
+        padding: 0;
+    }
+
+    .card-limit .card-body .row {
+        height: 400px;
+    }
+
+    .card-limit .card-header h4 {
+        font-size: 18px !important;
+        padding: 0px;
+    }
+
+    .header {
+        background-color: #03A9F4;
+        position: fixed;
+
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+        left: 0;
+        margin: 0;
+    }
+
+    .main-wrapper {
+        margin-top: 80px;
+
+    }
+
+    #content {
+        position: relative;
+        background-color: white !important;
+    }
+
+    body {
+        line-height: 1.8;
+        color: black;
+        font-family: 'Samsung One', sans-serif;
+        padding: 0 20px;
+        background-color: white !important;
+    }
+
+    .main {
+        padding-bottom: 0 !important;
+        margin-bottom: 0px !important;
+    }
+
+    #myTab li .nav-link {
+        color: #000;
+        background-color: white;
+        border-radius: 10px;
+        font-size: 20px;
+        width: 130px;
+        background-color: #dee2e6;
+        font-weight: 600;
+    }
+
+    #myTab li .nav-link.active {
+        color: black;
+        font-size: 20px;
+        background-color: #1ABC9C;
+        border-radius: 10px;
+        width: 130px;
+    }
+
+
+    #myTab {
+        column-gap: 10px;
+        border-bottom: 0;
+        justify-content: center;
+        padding: 20px 0 5px 0;
+    }
+
+
+    .table-limit {
+        border: 1px #eee solid;
+        overflow-y: auto;
+        height: 270px;
+    }
+
+    .image_slide {
+        display: flex;
+        justify-content: center;
+    }
+
+    .image_slide img {
+        width: 100%;
+        display: block;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .carousel-inner {
+        height: 300px;
+    }
+
+    .carousel-item.active {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+
+    .limit-item {
+        width: 100%;
+        background-color: white;
+        padding: 0 10px;
+        height: 400px;
+    }
+
+    .limit-remark {
+        margin-top: 10px;
+        border: 1px #cfcbcb solid;
+        padding: 5px 10px;
+        height: 90px;
+        overflow-y: auto;
+    }
+
+    .limit-remark p {
+        font-size: 14px !important;
+    }
+
+    .index-title {
+        padding-bottom: 20px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 40px;
+        COLOR: #0165ff;
+        font-family: 'Samsung One';
+        margin-top: 40px;
+    }
+
+    .menu-item {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 150px 150px;
+        gap: 20px;
+        padding: 0 50px;
+    }
+
+    .menu-item .item-list {
+        display: grid;
+        border-radius: 10px;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    .menu-item h3 {
+        font-size: 30px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .menu-item img {
+        width: 50px;
+        padding-bottom: 20px;
+    }
+
+
+}
+
+.logo-home {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding: 10px 0 5px 0;
+}
+
+.logo-home h5 {
+    font-size: 14px;
+}
+
+
+.logo-home img {
+    height: 50px;
+}
+
+
+.module-1,
+.module-2,
+.module-3,
+.module-4 {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.limit {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.worst {
+    background-color: var(--bs-red);
+    color: aliceblue;
+}
+
+.tieu-chuan {
+    background-color: var(--bs-purple);
+    color: white;
+}
+
+.report {
+    background-color: #3adbca;
+    color: white;
+}
+
+
+.users-item-dropdown button {
+    background: none;
+}
+

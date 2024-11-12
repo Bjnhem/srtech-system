@@ -16,13 +16,21 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index(UsersDataTable $dataTable)
+    // {
+    //     $pageTitle = trans('global-message.list_form_title',['form' => trans('users.title')] );
+    //     $auth_user = AuthHelper::authSession();
+    //     $assets = ['data-table'];
+    //     $headerAction = '<a href="'.route('users.create').'" class="btn btn-sm btn-primary" role="button">Add User</a>';
+    //     return $dataTable->render('global.datatable', compact('pageTitle','auth_user','assets', 'headerAction'));
+    // }
     public function index(UsersDataTable $dataTable)
     {
         $pageTitle = trans('global-message.list_form_title',['form' => trans('users.title')] );
         $auth_user = AuthHelper::authSession();
         $assets = ['data-table'];
         $headerAction = '<a href="'.route('users.create').'" class="btn btn-sm btn-primary" role="button">Add User</a>';
-        return $dataTable->render('global.datatable', compact('pageTitle','auth_user','assets', 'headerAction'));
+        return $dataTable->render('ilsung.pages.user.user', compact('pageTitle','auth_user','assets', 'headerAction'));
     }
 
     /**
@@ -34,7 +42,7 @@ class UserController extends Controller
     {
         $roles = Role::where('status',1)->get()->pluck('title', 'id');
 
-        return view('users.form', compact('roles'));
+        return view('ilsung.users.form', compact('roles'));
     }
 
     /**
@@ -73,7 +81,7 @@ class UserController extends Controller
 
         $profileImage = getSingleMedia($data, 'profile_image');
 
-        return view('users.profile', compact('data', 'profileImage'));
+        return view('ilsung.users.profile', compact('data', 'profileImage'));
     }
 
     /**
@@ -92,7 +100,7 @@ class UserController extends Controller
 
         $profileImage = getSingleMedia($data, 'profile_image');
 
-        return view('users.form', compact('data','id', 'roles', 'profileImage'));
+        return view('ilsung.users.form', compact('data','id', 'roles', 'profileImage'));
     }
 
     /**

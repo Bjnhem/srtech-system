@@ -1,0 +1,280 @@
+.demo {
+    padding: 20px 0px 10px 0;
+    /* background: #00543a8c; */
+}
+
+.main-wrapper {
+    position: relative;
+    width: 100%;
+    background-color: #d9d9d9;
+}
+
+#progress-container-1 {
+    justify-content: center;
+}
+
+
+.progress.red .progress-value {
+    background: #ec4251;
+}
+
+.progress.green .progress-value {
+    background: #73cd21;
+}
+
+.progress.blue .progress-value {
+    background: #2e9ce0;
+}
+
+.progress.yellow .progress-value {
+    background: #eea921;
+}
+
+.progress {
+    cursor: pointer;
+    /* Hiển thị con trỏ khi di chuột vào */
+    margin-bottom: 10px;
+    /* Khoảng cách giữa các thẻ */
+}
+
+#tooltip {
+    /* Thiết lập kiểu dáng cho tooltip */
+    z-index: 1000;
+    /* Đảm bảo tooltip ở trên cùng */
+}
+
+@keyframes animate-positive {
+    0% {
+        width: 0;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .progress .progress-title {
+        font-size: 12px;
+        letter-spacing: 0;
+    }
+}
+
+.white {
+    margin-bottom: 50px;
+}
+
+.sidebar-body-menu a {
+    font-size: 18px;
+    color: #afafaf;
+    opacity: 1;
+}
+
+/* .sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    background: #000000d6 !important;
+
+    width: 253px;
+    padding: 20px 15px 37px 20px;
+    -webkit-transition: .5s all;
+    -o-transition: .5s all;
+    transition: .5s all;
+    min-height: 100vh;
+} */
+
+.cat-sub-menu.visible a:hover, .sidebar-body-menu a.active, .sidebar-body-menu a.active::after, .sidebar-body-menu a:hover, .sidebar-body-menu a:hover::after {
+    opacity: 1;
+    color: greenyellow;
+}
+
+
+.progress {
+    height: 40px;
+    background: #e1e1e1;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.progress .progress-bar {
+    animation: animate-positive 2s;
+}
+
+.progress .progress-value {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #fff;
+    font-size: 14px;
+    color: #007bff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-weight: 600;
+    width: 50px;
+
+}
+
+.progress .progressbar-title {
+    position: absolute;
+    bottom: 9px;
+    left: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    letter-spacing: 1px;
+}
+
+@-webkit-keyframes animate-positive {
+    0% {
+        width: 0%;
+    }
+}
+
+@keyframes animate-positive {
+    0% {
+        width: 0%;
+    }
+}
+
+#myTab, #study-Tab {
+    column-gap: 10px;
+    border-bottom: 0;
+    justify-content: center;
+    padding: 20px 0 0 0;
+}
+
+#myTab li .nav-link, #study-Tab li .nav-link {
+    color: #000;
+    background-color: #cfcfcf;
+    border-radius: 10px;
+    font-size: 20px;
+    width: auto;
+}
+
+#table_check_list_search tbody tr td:nth-child(8) {
+    display: flex;
+    column-gap: 5px;
+    justify-content: center;
+}
+
+
+#table-check-list thead tr:nth-child(2) {
+    display: none !important;
+}
+
+#table-check-list tbody tr, #table-check-list tbody td {
+    padding: 4px 10px;
+    border: 1px solid #5c5656;
+    vertical-align: middle;
+    text-align: left;
+    font-size: 16px;
+}
+
+#table-check-list tbody tr td:nth-child(3),
+#table-check-list tbody tr td:nth-child(4) {
+    text-align: center;
+    width: 10%;
+}
+
+#table-check-list tbody tr td:nth-child(2) {
+    width: 70%;
+    word-wrap: break-word;  /* Chuyển dòng khi gặp từ dài */
+    word-break: break-word; /* Đảm bảo các từ dài cũng sẽ bị chia để xuống dòng */
+    white-space: normal;    /* Đảm bảo văn bản không bị giữ trên một dòng duy nhất */
+}
+
+#table-check-list tbody tr td:nth-child(1) {
+    width: 5%;
+}
+
+#table-check-list tbody tr td:nth-child(5) {
+    width: 15%;
+}
+
+#table-check-list_wrapper .dataTables_length,
+#table_check_list_search_wrapper .dataTables_length,
+#table_check_list_search_filter {
+    display: none;
+}
+
+#qr-reader {
+    width: 100%;
+    height: auto;
+    margin: auto;
+    display: block;
+}
+
+.sidebar .sidebar-toggle {
+    position: absolute;
+    right: -12px;
+    top: 20px;
+    cursor: pointer;
+    background: #3a57e8;
+    color: #fff;
+    padding: 0.2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(58, 87, 232, 0.1);
+}
+
+.modal-fullscreen .modal-header {
+    padding: 0.5rem 0.5rem;
+    display: flex !important;
+}
+
+@media (min-width: 1500px) {
+    #content {
+        position: relative;
+        background-color: white !important;
+        z-index: 100px !important;
+        padding-top: 100px;
+    }
+}
+
+.form-control {
+    border: 1px solid #ced4da ! IMPORTANT;
+    border-radius: 0.5rem;
+}
+
+.btn-outline-secondary {
+    color: #ffffff;
+    /* border-color: #6c757d; */
+}
+
+.content-inner {
+    padding: calc(var(--bs-gutter-x, 0.4rem)* 3);
+}
+
+.nav .search-input {
+    display: none !important;
+}
+
+.sidebar .navbar-brand {
+    align-items: center;
+    justify-content: center;
+}
+
+.fc-right .fc-button-group {
+    display: none !important;
+
+}
+
+.toast-center {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed;
+}
+
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0 !important;
+
+}
