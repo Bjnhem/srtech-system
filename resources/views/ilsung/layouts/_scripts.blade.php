@@ -30,6 +30,7 @@
 <script src="{{ asset('vendor/datatables/buttons.server-side.js')}}"></script>
 <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
 {{-- <script src="{{asset('vendor/vanillajs-datepicker/dist/js/datepicker-full.js')}}"></script> --}}
+<script src="{{ asset('smart-ver2/jquery-tabledit/jquery.tabledit.js') }}"></script>
 @if(in_array('animation',$assets ?? []))
 <!--aos javascript-->
 <script src="{{asset('vendor/aos/dist/aos.js')}}"></script>

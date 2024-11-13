@@ -6,15 +6,15 @@
                <div class="col-md-10">
                   <div class="card card-transparent shadow-none d-flex justify-content-center mb-0 auth-card">
                      <div class="card-body">
-                        <a href="{{route('dashboard')}}" class="navbar-brand d-flex align-items-center mb-3">
+                        {{-- <a href="{{route('dashboard')}}" class="navbar-brand d-flex align-items-center mb-3">
                            <svg width="30" class="text-primary" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <rect x="-0.757324" y="19.2427" width="28" height="4" rx="2" transform="rotate(-45 -0.757324 19.2427)" fill="currentColor"/>
                               <rect x="7.72803" y="27.728" width="28" height="4" rx="2" transform="rotate(-45 7.72803 27.728)" fill="currentColor"/>
                               <rect x="10.5366" y="16.3945" width="16" height="4" rx="2" transform="rotate(45 10.5366 16.3945)" fill="currentColor"/>
                               <rect x="10.5562" y="-0.556152" width="28" height="4" rx="2" transform="rotate(45 10.5562 -0.556152)" fill="currentColor"/>
                            </svg>
-                           <h4 class="logo-title ms-3">{{env('APP_NAME')}}</h4>
-                        </a>
+                           <h4 class="logo-title ms-3">ILSUNG SYSTEM</h4>
+                        </a> --}}
                         <h2 class="mb-2 text-center">Sign In</h2>
                         <p class="text-center">Login to stay connected.</p>
                         <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -29,6 +29,10 @@
                                     <label for="email" class="form-label">Email</label>
                                     <input id="email" type="email" name="email"  value="{{env('IS_DEMO') ? 'admin@example.com' : old('email')}}"   class="form-control"  placeholder="admin@example.com" required autofocus>
                                  </div>
+                                 {{-- <div class="form-group">
+                                    <label for="username" class="form-label">User name</label>
+                                    <input id="username" type="text" name="username"  value="{{env('IS_DEMO') ? 'Username' : old('username')}}"   class="form-control"  placeholder="User name" required autofocus>
+                                 </div> --}}
                               </div>
                               <div class="col-lg-12">
                                  <div class="form-group">

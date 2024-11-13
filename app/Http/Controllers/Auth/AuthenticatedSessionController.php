@@ -16,6 +16,16 @@ class AuthenticatedSessionController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
+    protected function credentials(Request $request)
+    {
+        return [
+            'username' => $request->username,  // Thay vì 'email'
+            'password' => $request->password,
+        ];
+    }
+
+    
     public function create()
     {
         return view('auth.login');

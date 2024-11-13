@@ -7,11 +7,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DataTbaleController;
 use App\Http\Controllers\AdminController as ControllersAdminController;
 use App\Http\Controllers\check_list_controller;
+use App\Http\Controllers\DataTableController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Plan_checklist;
 use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
+use App\Http\Controllers\UpdatedataController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
 // Packages
@@ -76,9 +78,20 @@ Route::prefix('Plan-checklist')->group(function () {
 });
 
 Route::prefix('Update-master')->group(function () {
+        Route::get('/', [UpdatedataController::class, 'index'])->name('update.master');
         Route::get('/data-checklist', [UpdatedataController::class, 'data_checklist'])->name('update.data.checklist');
         Route::get('/data-line', [UpdatedataController::class, 'data_line'])->name('update.data.line');
-   
+        Route::get('/data-model', [UpdatedataController::class, 'data_model'])->name('update.data.model');
+        Route::get('/data-machine', [UpdatedataController::class, 'data_model'])->name('update.data.machine');
+        Route::get('/data-machine-list', [UpdatedataController::class, 'data_model'])->name('update.data.machine.list');
+
+
+        Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
+        Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
+        Route::get('/show-data-table', [UpdatedataController::class, 'show_data_table'])->name('update.show.data');
+        Route::post('/delete-data-table', [UpdatedataController::class, 'delete_data_row_table'])->name('update.delete.data');
+        Route::post('/add-data-table', [UpdatedataController::class, 'add_data_row_table'])->name('update.add.data');
+       
 });
 
 
@@ -190,7 +203,7 @@ Route::/* middleware('auth')-> */prefix('admin-dashboard/master')->group(functio
     Route::get('/show-model', [master_data_controller::class, 'show'])->name('master.show.model');
     Route::get('/list', [master_data_controller::class, 'list'])->name('master.list');
     Route::post('/upload-csv', [master_data_controller::class, 'update_table'])->name('master.update.data');
-    Route::post('/edit-table/{model}', [master_data_controller::class, 'edit_table'])->name('master.edit.data');
+   
     Route::get('/new-row', [master_data_controller::class, 'new_row'])->name('master.new_row');
     Route::get('/delete-row', [master_data_controller::class, 'delete_row'])->name('master.delete_row');
 });

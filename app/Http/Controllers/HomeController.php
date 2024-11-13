@@ -42,10 +42,6 @@ class HomeController extends Controller
     }
 
 
-    public function index_master()
-    {
-        return view('Checklist_EQM.pages.Master-checklist');
-    }
 
     public function index_user()
     {

@@ -42,31 +42,39 @@
     </li>
 
     {{-- database --}}
+
     <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-special-pages" role="button" aria-expanded="false"
+        <a class="nav-link  {{ Request::is('Update-master*') ? 'active' : '' }}" aria-current="page"
+            href="{{ route('update.master') }}">
+            <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera" width="20"
+                height="20">
+            <span class="item-name">Database</span>
+        </a>
+
+        {{-- <a class="nav-link  {{ Request::is('Update-master*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#sidebar-special-pages" role="button" aria-expanded="false"
             aria-controls="sidebar-special-pages">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera"
                 width="20" height="20">
 
-            <span class="item-name">Database</span>
-            <i class="right-icon">
+            <span class="item-name">Database</span> --}}
+        {{-- <i class="right-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-            </i>
-        </a>
-        <ul class="sub-nav collapse" id="sidebar-special-pages" data-bs-parent="#sidebar">
-            <li class=" nav-item">
-                <a class="nav-link" href="{{ route('special-pages.billing') }}">
+            </i> --}}
+        {{-- </a> --}}
+        {{-- <ul class="sub-nav collapse" id="sidebar-special-pages" data-bs-parent="#sidebar">
+            <li class=" nav-item ">
+                <a class="nav-link {{ activeRoute(route('update.data.model')) }}" href="{{ route('update.data.model') }}">
                     <img class=" icon" src="{{ asset('checklist-ilsung/icon/next.png') }}" alt="Camera"
                         width="20" height="20">
                     <span class="item-name">Model</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  {{ activeRoute(route('special-pages.calender')) }}"
-                    href="{{ route('special-pages.calender') }}">
+                <a class="nav-link  {{ activeRoute(route('update.data.line')) }}"
+                    href="{{ route('update.data.line') }}">
                     <img class=" icon" src="{{ asset('checklist-ilsung/icon/next.png') }}" alt="Camera"
                         width="20" height="20">
                     <span class="item-name">line</span>
@@ -96,19 +104,16 @@
                     <span class="item-name">Checklist detail</span>
                 </a>
             </li>
-            {{-- <li class="nav-item">
-                <a class="nav-link {{ activeRoute(route('special-pages.timeline')) }}"
-                    href="{{ route('special-pages.timeline') }}">
-                    <img class=" icon" src="{{ asset('checklist-ilsung/icon/next.png') }}" alt="Camera"
-                    width="20" height="20">
-                    <span class="item-name">Timeline</span>
-                </a>
-            </li> --}}
-        </ul>
+          
+        </ul> --}}
     </li>
+
+
     {{-- user --}}
+
+
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('users.index')) }}" aria-current="page"
+        <a class="nav-link  {{ Request::is('users*') ? 'active' : '' }}" aria-current="page"
             href="{{ route('users.index') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/group.png') }}" alt="Camera" width="20"
                 height="20">
@@ -155,7 +160,7 @@
         </ul>
     </li> --}}
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#sidebar-auth" role="button" aria-expanded="false"
             aria-controls="sidebar-user">
             <i class="icon">
@@ -250,9 +255,9 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> --}}
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link" data-bs-toggle="collapse" href="#utilities-error" role="button" aria-expanded="false"
             aria-controls="utilities-error">
             <i class="icon">
@@ -330,6 +335,6 @@
             </i>
             <span class="item-name">Admin</span>
         </a>
-    </li>
+    </li> --}}
 
 </ul>

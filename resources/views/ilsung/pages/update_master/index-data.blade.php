@@ -1,57 +1,155 @@
 @extends('ilsung.layouts.layout')
 
 @section('content')
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.model') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-info text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/smartphone.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                                Danh sách model
+                                <h2 class="counter" style="visibility: visible;">75</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.line') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-warning text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/production.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                                Products line
+                                <h2 class="counter counter_line" style="visibility: visible;">60</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
 
-    <div class="container-fluid" style="background-color: #fff">
-        <ul id="myTab" class="nav nav-tabs boot-tabs mb-5">
-            <li class="nav-item">
-                <button class="nav-link active" id="check-list-1" value="Model_master" data-bs-toggle="tab"
-                    data-bs-target="#check-list" type="button" role="tab" aria-controls="nav-disabled"
-                    aria-selected="false">Model</button>
-            </li>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.machine') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-success text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/machine.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                                Machine master
+                                <h2 class="counter counter_machine" style="visibility: visible;">80</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.machine.list') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-danger text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/evaluating.png') }}" alt="Camera"
+                                    width="30" height="30">
 
-            <li class="nav-item">
-                <button class="nav-link" id="line-type-1" value="line" data-bs-toggle="tab" data-bs-target="#line-type"
-                    type="button" role="tab" aria-controls="nav-disabled" aria-selected="false">Line</button>
-            </li>
-            <li class="nav-item"> <button class="nav-link" id="cong-doan-1" value="Machine_master" data-bs-toggle="tab"
-                    data-bs-target="#study-post" type="button" role="tab" aria-controls="nav-home"
-                    aria-selected="true">Machine</button></li>
-            <li class="nav-item"> <button class="nav-link" id="phan-loai-1" value="Machine_list" data-bs-toggle="tab"
-                    data-bs-target="#mind-post" type="button" role="tab" aria-controls="nav-profile"
-                    aria-selected="false">machine list</button></li>
-            <li class="nav-item">
-                <button class="nav-link" id="line-1" value="Checklist_item" data-bs-toggle="tab"
-                    data-bs-target="#line1" type="button" role="tab" aria-controls="nav-contact"
-                    aria-selected="false">Item check</button>
+                            </div>
+                            <div class="text-end">
+                                List machine
+                                <h2 class="counter counter-list_machine" style="visibility: visible;">45</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-soft-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="bg-soft-info rounded p-3">
 
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="line-1" value="Checklist_master" data-bs-toggle="tab"
-                    data-bs-target="#line1" type="button" role="tab" aria-controls="nav-contact"
-                    aria-selected="false">Master checklist</button>
-
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="nhan_vien-1" value="nhan_vien_check_list" data-bs-toggle="tab"
-                    data-bs-target="#nhan-vien" type="button" role="tab" aria-controls="nav-disabled"
-                    aria-selected="false">Nhân Viên</button>
-            </li>
-        </ul>
-        <div class="tab-content mt-4" id="nav-tabContent">
-            {{-- =====  Hoạt động nổi bật ===== --}}
-            <div class="tab-pane fade show active " id="check-list" role="tabpanel" aria-labelledby="check-list-1"
-                tabindex="0">
-                <div class="card table-responsive" style="border: none">
-                    <div class="card-body ">
-                        <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
-                            <thead class="table-success"></thead>
-                        </table>
+                            <img class=" icon" src="{{ asset('checklist-ilsung/icon/smartphone.png') }}" alt="Camera"
+                                width="30" height="30">
+                        </div>
+                        <div class="text-end">
+                            <h2 class="counter counter_model" style="visibility: visible;">5600</h2>
+                            Model
+                        </div>
                     </div>
                 </div>
             </div>
-
-
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-soft-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="bg-soft-warning rounded p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="counter" style="visibility: visible;">5600</h2>
+                            Nurses
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-soft-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="bg-soft-danger rounded p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path
+                                    d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="counter" style="visibility: visible;">3500</h2>
+                            Patients
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-soft-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="counter" style="visibility: visible;">4500</h2>
+                            Pharmacists
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -62,7 +160,7 @@
     <script>
         $(document).ready(function() {
             localStorage.setItem('activeItem', 'master');
-            var table = 'check_list';
+            var table = 'model_master';
             var colum_table = [];
             var colums = [];
             var tables;

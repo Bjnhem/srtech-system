@@ -42,7 +42,7 @@ class UserController extends Controller
     {
         $roles = Role::where('status',1)->get()->pluck('title', 'id');
 
-        return view('ilsung.users.form', compact('roles'));
+        return view('ilsung.pages.user.Create', compact('roles'));
     }
 
     /**
@@ -81,7 +81,7 @@ class UserController extends Controller
 
         $profileImage = getSingleMedia($data, 'profile_image');
 
-        return view('ilsung.users.profile', compact('data', 'profileImage'));
+        return view('ilsung.pages.user.profile', compact('data', 'profileImage'));
     }
 
     /**
@@ -100,7 +100,7 @@ class UserController extends Controller
 
         $profileImage = getSingleMedia($data, 'profile_image');
 
-        return view('ilsung.users.form', compact('data','id', 'roles', 'profileImage'));
+        return view('ilsung.pages.user.Create', compact('data','id', 'roles', 'profileImage'));
     }
 
     /**
