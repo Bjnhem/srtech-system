@@ -65,7 +65,6 @@
                             <div class="bg-danger text-white rounded p-3">
                                 <img class=" icon" src="{{ asset('checklist-ilsung/icon/evaluating.png') }}" alt="Camera"
                                     width="30" height="30">
-
                             </div>
                             <div class="text-end">
                                 List machine
@@ -77,6 +76,48 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.checklist.master') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-warning text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/production.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                                Checklist master
+                                <h2 class="counter counter_line" style="visibility: visible;">60</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('update.data.checklist.item') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-success text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/machine.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                               Checklist item
+                                <h2 class="counter counter_machine" style="visibility: visible;">80</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+
+
+
+        {{-- <div class="col-lg-3 col-md-6">
             <div class="card bg-soft-info">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
@@ -150,7 +191,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
 
     </div>

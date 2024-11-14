@@ -254,10 +254,13 @@
                     }),
                     success: function(users) {
                         if (users.isValid) {
-                            $('#Machine_ID').val(users.machine_id);
-                            toastr.success("Mã QR hợp lệ. ID máy đã được điền.");
+                            console.log(machineID);
+                            $('#Code_machine').val(machineID);
+                            toastr.success("Mã QR hợp lệ: " + machineID);
                             html5QrcodeScanner.clear();
                             $('#modal-scan').modal('hide');
+                            search();
+                            show_overview()
 
                         } else {
                             // Nếu mã QR không hợp lệ
@@ -276,8 +279,6 @@
 
                 });
             }
-
-
 
 
             function show_master_status() {
@@ -838,12 +839,39 @@
                 if (rowSelected.length > 0) {
                     var rowData = tables.row(rowSelected[0]).data();
                     console.log(rowData);
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
+                    Lấy dữ liệu của dòng đầu tiên được chọn
                     $('#Machine option').text(rowData[3]);
                     $('#ID_machine').val(rowData[4]);
                     $('#line option').text(rowData[1]);
                     $('#Checklist_item option').text(rowData[5]);
                     $('#Khung_gio option').text(rowData[6]);
+                    // $('#ID_machine').val(rowData[4]);
+                    // $('#Line option').each(function() {
+                    //     if ($(this).text() === rowData[1]) {
+                    //         $(this).prop('selected', true); // Chọn option có text khớp
+                    //     }
+                    // });
+                    // $('#Machine option').each(function() {
+                    //     if ($(this).text() === rowData[3]) {
+                    //         $(this).prop('selected', true); // Chọn option có text khớp
+                    //     }
+                    // });
+                    // $('#Checklist_item option').each(function() {
+                    //     if ($(this).text() === rowData[5]) {
+                    //         $(this).prop('selected', true); // Chọn option có text khớp
+                    //     }
+                    // });
+                    // $('#Khung_gio option').each(function() {
+                    //     if ($(this).text() === rowData[6]) {
+                    //         $(this).prop('selected', true); // Chọn option có text khớp
+                    //     }
+                    // });
+
+                    // $('#Model option').each(function() {
+                    //     if ($(this).text() === rowData[2]) {
+                    //         $(this).prop('selected', true); // Chọn option có text khớp
+                    //     }
+                    // });
                     date = rowData[9];
                     shift = rowData[7];
                     $('#Model option:selected').filter(function() {
@@ -876,12 +904,40 @@
                 if (rowSelected.length > 0) {
                     var rowData = tables.row(rowSelected[0]).data();
                     // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Machine option').text(rowData[3]);
+                    // $('#Machine option').text(rowData[3]);
+                    
+                    // $('#line option').text(rowData[1]);
+
+                    // $('#Checklist_item option').text(rowData[5]);
+                    // $('#Khung_gio option').text(rowData[6]);
+                    // $('#Model option:selected').text(rowData[2]);
                     $('#ID_machine').val(rowData[4]);
-                    $('#line option').text(rowData[1]);
-                    $('#Checklist_item option').text(rowData[5]);
-                    $('#Khung_gio option').text(rowData[6]);
-                    $('#Model option:selected').text(rowData[2]);
+                    $('#line option').each(function() {
+                        if ($(this).text() === rowData[1]) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
+                    $('#Machine option').each(function() {
+                        if ($(this).text() === rowData[3]) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
+                    $('#Checklist_item option').each(function() {
+                        if ($(this).text() === rowData[5]) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
+                    $('#Khung_gio option').each(function() {
+                        if ($(this).text() === rowData[6]) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
+
+                    $('#Model option').each(function() {
+                        if ($(this).text() === rowData[2]) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
                     date = rowData[9];
                     shift = rowData[7];
 

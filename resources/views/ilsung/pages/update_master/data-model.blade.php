@@ -7,7 +7,9 @@
         <div class="tab-pane fade show active " id="check-list" role="tabpanel" aria-labelledby="check-list-1" tabindex="0">
             <div class="card table-responsive" style="border: none">
                 <div class="card-header">
-                    <button type="button" id="creat" class="btn btn-primary">Add new mode</button>
+                    <button type="button" id="Home" class="btn btn-success"
+                    onclick="window.location='{{ route('update.master') }}'"><span class="icon-home"></span></button>
+                <button type="button" id="creat" class="btn btn-primary">Add</button>
                 </div>
                 <div class="card-body ">
                     <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
@@ -234,9 +236,11 @@
     <script>
         $(document).ready(function() {
             var table_name = 'Model_master';
-            var colum_table = [];
-            var colums = [];
-            var tables;
+            var table = '#table-result';
+                  var tables;
+            let id;
+            let title_add="Add new Model";
+            let title_edit="Edit Model";
 
             // data_table_view(table);
             show_data_table(table_name);
@@ -261,7 +265,7 @@
             }
 
             function show_data_table(tab) {
-                var table = '#table-result';
+               
                 $.ajax({
                     type: "GET",
                     url: "{{ route('update.show.data') }}",
@@ -282,7 +286,7 @@
                                 '" data-bs-toggle="modal" data-bs-target="#modal-show" class="btn btn-primary editbtn btn-sm" id="view"><span class="icon-eye2"></span></button>';
 
                             var edit = '<button type="button" value="' + id +
-                                '"class="btn btn-success editbtn btn-sm" id="edit"><span class="icon-pencil2"></span></button>';
+                                '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
                             var deleted = '<button type="button" value="' + id +
                                 '" data-bs-toggle="modal" data-bs-target="#DeleteModal" class="btn btn-danger editbtn btn-sm" id="delete"><span class="icon-trash1"></span></button>';
 
@@ -306,6 +310,9 @@
                                 "paging": true,
                                 "ordering": false,
                                 "info": false,
+                                select: {
+                                    style: 'single',
+                                },
                             });
                         }
 
@@ -318,7 +325,7 @@
 
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
-                $('#title_modal_data').text("Add new model");
+                $('#title_modal_data').text(title_add);
                 const button1 = document.getElementById('save');
                 button1.style.display = 'unset'; // Ẩn button
                 const button2 = document.getElementById('update');
@@ -366,22 +373,61 @@
 
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
-                $('#title_modal_data').text("Edit model");
+                $('#title_modal_data').text(title_edit);
                 const button1 = document.getElementById('save');
                 button1.style.display = 'none'; // Ẩn button
                 const button2 = document.getElementById('update');
                 button2.style.display = 'unset'; // Ẩn button
-                let id = $(this).val();
+                id = $(this).val();
 
                 rowSelected = tables.rows('.selected').indexes();
+                // console.log(rowSelected[1]);
                 if (rowSelected.length > 0) {
                     var rowData = tables.row(rowSelected[0]).data();
                     // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Model').text(rowData[1]);
-                    $('#Name').text(rowData[2]);
-                    $('#Status option').text(rowData[3]);
+                    // console.log(rowData[1]);
+                    $('#model').val(rowData[1]);
+                    $('#Name').val(rowData[2]);
+                    $('#Status').val(rowData[3]);
                 }
                 $('#modal-created').modal('show');
+            });
+
+            $(document).on('click', '#update', function(e) {
+                e.preventDefault();
+               const data = new FormData(document.getElementById('form_data'));
+                data.append('table', table_name);
+                data.append('id', id);
+                console.log(id);
+                if (data.get('model') == "" || data.get('Name') == "") {
+                    return alert(
+                        "Vui lòng điền đầy đủ thông tin");
+                } else {
+                    // Gửi yêu cầu AJAX với cả hai dữ liệu
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('update.add.data') }}",
+                        dataType: 'json',
+                        data: data,
+                        processData: false, // Không xử lý dữ liệu (FormData tự xử lý)
+                        contentType: false,
+                        success: function(response) {
+                            if (response.status === 400) {
+                                toastr.danger('Có lỗi khi add - vui lòng thực hiện lại');
+                            }
+                            toastr.success('Update thành công');
+                            show_data_table(table_name);
+                            $('#modal-created').modal('hide');
+                            document.getElementById('form_data').reset();
+                        },
+                        error: function() {
+                            toastr.success('Có lỗi - vui lòng thực hiện lại');
+                        }
+                    });
+                }
+
+
+
             });
 
 

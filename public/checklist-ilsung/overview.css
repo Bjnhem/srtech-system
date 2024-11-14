@@ -186,9 +186,12 @@
 
 #table-check-list tbody tr td:nth-child(2) {
     width: 70%;
-    word-wrap: break-word;  /* Chuyển dòng khi gặp từ dài */
-    word-break: break-word; /* Đảm bảo các từ dài cũng sẽ bị chia để xuống dòng */
-    white-space: normal;    /* Đảm bảo văn bản không bị giữ trên một dòng duy nhất */
+    word-wrap: break-word;
+    /* Chuyển dòng khi gặp từ dài */
+    word-break: break-word;
+    /* Đảm bảo các từ dài cũng sẽ bị chia để xuống dòng */
+    white-space: normal;
+    /* Đảm bảo văn bản không bị giữ trên một dòng duy nhất */
 }
 
 #table-check-list tbody tr td:nth-child(1) {
@@ -276,5 +279,34 @@
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     padding: 0 !important;
+
+}
+
+#table-result thead tr th,
+#table-result tbody tr td {
+    text-align: center;
+
+}
+
+
+#table-result thead tr th:last-child {
+    width: 10%;
+
+}
+
+#table-result thead tr th:first-child {
+    width: 5%;
+
+}
+
+#table-result_wrapper .dataTables_length,
+#table-result_wrapper .dataTables_filter {
+
+    margin-bottom: 10px;
+}
+
+#check-list .card-header {
+    display: flex;
+    justify-content: space-between;
 
 }
