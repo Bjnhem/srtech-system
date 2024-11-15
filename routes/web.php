@@ -91,7 +91,9 @@ Route::prefix('Update-master')->group(function () {
         Route::get('/data-checklist-master', [UpdatedataController::class, 'data_checklist_master'])->name('update.data.checklist.master');
         Route::get('/show-data-table-checklist-master', [UpdatedataController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
 
-        Route::get('/show-data-table-checklist-item', [UpdatedataController::class, 'data_checklist_item'])->name('update.data.checklist.item');
+        Route::get('/data-checklist-item', [UpdatedataController::class, 'data_checklist_item'])->name('update.data.checklist.item');
+        Route::get('/show-data-table-checklist-item', [UpdatedataController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
+        Route::get('/data-checklist-item_search', [UpdatedataController::class, 'data_item_master'])->name('update.data.item_check');
 
         
 

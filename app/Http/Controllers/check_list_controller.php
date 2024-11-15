@@ -200,6 +200,7 @@ class check_list_controller extends Controller
         $Code_machine = ($request->input('Code_machine') == '') ? null : $request->input('Code_machine');
         $shift = ($request->input('shift') == 'All') ? null : $request->input('shift');
         $Check_status = ($request->input('Status') == 'All') ? null : $request->input('Status');
+        $Machine = ($request->input('Machine_search') == 'All') ? null : $request->input('Machine_search');
         $date_form = $request->input('date_form');
         $table = 'App\\Models\\checklist_result';
 
@@ -211,6 +212,7 @@ class check_list_controller extends Controller
                 $data = Checklist_result::where('Shift', 'LIKE', '%' . $shift . '%')
                     ->where('Locations', 'LIKE', '%' . $line . '%')
                     ->where('Code_machine', 'LIKE', '%' . $Code_machine . '%')
+                    ->where('Machine', 'LIKE', '%' . $Machine . '%')
                     ->where('Check_status', 'LIKE', '%' . $Check_status . '%')
                     ->where('Date_check', $date_form)
                     ->orderBy('Check_status', "desc")

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Checklist_item;
+use App\Models\Checklist_master;
 use App\Models\line;
 use App\Models\Machine_master;
 use App\Models\Model_master;
@@ -126,11 +128,25 @@ class UpdatedataController extends Controller
         $machine = Machine_master::all();
         $line = line::all();
         $model = Model_master::all();
+        $khung_check = Checklist_item::distinct()->pluck('khung_check');
+
         return response()->json(
             [
                 'machine' => $machine,
                 'line' => $line,
                 'model' => $model,
+                'khung_check' => $khung_check
+            ]
+        );
+    }
+
+    public function data_item_master(Request $request)
+    {
+        $Machine = $request->input("Machine");
+        $list_item_checklist = Checklist_master::where('Machine', $Machine)->get();
+        return response()->json(
+            [
+                'checklist_item' => $list_item_checklist,
             ]
         );
     }
@@ -193,12 +209,14 @@ class UpdatedataController extends Controller
         $table = 'App\Models\\' . $request->input('table');
 
         $Machine = ($request->input('Machine') == 'All') ? null : $request->input('Machine');
+        $Shift = ($request->input('Shift') == 'All') ? null : $request->input('Shift');
 
 
         if ($request->ajax()) {
             if (class_exists($table)) {
 
                 $data = $table::where('Machine', 'LIKE', '%' . $Machine . '%')
+                    ->where('Shift', 'LIKE', '%' . $Shift . '%')
                     ->orderBy('id', "desc")
                     ->get();
 

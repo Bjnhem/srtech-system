@@ -14,11 +14,20 @@
                 </div>
                 <div class="card-body ">
                     <div class="row">
-                        <div class="col-sm-6 col-xl-3 mb-3">
+                        <div class="col-sm-6 col-xl-4 mb-3">
                             <span>Machine:</span>
                             <select name="Machine" id="Machine_search" class="form-select">
                             </select>
 
+                        </div>
+                        <div class="col-sm-6 col-xl-4 mb-3">
+                            <span>Shift:</span>
+                            <select name="Shift" id="Shift_search" class="form-select">
+                                <option value="">All</option>
+                                <option value="Ca ngày">Ca ngày</option>
+                                <option value="Ca đêm">Ca đêm</option>
+
+                            </select>
                         </div>
 
                     </div>
@@ -27,9 +36,11 @@
                             <thead class="table-success">
                                 <tr>
                                     <th>STT</th>
+                                    <th>ID_checklist</th>
                                     <th>Machine</th>
                                     <th>Item checklist</th>
-                                    <th>Chu kỳ</th>
+                                    <th>Khung giờ</th>
+                                    <th>Shift</th>
                                     <th>Edit</th>
                                 </tr>
                             </thead>
@@ -46,7 +57,7 @@
 
 
     <div class="modal" id="modal-created">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between align-items-center">
                     <!-- Tiêu đề bên trái -->
@@ -63,48 +74,34 @@
                     <form action="" method="post" id="form_data">
                         @csrf
                         <div class="row">
-                            <div class="col-sm-12 col-xl-4 mb-3">
+                            <input type="hidden" name="ID_checklist" id="ID_checklist">
+                            <div class="col-sm-16 col-xl-3 mb-3">
                                 <span>Machine:</span>
-                                <input name="Machine" type="text" id="Machine" class="form-control"
-                                    placeholder="Nhập machine...">
+                                <select name="Machine" id="Machine" class="form-select">
+                                </select>
+
                             </div>
-                            <div class="col-sm-12 col-xl-4 mb-3">
+                            <div class="col-sm-6 col-xl-3 mb-3">
                                 <span>Item checklist:</span>
-                                <input name="item_checklist" type="text" id="item_checklist" class="form-control"
-                                    placeholder="Nhập item check...">
-                            </div>
-                            <div class="col-sm-12 col-xl-4 mb-3">
-                                <span>Chu kỳ:</span>
-                                <input name="Chu_ky" type="text" id="Chu_ky" class="form-control">
-                            </div>
+                                <select name="item_checklist" id="item_checklist" class="form-select">
+                                </select>
 
+                            </div>
+                            <div class="col-sm-6 col-xl-3 mb-3">
+                                <span>Shift:</span>
+                                <select name="Shift" id="Shift" class="form-select">
+                                    <option value="Ca ngày">Ca ngày</option>
+                                    <option value="Ca đêm">Ca đêm</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-xl-3 mb-3">
+                                <span>Khung check:</span>
+                                <input type="text" name="khung_check" id="Khung_check" class="form-control">
+                            </div>
                         </div>
-                       
                     </form>
-
                     <br>
 
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- modal Scan --}}
-    <div class="modal" id="modal-scan">
-        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="text-primary mx-3">Quét QR Code</b>
-                    </h5>
-
-                </div>
-                <div class="modal-footer mx-5">
-                    <button type="button" class="btn btn-warning close close-model-scan"
-                        id="close-model-scan">Close</button>
-                </div>
-                <div class="modal-body mx-5" style="background-color: white; ">
-                    <div id="qr-reader" style="width:100%"></div>
-                    <button id="closeScanBtn" style="display: none;">Đóng Quét</button>
                 </div>
             </div>
         </div>
@@ -113,27 +110,27 @@
 
 @section('admin-js')
     <script src="{{ asset('checklist-ilsung/js/QR.min.js') }}"></script>
-    <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
+    <script src="{{ asset('checklist-ilsung/jquery-ui/auto.js') }}"></script>
     <script>
         $(document).ready(function() {
-            var table_name = 'Checklist_master';
+            var table_name = 'Checklist_item';
             var table = '#table-result';
             let title_add = "Add new Machine";
             let title_edit = "Edit machine";
             var tables;
             let id;
-         
+
             function show_data_table(tab) {
-                // var Item_search = $('#Item_search option:selected').text();
+                var Shift_search = $('#Shift_search option:selected').text();
                 var Machine_search = $('#Machine_search option:selected').text();
 
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('update.data.checklist.item') }}",
+                    url: "{{ route('update.show.data.checklist.item') }}",
                     dataType: "json",
                     data: {
                         table: tab,
-                        // item: Item_search,
+                        Shift: Shift_search,
                         Machine: Machine_search,
 
                     },
@@ -159,9 +156,11 @@
 
                             data.push([
                                 count,
+                                value.ID_checklist,
                                 value.Machine,
                                 value.item_checklist,
-                                value.Chu_kỳ,
+                                value.khung_check,
+                                value.Shift,
                                 edit + deleted,
                             ]);
 
@@ -181,7 +180,7 @@
                                 select: {
                                     style: 'single',
                                 },
-                                
+
                             });
                         }
 
@@ -197,9 +196,9 @@
                 data.append('table', table_name);
                 data.append('id', id);
                 data.set('Machine', $('#Machine option:selected').text());
-                data.set('Locations', $('#Locations option:selected').text());
+                data.set('item_checklist', $('#item_checklist option:selected').text());
                 console.log(id);
-                if (data.get('Machine') == "" || data.get('Code_machine') == "" || data.get('Locations') == "") {
+                if (data.get('Machine') == "" || data.get('item_checklist') == "" || data.get('khung_check') == "") {
                     return alert(
                         "Vui lòng điền đầy đủ thông tin");
                 } else {
@@ -227,147 +226,133 @@
                 }
             }
 
-            function show_master() {
+            function show_master_model() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('update.data.machine.master') }}",
                     dataType: "json",
                     success: function(response) {
                         $('#Machine').empty();
-                        $('#Machine_search').empty();
-                        $('#ID_machine').empty();
-                        $('#Locations').empty();
-                        $('#Line_search').empty();
+                        $('#item_checklist').empty();
 
+                        var list_khung_check = [];
                         $('#Machine').append($('<option>', {
                             value: "",
                             text: "---",
                         }));
-                        $('#Locations').append($('<option>', {
+                        $('#item_checklist').append($('<option>', {
                             value: "",
                             text: "---",
                         }));
-
-                        $('#Machine_search').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-                        $('#Line_search').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-
 
                         $.each(response.machine, function(index, value) {
                             $('#Machine').append($('<option>', {
                                 value: value.id,
                                 text: value.Machine,
                             }));
-
-                            $('#Machine_search').append($('<option>', {
-                                value: value.id,
-                                text: value.Machine,
-                            }));
-                        });
-                        $.each(response.line, function(index, value) {
-                            $('#Locations').append($('<option>', {
-                                value: value.id,
-                                text: value.line_name,
-                            }));
-                            $('#Line_search').append($('<option>', {
-                                value: value.id,
-                                text: value.line_name,
-                            }));
                         });
 
-                    }
-                });
+                        $.each(response.khung_check, function(index, value) {
+                            list_khung_check.push(value);
+                        });
 
-
-            }
-
-            function checkMachineID(machineID) {
-                console.log(machineID);
-                $.ajax({
-                    type: "POST",
-                    url: '{{ route('check.machine') }}',
-                    contentType: 'application/json', // Đảm bảo là gửi dữ liệu dưới dạng JSON
-                    data: JSON.stringify({
-                        machine_id: machineID,
-                    }),
-                    success: function(users) {
-                        if (users.isValid) {
-                            $('#Code_machine_search').val(users.machine_id);
-                            toastr.success("Mã QR hợp lệ. ID máy đã được điền.");
-                            html5QrcodeScanner.clear();
-                            $('#modal-scan').modal('hide');
-
-                        } else {
-                            // Nếu mã QR không hợp lệ
-                            const userChoice = confirm(
-                                "Mã QR không hợp lệ. Bạn có muốn quét lại hoặc thoát?");
-                            if (userChoice) {} else {
-                                html5QrcodeScanner.clear();
-                                $('#modal-scan').modal('hide');
+                        $("#Khung_check").autocomplete({
+                            source: list_khung_check,
+                            minLength: 0, // Để hiển thị gợi ý ngay khi nhấp vào ô
+                            focus: function(event, ui) {
+                                event
+                                    .preventDefault(); // Ngăn chặn việc điền tự động
+                            },
+                            select: function(event, ui) {
+                                $('#Khung_check').val(ui.item
+                                    .value); // Điền giá trị đã chọn vào input
+                                return false; // Ngăn chặn hành vi mặc định
                             }
-                        }
-                    },
-                    error: function() {
-                        alert("Lỗi kết nối khi kiểm tra mã máy.");
+                        }).focus(function() {
+                            $(this).autocomplete('search',
+                                ''); // Tìm kiếm tất cả gợi ý khi nhấp vào
+                        });
                     }
-
-
                 });
             }
 
-            function reader_QR() {
-                var lastResult, countResults = 0;
-                html5QrcodeScanner = new Html5QrcodeScanner(
-                    "qr-reader", {
-                        fps: 10,
-                        qrbox: 250,
-                        experimentalFeatures: {
-                            useBarCodeDetectorIfSupported: true
-                        },
-                        rememberLastUsedCamera: true,
-                        showTorchButtonIfSupported: true
-                    });
 
-                html5QrcodeScanner.render(onScanSuccess);
+            function show_master_item() {
+                var Machine = $('#Machine option:selected').text();
+                console.log(Machine);
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('update.data.item_check') }}",
+                    dataType: "json",
+                    data: {
+                        Machine: Machine
+                    },
+                    success: function(response) {
+                        $('#item_checklist').empty();
 
-                function onScanSuccess(decodedText, decodedResult) {
-                    if (decodedText !== lastResult) {
-                        ++countResults;
-                        lastResult = decodedText;
-                        checkMachineID(lastResult);
+                        $('#item_checklist').append($('<option>', {
+                            value: "",
+                            text: "---",
+                        }));
+
+                        $.each(response.checklist_item, function(index, value) {
+                            $('#item_checklist').append($('<option>', {
+                                value: value.id,
+                                text: value.item_checklist,
+                            }));
+                        });
+
 
                     }
-                }
+                });
+
+
+            }
+
+            function show_master_item() {
+                var Machine = $('#Machine option:selected').text();
+                var item_check = $('#item_checklist option:selected').text();
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('update.data.item_check') }}",
+                    dataType: "json",
+                    data: {
+                        Machine: Machine,
+                        item_checklist: item_check
+                    },
+                    success: function(response) {
+                        $('#item_checklist').empty();
+
+                        $('#item_checklist').append($('<option>', {
+                            value: "",
+                            text: "---",
+                        }));
+
+                        $.each(response.checklist_item, function(index, value) {
+                            $('#item_checklist').append($('<option>', {
+                                value: value.id,
+                                text: value.item_checklist,
+                            }));
+                        });
+
+
+                    }
+                });
+
 
             }
 
 
-            show_master();
+            show_master_model();
             show_data_table(table_name);
 
-
-            Scan.addEventListener('click', () => {
-                $('#modal-scan').modal('show');
-                reader_QR();
-            });
-
-
-            $('#Line_search').on('change', function(e) {
+            $('#Shift_search').on('change', function(e) {
                 e.preventDefault();
                 show_data_table(table_name);
 
             });
 
-            // $('#Code_machine').on('change', function(e) {
-            //     e.preventDefault();
-            //     show_data_table(table_name);
-
-            // });
 
             $('#Machine_search').on('change', function(e) {
                 e.preventDefault();
@@ -375,24 +360,18 @@
 
             });
 
-            $('#Code_machine_search').on('change', function(e) {
+            $('#Machine').on('change', function(e) {
                 e.preventDefault();
-                show_data_table(table_name);
-
+                show_master_item();
             });
 
-
-            $('#Status_search').on('change', function(e) {
-                e.preventDefault();
-                show_data_table(table_name);
-            });
-
-            document.getElementById('Machine').addEventListener('change', function() {
+            document.getElementById('item_checklist').addEventListener('change', function() {
                 // Lấy giá trị của option đã được chọn
                 var selectedValue = this.value;
                 // Cập nhật giá trị của input hidden
-                document.getElementById('ID_machine').value = selectedValue;
+                document.getElementById('ID_checklist').value = selectedValue;
             });
+
 
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();

@@ -118,8 +118,8 @@
         $(document).ready(function() {
             var table_name = 'Checklist_master';
             var table = '#table-result';
-            let title_add = "Add new Machine";
-            let title_edit = "Edit machine";
+            let title_add = "Add new checklist master";
+            let title_edit = "Edit checklist master";
             var tables;
             let id;
          
@@ -362,7 +362,7 @@
                 if (rowSelected.length > 0) {
                     var rowData = tables.row(rowSelected[0]).data();
                     $('#Machine').val(rowData[1]);
-                    $('#Item_checklist').val(rowData[2]);
+                    $('#item_checklist').val(rowData[2]);
                     $('#Chu_ky').val(rowData[3]);
                    
 

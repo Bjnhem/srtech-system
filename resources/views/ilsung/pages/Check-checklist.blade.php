@@ -7,7 +7,7 @@
             </div>
             <br>
             <div class="row">
-                <div class=" col-sm-6 col-xl-3 mb-3 bottommargin-sm">
+                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
 
                     <label for="">Machine-ID</label>
                     <div class="input-group mb-3">
@@ -16,19 +16,27 @@
                         <button class="btn btn-outline-secondary btn-primary" type="button" id="Scan_QR">Scan</button>
                     </div>
                 </div>
-                <div class=" col-sm-6 col-xl-3 mb-3 bottommargin-sm">
+
+
+                <div class="col-sm-6 col-xl-4 mb-3">
+                    <span>Line:</span>
+                    <select name="line" id="Line_search" class="form-select">
+                    </select>
+                </div>
+                <div class="col-sm-6 col-xl-4 mb-3">
+                    <span>Machine:</span>
+                    <select name="Machine" id="Machine_search" class="form-select">
+                    </select>
+
+                </div>
+                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
                     <label for="">Date Search</label>
                     <div class="input-daterange component-datepicker input-group">
                         <input type="text" value="" class="form-control text-start" id="date_form"
                             placeholder="YYYY-MM-DD">
                     </div>
                 </div>
-                <div class="col-sm-4 col-xl-2 mb-3">
-                    <span>Line:</span>
-                    <select name="line" id="Line_search" class="form-select">
-                    </select>
-                </div>
-                <div class="col-sm-4 col-xl-2 mb-3">
+                <div class="col-sm-6 col-xl-4 mb-3">
                     <span>Shift:</span>
                     <select name="shift" id="shift_search" class="form-select">
                         <option value="">All</option>
@@ -37,7 +45,7 @@
 
                     </select>
                 </div>
-                <div class="col-sm-4 col-xl-2 mb-3">
+                <div class="col-sm-6 col-xl-4 mb-3">
                     <span>Tình trạng:</span>
                     <select name="shift" id="Status_search" class="form-select">
                         <option value="">All</option>
@@ -315,6 +323,7 @@
                     // },
                     success: function(response) {
                         $('#Machine').empty();
+                        $('#Machine_search').empty();
                         $('#ID_machine').empty();
                         $('#line').empty();
                         $('#Model').empty();
@@ -325,10 +334,14 @@
                             value: "",
                             text: "---",
                         }));
-                        $('#Checklist_item').append($('<option>', {
+                        $('#Machine_search').append($('<option>', {
                             value: "",
-                            text: "---",
+                            text: "All",
                         }));
+                        // $('#Checklist_item').append($('<option>', {
+                        //     value: "",
+                        //     text: "---",
+                        // }));
 
                         $('#Khung_gio').append($('<option>', {
                             value: "",
@@ -343,6 +356,10 @@
                         ID_machine_list = [];
                         $.each(response.machine, function(index, value) {
                             $('#Machine').append($('<option>', {
+                                value: value.id,
+                                text: value.Machine,
+                            }));
+                            $('#Machine_search').append($('<option>', {
                                 value: value.id,
                                 text: value.Machine,
                             }));
@@ -460,6 +477,11 @@
                 search();
                 show_overview()
 
+            });
+            $('#Machine_search').on('change', function(e) {
+                e.preventDefault();
+                search();
+                show_overview()
             });
 
             $('#date_form').on('change', function(e) {
@@ -701,6 +723,7 @@
                     $('#table_check_list_search').DataTable().destroy();
                 }
                 var line_search = $('#Line_search option:selected').text();
+                var Machine_search = $('#Machine_search option:selected').text();
                 var shift_search = $('#shift_search option:selected').text();
                 var Status_search = $('#Status_search option:selected').text();
                 var Code_machine = $('#Code_machine').val();
@@ -718,6 +741,7 @@
                             date_form: date_form,
                             Status: Status_search,
                             Code_machine: Code_machine,
+                            Machine_search: Machine_search
                         },
                         success: function(users) {
                             var count = 0;
@@ -839,10 +863,10 @@
                 if (rowSelected.length > 0) {
                     var rowData = tables.row(rowSelected[0]).data();
                     console.log(rowData);
-                    Lấy dữ liệu của dòng đầu tiên được chọn
+                    // Lấy dữ liệu của dòng đầu tiên được chọn
                     $('#Machine option').text(rowData[3]);
                     $('#ID_machine').val(rowData[4]);
-                    $('#line option').text(rowData[1]);
+                    $('#Line option').text(rowData[1]);
                     $('#Checklist_item option').text(rowData[5]);
                     $('#Khung_gio option').text(rowData[6]);
                     // $('#ID_machine').val(rowData[4]);
@@ -905,7 +929,7 @@
                     var rowData = tables.row(rowSelected[0]).data();
                     // Lấy dữ liệu của dòng đầu tiên được chọn
                     // $('#Machine option').text(rowData[3]);
-                    
+
                     // $('#line option').text(rowData[1]);
 
                     // $('#Checklist_item option').text(rowData[5]);
