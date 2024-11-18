@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\checklist;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Checklist_item;
 use App\Models\Checklist_result;
 use App\Models\Checklist_result_detail;
 use App\Models\Machine_list;
 use App\Models\Machine_master;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\DB as FacadesDB;
 
-class Plan_checklist extends Controller
+
+class PlanController extends Controller
 {
+    //
 
     public function __construct()
     {
@@ -176,6 +179,41 @@ class Plan_checklist extends Controller
         return abort(404);
     }
 
+    public function search_check_list_overview(Request $request)
+    {
+
+        $line = ($request->input('line') == '---') ? null : $request->input('line');
+        $Code_machine = ($request->input('Code_machine') == '') ? null : $request->input('Code_machine');
+        $shift = ($request->input('shift') == 'All') ? null : $request->input('shift');
+        $Check_status = ($request->input('Status') == 'All') ? null : $request->input('Status');
+        $Machine = ($request->input('Machine_search') == 'All') ? null : $request->input('Machine_search');
+        $date_form = $request->input('date_form');
+        $table = 'App\\Models\\checklist_result';
+
+        if ($request->ajax()) {
+            if (class_exists($table)) {
+                $data = $table::all();
+                $colum = array_keys($data->first()->getAttributes());
+                $colums = array_diff($colum, ['updated_at']);
+                $data = Checklist_result::where('Shift', 'LIKE', '%' . $shift . '%')
+                    ->where('Locations', 'LIKE', '%' . $line . '%')
+                    ->where('Code_machine', 'LIKE', '%' . $Code_machine . '%')
+                    ->where('Machine', 'LIKE', '%' . $Machine . '%')
+                    ->where('Check_status', 'LIKE', '%' . $Check_status . '%')
+                    ->where('Date_check', $date_form)
+                    ->orderBy('Check_status', "desc")
+                    ->get();
+
+                return response()->json([
+                    'data' => $data,
+                    'colums' => $colums,
+                    'status' => 200,
+                ]);
+            }
+            return abort(404);
+        }
+        return abort(404);
+    }
 
     public function show_plan()
     {

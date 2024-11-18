@@ -6,7 +6,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('index')) }}" aria-current="page" href="{{ route('index') }}">
+        <a class="nav-link {{ activeRoute(route('Home.checklist')) }}" aria-current="page" href="{{ route('Home.checklist') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/business.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Overview</span>
@@ -44,7 +44,7 @@
     {{-- database --}}
 
     <li class="nav-item">
-        <a class="nav-link  {{ Request::is('Update-master*') ? 'active' : '' }}" aria-current="page"
+        <a class="nav-link  {{ Request::is('Checklist/Master*') ? 'active' : '' }}" aria-current="page"
             href="{{ route('update.master') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera" width="20"
                 height="20">

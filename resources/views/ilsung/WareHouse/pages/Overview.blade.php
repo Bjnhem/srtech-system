@@ -1,4 +1,4 @@
-@extends('ilsung.layouts.layout')
+@extends('ilsung.WareHouse.layouts.WareHouse_layout')
 @section('content')
     <div class="card mb-4">
         <div class="card-header py-3" style="text-align: center">

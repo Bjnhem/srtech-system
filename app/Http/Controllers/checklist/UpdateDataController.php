@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\checklist;
 
+use App\Http\Controllers\Controller;
 use App\Models\Checklist_item;
 use App\Models\Checklist_master;
 use App\Models\line;
@@ -10,9 +11,9 @@ use App\Models\Model_master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
-class UpdatedataController extends Controller
+class UpdateDataController extends Controller
 {
-
+    //
     public function data_model()
     {
         return view('ilsung.pages.update_master.data-model');
@@ -42,10 +43,7 @@ class UpdatedataController extends Controller
     {
         return view('ilsung.pages.update_master.data-line');
     }
-    public function index()
-    {
-        return view('ilsung.pages.update_master.index-data');
-    }
+   
 
     public function show_data_table(Request $request)
     {

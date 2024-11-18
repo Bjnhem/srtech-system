@@ -91,7 +91,7 @@
         </div>
         <div class="sidebar-body pt-0 data-scrollbar">
             <div class="sidebar-list" id="sidebar">
-                @include('ilsung.layouts.menu')
+                @include('ilsung.WareHouse.layouts.menu')
 
                 {{-- @include('partials.dashboard.sub-header') --}}
             </div>
@@ -100,7 +100,7 @@
     </aside>
     <main class="main-content">
         <div class="position-relative">
-            @include('ilsung.layouts._body_header')
+            @include('ilsung.WareHouse.layouts._body_header')
             {{-- @include('partials.dashboard.sub-header') --}}
         </div>
 

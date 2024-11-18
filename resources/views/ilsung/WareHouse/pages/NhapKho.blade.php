@@ -1,4 +1,4 @@
-@extends('ilsung.layouts.layout')
+@extends('ilsung.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
     <div class="card mb-4">
@@ -178,7 +178,6 @@
             });
 
             var colum_table = [];
-            var line_check = @json($line_id);
             var tables;
             var tables_check;
             var table_edit;
@@ -202,8 +201,8 @@
             $('#date_form').val(date);
 
 
-            show_master_check();
-            show_master_status();
+            // show_master_check();
+            // show_master_status();
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(

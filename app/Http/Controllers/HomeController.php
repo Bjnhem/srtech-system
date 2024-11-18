@@ -12,13 +12,38 @@ class HomeController extends Controller
     /*
      * Dashboard Pages Routs
      */
-    // public function index(Request $request)
-    // {
-    //     $assets = ['chart', 'animation'];
-    //     return view('dashboards.dashboard', compact('assets'));
-    // }
 
-    public function home_index(Request $request)
+    public function Home_index()
+    {
+
+        return view('ilsung.pages.Home.Home_index');
+        // return view('ilsung.pages.Overview-checklist');
+    }
+
+    public function Home_checklist()
+    {
+
+        // return view('ilsung.pages.Home.Home_index');
+        return view('ilsung.pages.Overview-checklist');
+    }
+
+    public function Home_WareHouse()
+    {
+
+        // return view('ilsung.pages.Home.Home_index');
+        return view('ilsung.WareHouse.pages.Overview');
+    }
+
+    public function Home_OQC()
+    {
+
+        // return view('ilsung.pages.Home.Home_index');
+        return view('ilsung.pages.OQC.Home_index');
+    }
+
+
+
+    public function home_checklist_overview(Request $request)
     {
         $assets = ['calender', 'animation'];
         $line_search = 'Line 01';
@@ -26,11 +51,7 @@ class HomeController extends Controller
         return view('ilsung.dashboards.Home_index', compact('assets', 'line_id'));
     }
 
-    public function index()
-    {
 
-        return view('ilsung.pages.Overview-checklist');
-    }
 
     public function index_checklist()
     {
