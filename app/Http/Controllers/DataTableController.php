@@ -125,7 +125,7 @@ class DataTableController extends Controller
                 $table::updateOrCreate(
                     ['id' => $record['id']],
                     $record
-                );
+                );  
             }
             Storage::delete($path_2);
             return redirect()->back()->with('success', 'update dữ liệu thành công');

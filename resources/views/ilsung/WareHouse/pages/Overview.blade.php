@@ -1,45 +1,169 @@
 @extends('ilsung.WareHouse.layouts.WareHouse_layout')
 @section('content')
-    <div class="card mb-4">
-        <div class="card-header py-3" style="text-align: center">
-            <h5 class="text-primary mx-3"><b>
-                    TỶ LỆ HOÀN THÀNH CHECK LIST EQM THEO LINE</b>
-            </h5>
+    
+    <style type="text/css">
+        /* Chart.js */
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: .99
+            }
 
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            animation: chartjs-render-animation 1ms
+        }
+
+        .chartjs-size-monitor,
+        .chartjs-size-monitor-expand,
+        .chartjs-size-monitor-shrink {
+            position: absolute;
+            direction: ltr;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            visibility: hidden;
+            z-index: -1
+        }
+
+        .chartjs-size-monitor-expand>div {
+            position: absolute;
+            width: 1000000px;
+            height: 1000000px;
+            left: 0;
+            top: 0
+        }
+
+        .chartjs-size-monitor-shrink>div {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            left: 0;
+            top: 0
+        }
+    </style>
+
+ 
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-th-list"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">PO Records</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class=" col-sm-6 col-xl-6 px-4">
-                    <label for="">Date Search</label>
-                    <div class="input-daterange component-datepicker input-group">
-                        <input type="text" value="" class="form-control text-start" id="date_form"
-                            placeholder="YYYY-MM-DD">
-                    </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-boxes"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Receiving Records</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
                 </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-exchange-alt"></i></span>
 
-                <div class="col-sm-6 col-xl-6 px-4">
-                    <span>Shift:</span>
-                    <select name="shift" id="shift_search" class="form-select">
-                        <option value="">All</option>
-                        <option value="Ca ngày">Ca ngày</option>
-                        <option value="Ca đêm">Ca đêm</option>
+                <div class="info-box-content">
+                    <span class="info-box-text">BO Records</span>
+                    <span class="info-box-number text-right">
 
-                    </select>
+                    </span>
                 </div>
-
+                <!-- /.info-box-content -->
             </div>
-            <br>
-            <div class="demo">
-                <div class="row" id="progress-container-2">
+            <!-- /.info-box -->
+        </div>
 
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-undo"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Return Records</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
                 </div>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-file-invoice-dollar"></i></span>
 
-            <div id="tooltip"
-                style="display:none; position:absolute; background-color:rgb(145, 145, 145); border:1px solid black; padding:5px;">
-                Detail
+                <div class="info-box-content">
+                    <span class="info-box-text">Sales Records</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
             </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-navy elevation-1"><i class="fas fa-truck-loading"></i></span>
 
+                <div class="info-box-content">
+                    <span class="info-box-text">Suppliers</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-lightblue elevation-1"><i class="fas fa-th-list"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Items</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box bg-light shadow">
+                <span class="info-box-icon bg-teal elevation-1"><i class="fas fa-users"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Users</span>
+                    <span class="info-box-number text-right">
+
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
         </div>
 
     </div>

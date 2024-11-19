@@ -44,6 +44,10 @@
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/magnific-popup.css') }}" type="text/css" />
 
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/font_awesome.min.css') }}"> --}}
+    <!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
     <link rel="stylesheet"
         href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
@@ -188,36 +192,6 @@
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
 
     @yield('admin-js')
-
-    {{-- <script>
-        $(document).ready(function() {
-            $('.component-datepicker.input-daterange').datepicker({
-                autoclose: true,
-                format: 'yyyy-mm-dd'
-            });
-
-            var activeItem = localStorage.getItem('activeItem');
-
-            if (activeItem) {
-                var selectedItem = document.getElementById(activeItem);
-                if (selectedItem) {
-                    selectedItem.classList.add('active');
-                }
-            }
-
-            function activeLink() {
-                var itemId = this.id;
-                list.forEach((item) => {
-                    item.classList.remove("active");
-                });
-                this.classList.add("active");
-                localStorage.setItem('activeItem', itemId);
-            }
-
-            let list = document.querySelectorAll(".sidebar-body-menu a");
-            list.forEach((item) => item.addEventListener('click', activeLink));
-        });
-    </script> --}}
 </body>
 
 </html>

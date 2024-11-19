@@ -1,7 +1,7 @@
 @extends('ilsung.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
-    <div class="card mb-4">
+    {{-- <div class="card mb-4">
         <div class="card-body">
             <div class="row" id="progress-container-1">
             </div>
@@ -65,7 +65,50 @@
 
 
         </div>
-    </div>
+    </div> --}}
+
+    <h2>Nhập Kho</h2>
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('warehouse.import') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label for="product_id" class="form-label">Sản phẩm</label>
+            <select name="product_id" id="product_id" class="form-select" required>
+                @foreach ($products as $product)
+                    <option value="{{ $product->id }}">{{ $product->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="warehouse_id" class="form-label">Kho</label>
+            <select name="warehouse_id" id="warehouse_id" class="form-select" required>
+                @foreach ($warehouses as $warehouse)
+                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Số lượng</label>
+            <input type="number" name="quantity" id="quantity" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Nhập Kho</button>
+    </form>
 
 
     {{-- model show check list --}}

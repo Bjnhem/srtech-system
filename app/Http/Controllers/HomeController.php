@@ -42,7 +42,6 @@ class HomeController extends Controller
     }
 
 
-
     public function home_checklist_overview(Request $request)
     {
         $assets = ['calender', 'animation'];

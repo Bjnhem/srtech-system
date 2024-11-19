@@ -18,6 +18,8 @@ use App\Http\Controllers\Security\PermissionController;
 use App\Http\Controllers\UpdatedataController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WareHouse\HomeWareHouseController;
+use App\Http\Controllers\WareHouse\UpdateDataWarehouseController;
+use App\Http\Controllers\WareHouse\WarehouseController;
 use Illuminate\Support\Facades\Artisan;
 // Packages
 use Illuminate\Support\Facades\Route;
@@ -65,7 +67,6 @@ Route::group(['middleware' => 'auth'], function () {
     // Users Module
     Route::resource('users', UserController::class);
 });
-
 
 // Route checklist
 
@@ -147,13 +148,50 @@ Route::prefix('Checklist/Master')->group(function () {
 // Route WareHouse
 
 Route::middleware('auth')->prefix('WareHouse')->group(function () {
-  
-  
+
     Route::get('/Nhap-kho', [HomeWareHouseController::class, 'index_nhap_kho'])->name('WareHouse.nhap.kho');
+    Route::post('/import', [WarehouseController::class, 'importStock'])->name('warehouse.import');
+
     Route::get('/Xuat-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.xuat.kho');
+    Route::post('/export', [WarehouseController::class, 'exportStock'])->name('warehouse.export');
+
     Route::get('/Chuyen-kho', [HomeWareHouseController::class, 'index_chuyen_kho'])->name('WareHouse.chuyen.kho');
+    Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
+
+    Route::get('/stock', [WarehouseController::class, 'showStock'])->name('warehouse.stock');
     Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
     Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
+});
+
+Route::prefix('WareHouse/Master')->group(function () {
+
+    Route::get('/data-sanpham', [UpdateDataWarehouseController::class, 'data_sanpham'])->name('Warehouse.update.data.sanpham');
+    Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('Warehouse.update.data.kho');
+    Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
+    Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
+
+
+
+    Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data,machine');
+
+    Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
+    Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
+
+
+
+    Route::get('/data-checklist-item', [UpdateDataWarehouseController::class, 'data_checklist_item'])->name('update.data.checklist.item');
+    Route::get('/show-data-table-checklist-item', [UpdateDataWarehouseController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
+    Route::get('/data-checklist-item_search', [UpdateDataWarehouseController::class, 'data_item_master'])->name('update.data.item_check');
+
+
+
+
+    Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
+    Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
+    Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');
+    Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
+    Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
+  
 });
 
 
