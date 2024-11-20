@@ -13,7 +13,18 @@ use Illuminate\Support\Facades\DB;
 
 class WarehouseController extends Controller
 {
-   
+
+
+    public function show_master(Request $request)
+    {
+        $products = Product::all();
+        $warehouses = Warehouse::all();
+        return response()->json([
+            'product' => $products,
+            'warehouse' => $warehouses,
+
+        ]);
+    }
     public function showStock()
     {
         $stockData = DB::table('product_warehouse')

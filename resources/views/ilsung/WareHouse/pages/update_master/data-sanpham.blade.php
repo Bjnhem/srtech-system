@@ -14,7 +14,6 @@
 
                 </div>
                 <div class="card-body ">
-
                     <div class="row">
                         <div class="col-sm-6 col-xl-4 mb-3 bottommargin-sm">
                             <label for="">Code sản phẩm</label>
@@ -27,7 +26,7 @@
                         </div>
                         <div class="col-sm-6 col-xl-4 mb-3">
                             <span>Sản phẩm:</span>
-                            <select name="Status" id="Status_search" class="form-select">
+                            <select name="Type" id="Type_search" class="form-select">
                                 <option value="All">All</option>
                                 <option value="JIG">JIG</option>
                                 <option value="MRO">MRO</option>
@@ -46,9 +45,9 @@
                     <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
                         <thead class="table-success">
                             <tr>
-                                <th>STT</th>
-                                <th>ID</th>
+                                {{-- <th>STT</th> --}}
                                 <th>Image</th>
+                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Code Purchase</th>
                                 <th>Model</th>
@@ -88,6 +87,7 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="input-group">
+                                        {{-- <label for="" class="control-label">Update theo file:</label> --}}
                                         <input type="hidden" name="id" id="table_name" value="">
                                         <input class="form-control" type="file" name="csv_file" accept=".csv"
                                             id="file-upload">
@@ -100,12 +100,14 @@
                         </div>
                         <div class="card-body">
                             <div class="col-12">
-                                <form action="" method="post" id="form_data">
+                                <form action="{{ route('product.save') }}" method="post" id="form_data"
+                                    enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
 
                                         <input name="id" type="hidden" id="id" class="form-control"
                                             value="">
+                                        <input name="ID_SP" type="hidden" id="ID_SP" class="form-control">
                                         <div class="col-sm-6 col-xl-4 mb-3">
                                             <span>Sản phẩm:</span>
                                             <select name="Type" id="Type" class="form-select">
@@ -117,34 +119,35 @@
                                             </select>
                                         </div>
 
-                                        <div class="col-sm-12 col-xl-4 mb-3">
+                                        {{-- <div class="col-sm-12 col-xl-4 mb-3">
                                             <span>ID Sản phẩm</span>
                                             <input name="ID_SP" type="text" id="ID_SP" class="form-control">
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-sm-6 col-xl-4 mb-3">
                                             <span>Model:</span>
                                             <select name="Model" id="Model" class="form-select">
                                             </select>
                                         </div>
-                                        <div class="col-sm-12 col-xl-6 mb-3">
-                                            <span>Name:</span>
-                                            <select name="name" id="name" class="form-select">
-                                            </select>
-                                        </div>
-
-
-                                        <div class="col-sm-12 col-xl-6 mb-3">
+                                        <div class="col-sm-6 col-xl-4 mb-3">
                                             <span>Code Purchase:</span>
                                             <input name="Code_Purchase" type="text" id="Code_Purchase"
                                                 class="form-control" placeholder="Code mua hàng...">
                                         </div>
+                                        <div class="col-sm-12 col-xl-12 mb-3">
+                                            <span>Sản phẩm:</span>
+                                            <input name="name" id="name" type="text" class="form-control"
+                                                placeholder="Tên sản phẩm...">
+
+                                        </div>
+
+
+
                                         <div class="form-group col-6">
                                             <label for="" class="control-label">Image</label>
                                             <div class="input-group">
                                                 <input class="form-control" type="file" name="Image"
                                                     id="Image">
-                                                {{-- <button class="btn btn-success" type="submit">         </button> --}}
 
                                             </div>
 
@@ -154,6 +157,7 @@
                                                 class="img-fluid img-thumbnail">
                                         </div>
                                     </div>
+                                    {{-- <button class="btn btn-primary" type="submit">Lưu</button> --}}
                                 </form>
 
                             </div>
@@ -184,74 +188,6 @@
             var tables;
             let id;
             $('#table_name').val(table_name);
-
-            function show_data_table(tab) {
-                var Model_search = $('#Model_search option:selected').text();
-                var Type_search = $('#Type_search option:selected').text();
-            
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('Warehouse.update.show.data') }}",
-                    dataType: "json",
-                    data: {
-                        table: tab,
-                        Model: Model_search,
-                        Type: Type_search,
-                       
-                    },
-                    success: function(response) {
-                        var data = [];
-                        var count = 0;
-                        console.log(response.data);
-                        $.each(response.data, function(index, value) {
-
-                            count++;
-                            id = value.id;
-
-                            var view = '<button type="button" value="' + id +
-                                '" data-bs-toggle="modal" data-bs-target="#modal-show" class="btn btn-primary editbtn btn-sm" id="view"><span class="icon-eye2"></span></button>';
-
-                            var edit = '<button type="button" value="' + id +
-                                '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
-                            var deleted = '<button type="button" value="' + id +
-                                '" data-bs-toggle="modal" data-bs-target="#DeleteModal" class="btn btn-danger editbtn btn-sm" id="delete"><span class="icon-trash1"></span></button>';
-                            var images = '<img src="' + value.Image +
-                                '" alt="" id="image_avatar"' +
-                                '              class="img-fluid img-thumbnail">';
-                            data.push([
-                                count,
-                                value.ID_SP,
-                                images,
-                                value.name,
-                                value.Code_Purchase,
-                                value.Model,
-                                edit + deleted,
-                            ]);
-
-                        });
-                        if (tables) {
-                            tables.clear();
-                            tables.rows.add(data).draw();
-                        } else {
-                            tables = $(table).DataTable({
-                                data: data,
-                                "searching": true,
-                                "autoWidth": false,
-                                "paging": true,
-                                "ordering": false,
-                                "info": false,
-                                select: {
-                                    style: 'single',
-                                },
-                            });
-                        }
-
-
-
-
-                    }
-                });
-            }
 
             function displayImg(input, _this) {
                 if (input.files && input.files[0]) {
@@ -297,50 +233,192 @@
                 }
             }
 
-            show_data_table(table_name);
+            function show_model_check() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('check.list.masster') }}",
+                    dataType: "json",
+                    success: function(response) {
+
+                        $('#Model').empty();
+                        $('#Model').append($('<option>', {
+                            value: "",
+                            text: "All",
+                        }));
+                        $('#Model_search').append($('<option>', {
+                            value: "",
+                            text: "All",
+                        }));
+
+                        $.each(response.model, function(index, value) {
+                            $('#Model').append($('<option>', {
+                                value: value.id,
+                                text: value.model,
+                            }));
+
+                            $('#Model_search').append($('<option>', {
+                                value: value.id,
+                                text: value.model,
+                            }));
+                        });
+
+                    }
+                });
+
+
+            }
+
+            show_model_check();
+
+            tables = $(table).DataTable({
+                processing: true, // Cho phép xử lý dữ liệu trong lúc tải
+                serverSide: true, // Bật chế độ server-side pagination
+                ajax: {
+                    url: "{{ route('Warehouse.update.show.data.product') }}", // Đường dẫn đến route mà ta đã định nghĩa
+                    type: "GET",
+                    data: function(d) {
+                        // Thêm các tham số tìm kiếm từ các form hoặc dropdowns
+                        console.log('Sending data:', d);
+                        d.Type = $('#Type_search')
+                            .val(); // Lấy giá trị từ input hoặc select
+                        d.Model = $('#Model_search option:selected')
+                            .text(); // Lấy giá trị model search
+                        d.ID_SP = $('#ID_SP_search').val();
+
+                    },
+                   
+
+                },
+
+                columns: [{
+                        data: 'Image',
+                        render: function(data) {
+                            return '<img src="' + '{{ asset('') }}' +
+                                data +
+                                '" alt="Image" class="img-fluid img-thumbnail" style="max-width: 50px; max-height: 50px;">';
+                        }
+                    }, {
+                        data: 'ID_SP',
+                        name: 'ID_SP'
+                    }, // Cột ID_Sản phẩm
+
+                    {
+                        data: 'name',
+                        name: 'name'
+                    }, // Cột tên sản phẩm
+                    {
+                        data: 'Code_Purchase',
+                        name: 'Code_Purchase'
+                    }, // Cột code purchase
+                    {
+                        data: 'Model',
+                        name: 'Model'
+                    },
+                    {
+                        data: 'id',
+                        render: function(data) {
+                            // Thêm nút sửa và xóa
+                            var editButton =
+                                '<button type="button" value="' + data +
+                                '" class="btn btn-success btn-sm editbtn" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
+                            var deleteButton =
+                                '<button type="button" value="' + data +
+                                '" class="btn btn-danger btn-sm deletebtn" id="delete"><span class="icon-trash1"></span></button>';
+                            return editButton + deleteButton;
+                        }
+                    }
+                ],
+                pageLength: 10, // Mỗi trang có 20 bản ghi
+                ordering: false, // Tắt chức năng sắp xếp (có thể bật lại nếu cần)
+                searching: true, // Cho phép tìm kiếm
+                lengthChange: true, // Cho phép thay đổi số bản ghi mỗi trang
+                info: false, // Tắt thông tin số lượng bản ghi (total, filtered)
+                autoWidth: false,
+                select: {
+                    style: 'single',
+                }, // Tự động điều chỉnh chiều rộng của cột
+
+            });
+
+            
+            $('#Model_search, #Type_search').on('change', function() {
+                tables.ajax.reload(); // Tải lại dữ liệu của DataTable khi filter thay đổi
+
+            });
+            $(document).on('click', '#Scan_QR', function(e) {
+                e.preventDefault();
+                tables.ajax.reload();
+            });
+
+            document.getElementById('Image').addEventListener('change', function(event) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('cimg').src = e.target.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_add);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save').show(); // Ẩn nút Save
+                $('#update').hide();
                 $('#modal-created').modal('show');
                 id = "";
             });
 
             $(document).on('click', '#save', function(e) {
                 e.preventDefault();
-                save_update_data();
+                document.getElementById('form_data').submit();
+                // save_update_data();
 
             });
 
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
-                $('#title_modal_data').text(title_edit);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'unset'; // Ẩn button
-                id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                // console.log(rowSelected[1]);
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    // console.log(rowData[1]);
-                    $('#Machine').val(rowData[1]);
-                    $('#Status').val(rowData[2]);
+                // Hiển thị modal với tiêu đề chỉnh sửa
+                $('#title_modal_data').text('Chỉnh sửa sản phẩm');
+                $('#save').hide(); // Ẩn nút Save
+                $('#update').show(); // Hiển thị nút Update
+
+                // Lấy ID từ nút Edit (giá trị ID hoặc dòng nào đó)
+                id = $(this).val();
+                let rowData = tables.rows().data().toArray().find(row => row.id == id);
+
+                if (rowData) {
+                    // Gán dữ liệu vào các trường form
+                    $('#id').val(rowData.id); // ID ẩn
+                    $('#ID_SP').val(rowData.ID_SP); // ID Sản phẩm
+                    $('#name').val(rowData.name); // Tên sản phẩm
+                    $('#Code_Purchase').val(rowData.Code_Purchase); // Mã mua hàng
+
+                    // Gán loại sản phẩm (Type) vào select box
+                    $('#Type').val(rowData.Type);
+
+                    $('#Model option').each(function() {
+                        if ($(this).text() === rowData.Model) {
+                            $(this).prop('selected', true); // Chọn option có text khớp
+                        }
+                    });
+                    // Hiển thị ảnh sản phẩm
+                    // document.getElementById('cimg').src = e.target.result;
+                    var imageBasePath = "{{ asset('') }}";
+                    $('#cimg').attr('src', rowData.Image ? imageBasePath + rowData.Image :
+                        imageBasePath +
+                        'default-image.png');
 
                 }
+
+                // Hiển thị modal
                 $('#modal-created').modal('show');
             });
 
-
             $(document).on('click', '#update', function(e) {
                 e.preventDefault();
-                save_update_data();
+                document.getElementById('form_data').submit();
+
             });
 
 
@@ -351,7 +429,7 @@
                 if (confirm('Bạn có chắc chắn muốn xóa không?')) {
                     $.ajax({
                         type: "post",
-                        url: "{{ route('update.delete.data') }}",
+                        url: "{{ route('Warehouse.update.delete.data') }}",
                         data: {
                             table: table_name,
                             id_row: id

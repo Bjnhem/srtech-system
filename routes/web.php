@@ -150,6 +150,8 @@ Route::prefix('Checklist/Master')->group(function () {
 Route::middleware('auth')->prefix('WareHouse')->group(function () {
 
     Route::get('/Nhap-kho', [HomeWareHouseController::class, 'index_nhap_kho'])->name('WareHouse.nhap.kho');
+    Route::get('/show-master', [WarehouseController::class, 'show_master'])->name('WareHouse.show.master');
+
     Route::post('/import', [WarehouseController::class, 'importStock'])->name('warehouse.import');
 
     Route::get('/Xuat-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.xuat.kho');
@@ -185,7 +187,9 @@ Route::prefix('WareHouse/Master')->group(function () {
 
 
 
-
+    Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
+    Route::get('/show-data-table-product', [UpdateDataWarehouseController::class, 'showData'])->name('Warehouse.update.show.data.product');
+    Route::post('/product/save', [UpdateDataWarehouseController::class, 'store_products'])->name('product.save');
     Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
     Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
     Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');

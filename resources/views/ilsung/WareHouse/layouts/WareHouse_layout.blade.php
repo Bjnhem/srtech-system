@@ -80,7 +80,7 @@
         <div class="sidebar-header d-flex align-items-center justify-content-start">
             <a href="{{ route('Home.index') }}" class="navbar-brand">
                 <img src="{{ asset('checklist-ilsung/icon/logo_ilsung.png') }}" style="height: 30px">
-                <h4 class="logo-title">{{ env('APP_NAME') }}</h4>
+                <h4 class="logo-title">ILSUNG</h4>
             </a>
             <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
                 <i class="icon">
@@ -163,7 +163,7 @@
     </div>
     {{-- <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
-    <script src="{{ asset('jquery-ui/auto.js') }}"></script>
+
     <script src="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/pdfmake-0.2.7/pdfmake.min.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/jszip-3.10.1/jszip.min.js') }}"></script>
@@ -190,6 +190,7 @@
     <script src="{{ asset('smart-ver2/js/components/selectsplitter.js') }}"></script> --}}
     {{-- <script src="{{ asset('js/hope-ui.js') }}"></script> --}}
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
+    <script src="{{ asset('jquery-ui/auto.js') }}"></script>
 
     @yield('admin-js')
 </body>
