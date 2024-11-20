@@ -151,6 +151,7 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
 
     Route::get('/Nhap-kho', [HomeWareHouseController::class, 'index_nhap_kho'])->name('WareHouse.nhap.kho');
     Route::get('/show-master', [WarehouseController::class, 'show_master'])->name('WareHouse.show.master');
+    Route::get('/search-master', [WarehouseController::class, 'search_master'])->name('WareHouse.show.product.infor');
 
     Route::post('/import', [WarehouseController::class, 'importStock'])->name('warehouse.import');
 

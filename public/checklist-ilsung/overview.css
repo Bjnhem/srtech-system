@@ -339,10 +339,12 @@
         width: 100% !important;
         max-width: unset;
     }
+
     .modal-dialog.mid-large {
         width: 100% !important;
         max-width: unset;
     }
+
     .modal-dialog {
         margin: unset !important;
     }
@@ -506,4 +508,27 @@ img.company-logo:hover {
 #add-product {
     margin-top: 1.4rem;
     cbt
+}
+
+.select2-container .select2-selection--single,
+#ID_SP {
+    height: 42px !important;
+    border: 1px solid #eee !important;
+    border-radius: 0.5rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #999;
+    line-height: 40px;
+    font-size: 16px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+
+    display: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 40px !important;
 }
