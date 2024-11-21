@@ -16,4 +16,8 @@ class Product extends Model
             ->withPivot('quantity')
             ->withTimestamps();
     }
+    public function stockMovements()
+    {
+        return $this->hasMany(\App\Models\WareHouse\StockMovement::class, 'product_id', 'id');
+    }
 }

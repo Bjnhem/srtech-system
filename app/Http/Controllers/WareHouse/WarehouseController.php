@@ -15,7 +15,7 @@ class WarehouseController extends Controller
 {
 
 
-    public function show_master(Request $request)
+    public function show_master_import(Request $request)
     {
         $products = Product::all();
         $warehouses = Warehouse::all();
@@ -26,39 +26,52 @@ class WarehouseController extends Controller
         ]);
     }
 
-    // public function search_master(Request $request)
-    // {
-    //     $type = ($request->input('Type') == 'All') ? null : $request->input('Type');
-    //     $name = $request->input('name');
-    //     $id_sp = $request->input('ID_SP');
-
-    //     $query = Product::query();
-
-    //     if (!empty($id_sp)) {
-    //         $query->where('ID_SP', $id_sp);
-    //     } else {
-
-    //         if ($type !== null) {
-    //             $query->where('Type', $type);
-    //         }
-
-    //         // Chỉ lọc theo Model nếu Model không phải là null
-    //         if ($name !== null) {
-    //             $query->where('name', $name);
-    //         }
-    //     }
-
-    //     $type = $query->Type;
-    //     $name = $query->name;
-    //     $ID_SP = $query->ID_SP;
-
-    //     return response()->json([
-    //         'type' => $type,
-    //         'name' => $name,
-    //         'ID_SP' => $ID_SP,
-
-    //     ]);
-    // }
+    public function show_master_export(Request $request)
+    {
+        $type = $request->input('Type'); // Lọc theo loại sản phẩm (nếu có)
+        $query = Product::with('stockMovements.warehouse', 'stockMovements.targetWarehouse');
+        $warehouses = Warehouse::all();
+        if ($type && $type !== 'All') {
+            $query->where('type', $type);
+        }
+    
+        $products = $query->get();
+    
+        // Chuẩn bị dữ liệu kho
+        $warehouses = Warehouse::all()->keyBy('id');
+        $data = [];
+    
+        foreach ($products as $product) {
+            foreach ($product->stockMovements as $stock) {
+                $warehouse = $warehouses->get($stock->warehouse_id);
+                if ($warehouse) {
+                    // Kiểm tra nếu sản phẩm chưa có trong mảng dữ liệu
+                    if (!isset($data[$product->id])) {
+                        $data[$product->id] = [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'ID_SP' => $product->ID_SP,
+                            'image' => $product->Image,
+                            'Type' => $product->Type,
+                            'stock_movements' => [],
+                        ];
+                    }
+                    // Thêm thông tin về kho vào sản phẩm
+                    $data[$product->id]['stock_movements'][] = [
+                        'warehouse_id' => $warehouse->id,
+                        'warehouse_name' => $warehouse->name,
+                        'available_qty' => $stock->quantity,
+                    ];
+                }
+            }
+        }
+    
+        return response()->json([
+            'products' => $data, // Trả về dữ liệu đã nhóm theo sản phẩm
+            'warehouse' => $warehouses,
+        ]);
+    }
+    
 
     public function search_master(Request $request)
     {
@@ -151,6 +164,56 @@ class WarehouseController extends Controller
             'Success' => 'OK',
         ]);
     }
+
+    public function importStock(Request $request)
+    {
+        // Xác thực dữ liệu từ AJAX (mảng products)
+        $request->validate([
+            'products' => 'required|array|min:1', // Mảng sản phẩm phải có ít nhất một phần tử
+            'products.*.From' => 'required', // Kiểm tra tồn tại kho chuyển (From)
+            'products.*.warehouse_id' => 'required|exists:warehouses,id', // Kiểm tra tồn tại kho nhận (To)
+            'products.*.quantity' => 'required|integer|min:1', // Kiểm tra số lượng nhập kho phải là số nguyên và >= 1
+        ]);
+
+        DB::transaction(function () use ($request) {
+            foreach ($request->products as $product) {
+                // Lưu lại sự kiện nhập kho cho mỗi sản phẩm
+                StockMovement::create([
+                    'product_id' => $product['product_id'],  // ID sản phẩm
+                    'warehouse_id' => $product['warehouse_id'], // Kho chuyển (From)
+                    'type' => 'import', // Loại sự kiện nhập kho
+                    'quantity' => $product['quantity'], // Số lượng nhập
+                    'Remark' => 'Nhập từ ' . $product['From'], // Số lượng nhập
+                ]);
+
+                // Cập nhật số lượng sản phẩm trong kho (kho chuyển)
+                $productWarehouseFrom = DB::table('product_warehouse')
+                    ->where('product_id', $product['product_id'])
+                    ->where('warehouse_id', $product['warehouse_id']);
+
+                if ($productWarehouseFrom->exists()) {
+                    // Nếu sản phẩm đã tồn tại trong kho chuyển, tăng số lượng
+                    $productWarehouseFrom->increment('quantity', $product['quantity']);
+                } else {
+                    // Nếu sản phẩm chưa có trong kho chuyển, tạo mới bản ghi
+                    DB::table('product_warehouse')->insert([
+                        'product_id' => $product['product_id'],
+                        'warehouse_id' => $product['warehouse_id'],
+                        'quantity' => $product['quantity'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+        });
+
+        return response()->json([
+            'success' => 'Nhập kho thành công!',
+            'status' => 200
+        ]);
+        // return redirect()->back()->with('success', 'Nhập kho thành công!');
+    }
+
     public function store_products(Request $request)
     {
         // Validate the incoming form data
@@ -234,9 +297,6 @@ class WarehouseController extends Controller
     }
 
 
-
-
-
     public function showStock()
     {
         $stockData = DB::table('product_warehouse')
@@ -248,39 +308,41 @@ class WarehouseController extends Controller
         return view('warehouse.stock', compact('stockData'));
     }
 
-    public function importStock(Request $request)
-    {
-        $data = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'warehouse_id' => 'required|exists:warehouses,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
 
-        DB::transaction(function () use ($data) {
-            StockMovement::create([
-                'product_id' => $data['product_id'],
-                'warehouse_id' => $data['warehouse_id'],
-                'type' => 'import',
-                'quantity' => $data['quantity'],
-            ]);
 
-            $productWarehouse = DB::table('product_warehouse')
-                ->where('product_id', $data['product_id'])
-                ->where('warehouse_id', $data['warehouse_id']);
+    // public function importStock(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'product_id' => 'required|exists:products,id',
+    //         'warehouse_id' => 'required|exists:warehouses,id',
+    //         'quantity' => 'required|integer|min:1',
+    //     ]);
 
-            if ($productWarehouse->exists()) {
-                $productWarehouse->increment('quantity', $data['quantity']);
-            } else {
-                DB::table('product_warehouse')->insert([
-                    'product_id' => $data['product_id'],
-                    'warehouse_id' => $data['warehouse_id'],
-                    'quantity' => $data['quantity'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
-    }
+    //     DB::transaction(function () use ($data) {
+    //         StockMovement::create([
+    //             'product_id' => $data['product_id'],
+    //             'warehouse_id' => $data['warehouse_id'],
+    //             'type' => 'import',
+    //             'quantity' => $data['quantity'],
+    //         ]);
+
+    //         $productWarehouse = DB::table('product_warehouse')
+    //             ->where('product_id', $data['product_id'])
+    //             ->where('warehouse_id', $data['warehouse_id']);
+
+    //         if ($productWarehouse->exists()) {
+    //             $productWarehouse->increment('quantity', $data['quantity']);
+    //         } else {
+    //             DB::table('product_warehouse')->insert([
+    //                 'product_id' => $data['product_id'],
+    //                 'warehouse_id' => $data['warehouse_id'],
+    //                 'quantity' => $data['quantity'],
+    //                 'created_at' => now(),
+    //                 'updated_at' => now(),
+    //             ]);
+    //         }
+    //     });
+    // }
 
     public function exportStock(Request $request)
     {
@@ -309,7 +371,6 @@ class WarehouseController extends Controller
             ->where('product_id', $productId)
             ->where('warehouse_id', $warehouseId)
             ->decrement('quantity', $quantity);
-
         return redirect()->route('warehouse.stock')->with('success', 'Xuất kho thành công!');
     }
 

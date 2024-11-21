@@ -1,168 +1,102 @@
 @extends('ilsung.WareHouse.layouts.WareHouse_layout')
-
 @section('content')
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row" id="progress-container-1">
+    <div class="tab-pane fade show active " id="check-list" role="tabpanel" aria-labelledby="check-list-1" tabindex="0">
+        <div class="card table-responsive" style="border: none">
+            <div class="card-header">
+                <h2>Xuất Kho</h2>
+                <button type="button" class="btn btn-success" id="save">Save</button>
             </div>
-            <br>
-            <div class="row">
-                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
+            <div class="card-body">
+                <form action="" method="POST">
+                    @csrf
+                    <input type="hidden" name="id" value="">
 
-                    <label for="">Machine-ID</label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Nhập code machine"
-                            aria-label="Nhập code machine" aria-describedby="Code_machine" id="Code_machine">
-                        <button class="btn btn-outline-secondary btn-primary" type="button" id="Scan_QR">Scan</button>
-                    </div>
-                </div>
-
-
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Line:</span>
-                    <select name="line" id="Line_search" class="form-select">
-                    </select>
-                </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Machine:</span>
-                    <select name="Machine" id="Machine_search" class="form-select">
-                    </select>
-
-                </div>
-                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
-                    <label for="">Date Search</label>
-                    <div class="input-daterange component-datepicker input-group">
-                        <input type="text" value="" class="form-control text-start" id="date_form"
-                            placeholder="YYYY-MM-DD">
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Shift:</span>
-                    <select name="shift" id="shift_search" class="form-select">
-                        <option value="">All</option>
-                        <option value="Ca ngày">Ca ngày</option>
-                        <option value="Ca đêm">Ca đêm</option>
-
-                    </select>
-                </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Tình trạng:</span>
-                    <select name="shift" id="Status_search" class="form-select">
-                        <option value="">All</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Pending" selected>Pending</option>
-
-                    </select>
-                </div>
-            </div>
-            <br>
-
-            <div class="table-responsive">
-                <table id="table_check_list_search" class="table table-bordered table-hover"
-                    style="width:100%;border-collapse:collapse;">
-                </table>
-            </div>
-
-
-        </div>
-    </div>
-
-
-    {{-- model show check list --}}
-    <div class="modal" id="modal-check">
-        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <!-- Tiêu đề bên trái -->
-                    <h5 class="text-primary mx-3">
-                        CHECK LIST EQM
-                    </h5>
-                    <div>
-                        <button type="button" id="save-check-list" class="btn btn-success">Save</button>
-                        <button type="button" id="update-check-list" class="btn btn-success">Update</button>
-                        <button type="button" id="close-model" class="btn btn-warning close-model-checklist">Close</button>
-                    </div>
-                </div>
-                <div class="modal-body" style="background-color: white">
                     <div class="row">
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Model:</span>
-                            <select name="model" id="Model" class="form-select">
-                            </select>
-                        </div>
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Line:</span>
-                            <select name="line" id="Line" class="form-select">
-                            </select>
-                        </div>
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Machine:</span>
-                            <select name="Machine" id="Machine" class="form-select">
-                            </select>
-                        </div>
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Machine-ID:</span>
+                        <div class="col-2">
 
-                            <input name="ID_machine" type="text" id="ID_machine" class="form-control"
-                                placeholder="Chọn ID máy...">
-                            <div id="suggestions" style="border: 1px solid #ccc; display: none;"></div>
-                            <div id="error-message" style="color: red; display: none;"></div>
-
+                            <div class="form-group col-6 d-flex justify-content-center" style="width: 40vh">
+                                {{-- <label for="name">Hình ảnh:</label> --}}
+                                <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="" id="image_prod"
+                                    class="img-fluid img-thumbnail">
+                            </div>
 
                         </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-sm-6 col-xl-2 mb-3">
+                                    <span>Phân loại:</span>
+                                    <select name="Type" id="Type" class="form-select">
+                                        <option value="All">All</option>
+                                        <option value="JIG">JIG</option>
+                                        <option value="MRO">MRO</option>
+                                        <option value="Spare part">Spare part</option>
+                                        <option value="SET">SET</option>
+                                        <option value="TSCD">TSCD</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-xl-3 mb-3 bottommargin-sm">
+                                    <label for="">Code ID</label>
+                                    <div class="input-group mb-3">
+                                        {{-- <input type="text" class="form-control" placeholder="Code sản phẩm" id="ID_SP"> --}}
+                                        <select name="ID_SP" id="ID_SP" class="form-select">
+                                            <option value="">Chọn Code</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-xl-7 mb-3">
+                                    <label for="name">Tên sản phẩm</label>
+                                    {{-- <input type="text" class="form-control" name="name" id="name"> --}}
+                                    <select name="name" id="name" class="form-select">
+                                        <option value="">Chọn sản phẩm</option>
+                                    </select>
+                                </div>
 
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Item check list:</span>
-                            <select name="item" id="Checklist_item" class="form-select">
-                            </select>
-                        </div>
-                        <div class="col-sm-4 col-xl-2 mb-3">
-                            <span>Khung check:</span>
-                            <select name="shift" id="Khung_gio" class="form-select">
-                            </select>
+                                <br>
+
+
+                                <div class="col-sm-6 col-xl-3 mb-3">
+                                    <label for="warehouse_id_1">Kho chuyển</label>
+                                    {{-- <input type="text" class="form-control" name="warehouse_1" id="warehouse_1"> --}}
+                                    <select name="warehouse_1" id="warehouse_1" class="form-control">
+
+                                    </select>
+                                </div>
+                                <div class=" col-sm-6 col-xl-3 mb-3">
+                                    <label for="warehouse_id_2">Kho nhận</label>
+                                    {{-- <input type="text" class="form-control" name="warehouse_2" id="warehouse_2"> --}}
+                                    <select name="warehouse_2" id="warehouse_2" class="form-control"> </select>
+                                </div>
+
+                                <div class="col-sm-6 col-xl-3 mb-3">
+                                    <label for="quantity">Số lượng</label>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" required>
+                                </div>
+                                <div class="col-sm-6 col-xl-3 mb-3">
+                                    {{-- <label for="quantity_1">Action:</label> --}}
+                                    <button type="button" class="btn btn-primary" id="add-product">Thêm sản phẩm</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row table-responsive">
-                        <table class="table table-bordered text-center mt-4 table-hover col-12" id="table-check-list"
-                            style="width: 100%; text-align: center; vertical-align:middle">
-                            <thead class="table-success">
-                                <tr>
-                                    <th style="width:3%" rowspan="2">STT</th>
-                                    <th style="width:77" rowspan="2">Nội dung</th>
-                                    <th style="width:10%" colspan="2">Tình trạng</th>
-                                    <th style="width:10%" rowspan="2">Vấn đề</th>
-                                </tr>
-                                <tr>
-                                    <th style="width:5%">OK</th>
-                                    <th style="width:5%">NG</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                    {{-- <h3>Sản phẩm đã chọn</h3> --}}
+                    <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
+                        <thead class="table-success">
+                            <tr>
+                                {{-- <th>STT</th> --}}
+                                <th>Image</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Q'ty</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- modal Scan --}}
-    <div class="modal" id="modal-scan">
-        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="text-primary mx-3">Quét QR Code</b>
-                    </h5>
-
-                </div>
-                <div class="modal-footer mx-5">
-                    <button type="button" class="btn btn-warning close close-model-scan"
-                        id="close-model-scan">Close</button>
-                </div>
-                <div class="modal-body mx-5" style="background-color: white; ">
-                    <div id="qr-reader" style="width:100%"></div>
-                    <button id="closeScanBtn" style="display: none;">Đóng Quét</button>
-                </div>
+                        </tbody>
+                    </table>
+                </form>
             </div>
         </div>
     </div>
@@ -172,38 +106,630 @@
     <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('.component-datepicker.input-daterange').datepicker({
-                autoclose: true,
-                format: 'yyyy-mm-dd'
+            let allProducts = []; // Dữ liệu sản phẩm có trong kho
+            let productWarehouses = {}; // Danh sách các kho có chứa sản phẩm
+            let editingRow = null; // Lưu trữ dòng đang chỉnh sửa
+
+            function loadInitialData() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('WareHouse.show.master.export') }}", // Route lấy danh sách sản phẩm có trong kho
+                    dataType: "json",
+                    success: function(response) {
+                        // Lưu dữ liệu sản phẩm và kho
+                        allProducts = Object.values(response.products);
+                        // allProducts = response.products;
+                        console.log(allProducts);
+                        productWarehouses = groupWarehousesByProduct(response.products);
+
+                        console.log(productWarehouses);
+                        // Cập nhật danh sách sản phẩm vào dropdown
+                        updateProductDropdown();
+                    }
+                });
+            }
+
+
+            function groupWarehousesByProduct(products) {
+                let grouped = {};
+
+                // Đảm bảo rằng sản phẩm và kho được nhóm đúng
+                for (let productId in products) {
+                    let product = products[productId];
+
+                    // Khởi tạo cho sản phẩm nếu chưa có
+                    if (!grouped[product.product_id]) {
+                        grouped[product.id] = [];
+                    }
+
+                    // Duyệt qua các chuyển kho của sản phẩm
+                    product.stock_movements.forEach(stock => {
+                        grouped[product.id].push({
+                            warehouse_id: stock.warehouse_id,
+                            warehouse_name: stock.warehouse_name,
+                            available_qty: stock.available_qty
+                        });
+                    });
+                }
+
+                return grouped;
+            }
+
+            // Cập nhật dropdown sản phẩm
+            function updateProductDropdown(type) {
+
+                $('#ID_SP, #name').empty().append($('<option>', {
+                    value: '',
+                    text: '-- Chọn --'
+                }));
+
+                // Gắn danh sách vào dropdown
+                $('#ID_SP').select2({
+                    placeholder: "Tìm kiếm ID",
+                    allowClear: true,
+                    data: allProducts.map(product => ({
+                        id: product.id,
+                        text: product.ID_SP,
+                    }))
+                });
+
+                // Gắn danh sách vào dropdown
+                $('#name').select2({
+                    placeholder: "Tìm kiếm sản phẩm",
+                    allowClear: true,
+                    data: allProducts.map(product => ({
+                        id: product.id,
+                        text: product.name
+                    }))
+                });
+
+
+                setupProductSelectionEvents(allProducts);
+            }
+
+
+            // Đồng bộ name và ID_SP
+            function setupProductSelectionEvents(filteredProducts) {
+
+                $('#name').on('select2:select', function(e) {
+                    let selectedID = e.params.data.id;
+                    let matchedProduct = filteredProducts.find(p => p.id === parseInt(selectedID));
+                    if (matchedProduct) {
+                        $('#ID_SP').val(selectedID).trigger('change');
+                        $('#Type').val(matchedProduct.Type).trigger('change'); // Điền Type
+                        $('#image_prod').attr('src', matchedProduct.image ? "{{ asset('') }}/" +
+                            matchedProduct.image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                        updateWarehouseDropdown(selectedID);
+                    }
+                });
+
+
+                $('#ID_SP').on('select2:select', function(e) {
+                    let selectedID = e.params.data.id;
+                    let matchedProduct = filteredProducts.find(p => p.id === parseInt(selectedID));
+                    
+                    $('#name').val(selectedID).trigger('change');
+                    $('#Type').val(matchedProduct.Type).trigger('change'); // Điền Type
+                    $('#image_prod').attr('src', matchedProduct.image ? "{{ asset('') }}/" +
+                        matchedProduct.image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                    updateWarehouseDropdown(selectedID);
+                });
+            }
+
+            // Cập nhật danh sách kho chuyển dựa trên sản phẩm được chọn
+            function updateWarehouseDropdown(product_id) {
+                let warehouses = productWarehouses[product_id] || [];
+                $('#warehouse_1').empty().append($('<option>', {
+                    value: '',
+                    text: '-- Chọn kho chuyển --'
+                }));
+
+                warehouses.forEach(warehouse => {
+                    $('#warehouse_1').append($('<option>', {
+                        value: warehouse.warehouse_id,
+                        text: `${warehouse.warehouse_name} (Tồn: ${warehouse.available_qty})`,
+                        'data-quantity': warehouse.available_qty
+                    }));
+                });
+
+                $('#warehouse_1').select2({
+                    placeholder: "Chọn kho chuyển",
+                    allowClear: true
+                });
+            }
+
+
+            // Khi chọn kho chuyển, cập nhật số lượng tối đa
+            $('#warehouse_1').on('select2:select', function(e) {
+                let selectedOption = $(this).find('option:selected');
+                let maxQuantity = selectedOption.data('quantity');
+                $('#quantity').attr('max', maxQuantity);
             });
 
-            var colum_table = [];
-            var line_check = @json($line_id);
-            var tables;
-            var tables_check;
-            var table_edit;
-            var table = 'result';
-            var table_2 = 'result_detail'
-            var table_result = table;
-            var table_result_detail = table_2;
-            var ID_machine_list = [];
-            var shift;
-            var currentDate = new Date();
-            var date = currentDate.toISOString().split('T')[0];
-            const hours = currentDate.getHours();
-            // console.log(hours);
-            // const hours = 22;
+            // Thêm sản phẩm vào bảng
+            $(document).on('click', '#add-product', function() {
+                let product_id = $('#ID_SP').val();
+                let selectedProduct = allProducts.find(p => p.id == product_id);
+                let warehouse_1 = $('#warehouse_1 option:selected').text();
+                let warehouse_1_id = $('#warehouse_1').val();
+                let warehouse_2 = $('#warehouse_2 option:selected').text();
+                let warehouse_2_id = $('#warehouse_2').val();
+                let quantity = parseInt($('#quantity').val(), 10);
+                let maxQuantity = parseInt($('#quantity').attr('max'), 10);
 
-            if (hours > 8 && hours < 20) {
-                $('#shift_search').val('Ca ngày');
-            } else {
-                $('#shift_search').val('Ca đêm');
+                if (!product_id || !warehouse_1_id || !warehouse_2_id || !quantity) {
+                    alert("Vui lòng điền đầy đủ thông tin.");
+                    return;
+                }
+
+                if (quantity > maxQuantity) {
+                    alert("Số lượng vượt quá tồn kho. Vui lòng kiểm tra lại.");
+                    return;
+                }
+
+                // Nếu đang chỉnh sửa, cập nhật dòng
+                if (editingRow) {
+                    $(editingRow).find('td').eq(1).text(selectedProduct.name).data('product-id',
+                        product_id);
+                    $(editingRow).find('td').eq(2).text(warehouse_1).data('warehouse-id', warehouse_1_id);
+                    $(editingRow).find('td').eq(3).text(warehouse_2).data('warehouse-id', warehouse_2_id);
+                    $(editingRow).find('td').eq(4).text(quantity);
+                    $('#add-product').text('Thêm sản phẩm');
+                    editingRow = null;
+                } else {
+                    // Thêm dòng mới
+                    $('#table-result tbody').append(`
+                        <tr>
+                            <td>${selectedProduct.name}</td>
+                            <td data-warehouse-id="${warehouse_1_id}">${warehouse_1}</td>
+                            <td data-warehouse-id="${warehouse_2_id}">${warehouse_2}</td>
+                            <td>${quantity}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm edit-product">Sửa</button>
+                                <button class="btn btn-danger btn-sm remove-product">Xóa</button>
+                            </td>
+                        </tr>
+                    `);
+                }
+
+                resetForm();
+            });
+
+            // Sửa dòng trong bảng
+            $(document).on('click', '.edit-product', function() {
+                let row = $(this).closest('tr');
+                editingRow = row;
+
+                $('#name').val(row.find('td').eq(0).data('product-id')).trigger('change');
+                $('#warehouse_1').val(row.find('td').eq(1).data('warehouse-id')).trigger('change');
+                $('#warehouse_2').val(row.find('td').eq(2).data('warehouse-id')).trigger('change');
+                $('#quantity').val(row.find('td').eq(3).text());
+
+                $('#add-product').text('Cập nhật');
+            });
+
+            // Xóa dòng trong bảng
+            $(document).on('click', '.remove-product', function() {
+                $(this).closest('tr').remove();
+            });
+
+            // Lưu dữ liệu
+            $(document).on('click', '#save', function() {
+                if ($('#table-result tbody tr').length === 0) {
+                    alert("Không có dữ liệu trong bảng. Vui lòng thêm sản phẩm trước khi lưu.");
+                    return;
+                }
+
+                let products = [];
+                $('#table-result tbody tr').each(function() {
+                    let row = $(this);
+                    products.push({
+                        product_id: row.find('td').eq(0).data('product-id'),
+                        from_warehouse_id: row.find('td').eq(1).data('warehouse-id'),
+                        to_warehouse_id: row.find('td').eq(2).data('warehouse-id'),
+                        quantity: row.find('td').eq(3).text()
+                    });
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('warehouse.export') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        products: products
+                    },
+                    success: function(response) {
+                        if (response.status == 200) {
+                            toastr.success(response.success);
+                            resetForm();
+                            $('#table-result tbody').html('');
+                        }
+                    },
+                    error: function() {
+                        alert("Có lỗi xảy ra khi xuất kho.");
+                    }
+                });
+            });
+
+            // Reset form
+            function resetForm() {
+                $('#ID_SP').val('').trigger('change');
+                $('#name').val('').trigger('change');
+                $('#warehouse_1').val('').trigger('change');
+                $('#warehouse_2').val('').trigger('change');
+                $('#quantity').val('');
+                editingRow = null;
             }
-            $('#date_form').val(date);
+
+            loadInitialData();
+        });
+    </script>
+
+    {{-- <script>
+        $(document).ready(function() {
+            var table_name = 'Product';
+            var table = '#table-result';
+            let title_add = "Add sản phẩm";
+            let title_edit = "Edit sản phẩm";
+            var tables;
+            let id;
+
+            // Biến toàn cục lưu dữ liệu sản phẩm ban đầu
+            let allProducts = [];
+            let productByType = {};
+
+            function show_data_check() {
+                var type = $('#Type').val();
+                var ID_SP = $('#ID_SP').val();
+
+                // Nếu dữ liệu đã được tải trước đó, chỉ cần lọc lại
+                if (allProducts.length > 0) {
+                    updateProductDropdown(type);
+                    return;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('WareHouse.show.master') }}",
+                    dataType: "json",
+                    data: {
+                        Type: type,
+                        ID_SP: ID_SP
+                    },
+                    success: function(response) {
+                        // Lưu trữ toàn bộ dữ liệu sản phẩm vào biến toàn cục
+                        allProducts = response.product;
+
+                        // Chia nhóm sản phẩm theo loại (Type)
+                        productByType = groupProductsByType(allProducts);
+
+                        // Cập nhật danh sách sản phẩm dựa trên type hiện tại
+                        updateProductDropdown(type);
+
+                        // Các xử lý khác (như autocomplete kho)
+                        handleWarehouseData(response.warehouse);
+                    }
+                });
+            }
+
+            // Hàm chia nhóm sản phẩm theo type
+            function groupProductsByType(products) {
+                let grouped = {};
+                products.forEach(product => {
+                    if (!grouped[product.Type]) {
+                        grouped[product.Type] = [];
+                    }
+                    grouped[product.Type].push(product);
+                });
+                return grouped;
+            }
+
+            // Hàm cập nhật Select2 dựa trên type
+            function updateProductDropdown(type) {
+                let filteredProducts = type && productByType[type] ? productByType[type] : allProducts;
+
+                // Cập nhật dropdown cho name
+                $('#name').empty();
+                $('#name').append($('<option>', {
+                    value: '',
+                    text: '-- Chọn sản phẩm --'
+                }));
+                $('#name').select2({
+                    placeholder: "Tìm kiếm sản phẩm",
+                    allowClear: true,
+                    data: filteredProducts.map(product => ({
+                        id: product.id,
+                        text: product.name,
+
+                    })),
+
+                });
+
+                // Cập nhật dropdown cho ID_SP
+                $('#ID_SP').empty();
+                $('#ID_SP').append($('<option>', {
+                    value: '',
+                    text: '-- Chọn ID --'
+                }));
+                $('#ID_SP').select2({
+                    placeholder: "Tìm kiếm ID",
+                    allowClear: true,
+                    data: filteredProducts.map(product => ({
+                        id: product.id,
+                        text: product.ID_SP
 
 
-            show_master_check();
-            show_master_status();
+                    }))
+                });
+
+                // Gắn sự kiện thay đổi giá trị
+                setupSelect2Events(filteredProducts);
+
+
+            }
+
+            // Hàm thiết lập sự kiện đồng bộ giữa name và ID_SP
+            function setupSelect2Events(filteredProducts) {
+
+                // Khi chọn name, tự động điền ID_SP
+                $('#name').on('select2:select', function(e) {
+                    let selectedName = e.params.data.text;
+                    let matchedProduct = filteredProducts.find(p => p.name === selectedName);
+                    if (matchedProduct) {
+                        $('#ID_SP').val(matchedProduct.id).trigger('change');
+                        $('#Type').val(matchedProduct.Type).trigger('change'); // Điền Type
+
+                        $('#image_prod').attr('src', matchedProduct.Image ? "{{ asset('') }}/" +
+                            matchedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                    }
+                });
+
+                // Khi chọn ID_SP, tự động điền name
+                $('#ID_SP').on('select2:select', function(e) {
+                    let selectedID = e.params.data.text;
+                    let matchedProduct = filteredProducts.find(p => p.ID_SP === selectedID);
+                    if (matchedProduct) {
+                        $('#name').val(matchedProduct.id).trigger('change');
+                        $('#Type').val(matchedProduct.Type).trigger('change'); // Điền Type
+                        $('#image_prod').attr('src', matchedProduct.Image ? "{{ asset('') }}/" +
+                            matchedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                    }
+                });
+
+                let forceFocusFn = function() {
+                    // Gets the search input of the opened select2
+                    var searchInput = document.querySelector('.select2-container--open .select2-search__field');
+                    // If exists
+                    if (searchInput)
+                        searchInput.focus(); // focus
+                };
+
+                // Every time a select2 is opened
+                $(document).on('select2:open', () => {
+                    // We use a timeout because when a select2 is already opened and you open a new one, it has to wait to find the appropiate
+                    setTimeout(() => forceFocusFn(), 200);
+                });
+
+            }
+
+            // Xử lý dữ liệu kho (warehouse)
+            function handleWarehouseData(warehouses) {
+                let OUT = [];
+                let IN = [];
+                $('#warehouse_1, #warehouse_2').empty(); // Xóa dữ liệu cũ
+
+                // Thêm tùy chọn mặc định
+                $('#warehouse_1').append($('<option>', {
+                    value: "",
+                    text: "Chọn kho chuyển"
+                }));
+                $('#warehouse_2').append($('<option>', {
+                    value: "",
+                    text: "Chọn kho nhận"
+                }));
+
+                // Phân loại kho
+                warehouses.forEach(warehouse => {
+                    if (warehouse.status === "OUT") OUT.push({
+                        id: warehouse.id,
+                        text: warehouse.name
+                    });
+                    if (warehouse.status === "IN") IN.push({
+                        id: warehouse.id,
+                        text: warehouse.name
+                    });
+                });
+
+                // Cập nhật select2 cho warehouse_1 và warehouse_2
+                $('#warehouse_1').select2({
+                    placeholder: "Chọn kho chuyển",
+                    allowClear: true,
+                    data: OUT
+                });
+
+                $('#warehouse_2').select2({
+                    placeholder: "Chọn kho nhận",
+                    allowClear: true,
+                    data: IN
+                });
+            }
+
+            // Hàm gắn autocomplete
+            function initAutocomplete(selector, data) {
+                $(selector).autocomplete({
+                    source: function(request, response) {
+                        var term = request.term.toLowerCase();
+                        var filtered = data.filter(item => item.toLowerCase().indexOf(term) !== -1);
+                        response(filtered.slice(0, 10));
+                    },
+                    minLength: 1,
+                    focus: function(event, ui) {
+                        event.preventDefault();
+                    },
+                    select: function(event, ui) {
+                        $(selector).val(ui.item.value);
+                        return false;
+                    }
+                });
+            }
+
+            function reset_form() {
+
+                // Reset form sau khi thêm hoặc cập nhật
+                $('#image_prod').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                $('#ID_SP').val('').trigger('change');
+                $('#name').val('').trigger('change');
+                $('#Type').val('All');
+                $('#warehouse_1').val('').trigger('change');
+                $('#warehouse_2').val('').trigger('change');
+                $('#quantity').val('');
+            }
+
+            show_data_check();
+            let editingRow = null; // Biến lưu trữ dòng đang được chỉnh sửa
+
+            $(document).on('click', '#add-product', function() {
+                var product_id = $('#ID_SP').val();
+                var selectedProduct = allProducts.find(p => p.id == product_id);
+                if (!selectedProduct) {
+                    alert("Không tìm thấy sản phẩm. Vui lòng kiểm tra lại!");
+                    return;
+                }
+
+                var ID_SP = $('#ID_SP option:selected').text();
+                var name = $('#name option:selected').text();
+                var Type = $('#Type').val();
+                var warehouse_1 = $('#warehouse_1 option:selected').text();
+                var warehouse_1_id = $('#warehouse_1').val();
+                var warehouse_2 = $('#warehouse_2 option:selected').text();
+                var warehouse_2_id = $('#warehouse_2').val();
+                var quantity = $('#quantity').val();
+
+                // Kiểm tra dữ liệu trước khi thêm vào bảng
+                if (!ID_SP || !name || !Type || !warehouse_1 || !warehouse_2 || !quantity) {
+                    alert("Vui lòng điền đầy đủ thông tin.");
+                    return;
+                }
+
+                var imageUrl = selectedProduct.Image ? "{{ asset('') }}/" +
+                    selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}";
+
+
+                // Nếu đang chỉnh sửa, cập nhật dòng hiện tại
+                if (editingRow) {
+                    $(editingRow).find('td').eq(1).text(ID_SP).data('product_id', product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(2).text(name).data('product_id', product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(3).text(warehouse_1).data('warehouse-id',
+                        warehouse_1_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(4).text(warehouse_2).data('warehouse-id',
+                        warehouse_2_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(5).text(quantity);
+                    $(editingRow).find('td').eq(0).html('<img src="' + imageUrl +
+                        '" alt="Hình ảnh sản phẩm" width="50">');
+
+                    // Đặt lại trạng thái "Sửa" và "Thêm sản phẩm"
+                    $('#add-product').text('Thêm sản phẩm');
+                    editingRow = null;
+
+                } else {
+                    // Thêm một hàng vào bảng
+                    var newRow = '<tr>' +
+                        '<td><img src="' + imageUrl + '" alt="Hình ảnh sản phẩm" width="40"></td>' +
+                        '<td data-product-id="' + product_id + '">' + ID_SP + '</td>' +
+                        '<td data-product-id="' + product_id + '">' + name + '</td>' +
+                        '<td data-warehouse-id="' + warehouse_1_id + '">' + warehouse_1 + '</td>' +
+                        '<td data-warehouse-id="' + warehouse_2_id + '">' + warehouse_2 + '</td>' +
+                        '<td>' + quantity + '</td>' +
+                        '<td>' +
+                        '<button class="btn btn-warning btn-sm edit-product">Sửa</button> ' +
+                        '<button class="btn btn-danger btn-sm remove-product">Xóa</button>' +
+                        '</td>' +
+                        '</tr>';
+                    $('#table-result tbody').append(newRow);
+
+                }
+
+                reset_form();
+
+            });
+
+            $(document).on('click', '.edit-product', function(e) {
+                event.preventDefault();
+                var row = $(this).closest('tr');
+                var product_id = row.find('td').eq(1).data('product-id'); // Lấy ID 
+                var warehouse_1 = row.find('td').eq(3).data('warehouse-id'); // Lấy ID kho chuyển
+                var warehouse_2 = row.find('td').eq(4).data('warehouse-id'); // Lấy ID kho nhận
+                var quantity = row.find('td').eq(5).text();
+
+
+                var selectedProduct = allProducts.find(product => product.id === product_id);
+
+                if (selectedProduct) {
+                    // Điền dữ liệu vào form
+                    $('#ID_SP').val(product_id).trigger('change');
+                    $('#name').val(product_id).trigger('change');
+                    $('#Type').val(selectedProduct.Type).trigger(
+                        'change'); // Điền đúng Type vào trường #Type
+                    $('#warehouse_1').val(warehouse_1).trigger('change');
+                    $('#warehouse_2').val(warehouse_2).trigger('change');
+                    $('#quantity').val(quantity);
+                    $('#image_prod').attr('src', selectedProduct.Image ? "{{ asset('') }}/" +
+                        selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                }
+                // Lưu dòng đang sửa
+                editingRow = row;
+
+                // Thay nút "Thêm sản phẩm" thành "Cập nhật"
+                $('#add-product').text('Cập nhật');
+            });
+
+            $(document).on('click', '.remove-product', function() {
+                // Xóa dòng khỏi bảng
+                $(this).closest('tr').remove();
+            });
+
+            $(document).on('click', '#save', function(e) {
+
+                e.preventDefault(); // Ngăn chặn form submit mặc định
+                if ($('#table-result tbody tr').length === 0) {
+                    alert("Không có dữ liệu trong bảng. Vui lòng thêm sản phẩm trước khi lưu.");
+                    return; // Dừng thực hiện nếu bảng trống
+                }
+                var products = [];
+                $('#table-result tbody tr').each(function() {
+                    var row = $(this);
+                    products.push({
+                        product_id: row.find('td:nth-child(2)').data('product-id'),
+                        From: row.find('td:nth-child(4)').text(),
+                        warehouse_id: row.find('td:nth-child(5)').data('warehouse-id'),
+                        quantity: row.find('td:nth-child(6)').text(),
+                    });
+                });
+
+                // Gửi dữ liệu qua AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('warehouse.import') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        products: products
+                    },
+                    success: function(response) {
+                        // location.reload();
+                        if (response.status == 200) {
+                            toastr.success(response.success);
+                            reset_form();
+                            $('#table-result tbody').html('');
+
+                        }
+                    },
+                    error: function() {
+                        alert("Có lỗi xảy ra khi nhập kho.");
+                    }
+                });
+            });
+
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
@@ -211,1058 +737,12 @@
                 }
             });
 
-            function reader_QR() {
-                var lastResult, countResults = 0;
-                html5QrcodeScanner = new Html5QrcodeScanner(
-                    "qr-reader", {
-                        fps: 10,
-                        qrbox: 250,
-                        experimentalFeatures: {
-                            useBarCodeDetectorIfSupported: true
-                        },
-                        rememberLastUsedCamera: true,
-                        showTorchButtonIfSupported: true
-                    });
-
-                html5QrcodeScanner.render(onScanSuccess);
-
-                function onScanSuccess(decodedText, decodedResult) {
-                    if (decodedText !== lastResult) {
-                        ++countResults;
-                        lastResult = decodedText;
-
-                        // $('#Code_machine').val(lastResult);
-
-                        // html5QrcodeScanner.clear();
-                        // $('#modal-scan').modal('hide');
-
-                        checkMachineID(lastResult);
-                        // search();
-                        // show_overview()
-
-                    }
-                }
-
-            }
-
-            const Scan = document.getElementById('Scan_QR');
-            Scan.addEventListener('click', () => {
-                $('#modal-scan').modal('show');
-                reader_QR();
-            });
-
-            function checkMachineID(machineID) {
-                console.log(machineID);
-                $.ajax({
-                    type: "POST",
-                    url: '{{ route('check.machine') }}',
-                    contentType: 'application/json', // Đảm bảo là gửi dữ liệu dưới dạng JSON
-                    data: JSON.stringify({
-                        machine_id: machineID,
-                    }),
-                    success: function(users) {
-                        if (users.isValid) {
-                            console.log(machineID);
-                            $('#Code_machine').val(machineID);
-                            toastr.success("Mã QR hợp lệ: " + machineID);
-                            html5QrcodeScanner.clear();
-                            $('#modal-scan').modal('hide');
-                            search();
-                            show_overview()
-
-                        } else {
-                            // Nếu mã QR không hợp lệ
-                            const userChoice = confirm(
-                                "Mã QR không hợp lệ. Bạn có muốn quét lại hoặc thoát?");
-                            if (userChoice) {} else {
-                                html5QrcodeScanner.clear();
-                                $('#modal-scan').modal('hide');
-                            }
-                        }
-                    },
-                    error: function() {
-                        alert("Lỗi kết nối khi kiểm tra mã máy.");
-                    }
-
-
-                });
-            }
-
-
-            function show_master_status() {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('check.list.masster') }}",
-                    dataType: "json",
-                    success: function(response) {
-                        $('#line_search').empty();
-                        $.each(response.line, function(index, value) {
-                            $('#Line_search').append($('<option>', {
-                                value: value.id,
-                                text: value.line_name,
-                            }));
-                        });
-
-                        $('#Line_search').val(line_check);
-                        search();
-                        show_overview();
-
-
-                    }
-                });
-
-            }
-
-            function show_master_check() {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('check.list.masster') }}",
-                    dataType: "json",
-                    // data: {
-                    //     id: "1"
-                    // },
-                    success: function(response) {
-                        $('#Machine').empty();
-                        $('#Machine_search').empty();
-                        $('#ID_machine').empty();
-                        $('#line').empty();
-                        $('#Model').empty();
-                        $('#line').empty();
-                        $('#Checklist_item').empty();
-                        $('#Khung_gio').empty();
-                        $('#Machine').append($('<option>', {
-                            value: "",
-                            text: "---",
-                        }));
-                        $('#Machine_search').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-                        // $('#Checklist_item').append($('<option>', {
-                        //     value: "",
-                        //     text: "---",
-                        // }));
-
-                        $('#Khung_gio').append($('<option>', {
-                            value: "",
-                            text: "---",
-                        }));
-
-                        $('#Model').append($('<option>', {
-                            value: "",
-                            text: "---",
-                        }));
-
-                        ID_machine_list = [];
-                        $.each(response.machine, function(index, value) {
-                            $('#Machine').append($('<option>', {
-                                value: value.id,
-                                text: value.Machine,
-                            }));
-                            $('#Machine_search').append($('<option>', {
-                                value: value.id,
-                                text: value.Machine,
-                            }));
-                        });
-                        $.each(response.line, function(index, value) {
-                            $('#Line').append($('<option>', {
-                                value: value.id,
-                                text: value.line_name,
-                            }));
-                        });
-                        $.each(response.model, function(index, value) {
-                            $('#Model').append($('<option>', {
-                                value: value.id,
-                                text: value.model,
-                            }));
-                        });
-
-
-
-                        // $("#ID_machine").autocomplete({
-                        //     source: ID_machine_list,
-                        //     minLength: 0, // Để hiển thị gợi ý ngay khi nhấp vào ô
-                        //     focus: function(event, ui) {
-                        //         event.preventDefault(); // Ngăn chặn việc điền tự động
-                        //     },
-                        //     select: function(event, ui) {
-                        //         $('#ID_machine').val(ui.item
-                        //             .value); // Điền giá trị đã chọn vào input
-                        //         return false; // Ngăn chặn hành vi mặc định
-                        //     }
-                        // }).focus(function() {
-                        //     $(this).autocomplete('search',
-                        //         ''); // Tìm kiếm tất cả gợi ý khi nhấp vào
-                        // });
-
-
-                    }
-                });
-
-            }
-
-            function show_model_check() {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('check.list.masster') }}",
-                    dataType: "json",
-                    success: function(response) {
-
-                        $('#Model').empty();
-                        $('#Model').append($('<option>', {
-                            value: "",
-                            text: "---",
-                        }));
-                        $.each(response.model, function(index, value) {
-                            $('#Model').append($('<option>', {
-                                value: value.id,
-                                text: value.model,
-                            }));
-                        });
-                    }
-                });
-
-            }
-
-            function show_overview() {
-                $('#progress-container-1').html("");
-                var shift_search = $('#shift_search option:selected').text();
-                var date_form = ($('#date_form').val());
-                var line = $('#Line_search option:selected').text();
-                $.ajax({
-                    url: "{{ route('checklist.overview.data') }}",
-                    method: 'GET',
-
-                    dataType: "json",
-                    data: {
-                        shift: shift_search,
-                        date_form: date_form,
-                        line: line
-                    },
-                    success: function(data) {
-                        var data_detail = data.progressData;
-                        data_detail.forEach(item => {
-                            createProgressBar(item.Locations + '  - (' +
-                                data
-                                .completed_checklists +
-                                '/' + data.total_checklists + ')',
-                                item
-                                .completion_percentage);
-                        });
-                    },
-                    error: function(error) {
-                        console.error('Error fetching data:', error);
-                    }
-                });
-
-            }
-
-            $('#Line_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-
-            $('#Code_machine').on('change', function(e) {
-                e.preventDefault();
-                var code_ID = $('#Code_machine').val();
-                // checkMachineID(code_ID);
-                search();
-                show_overview()
-
-            });
-            $('#shift_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-            $('#Machine_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-            });
-
-            $('#date_form').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-            $('#Status_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-
-            function createProgressBar(line, completion) {
-                const progressContainer = $('#progress-container-1');
-                const progressCol = $('<div>').addClass('col-xl-8 col-sm-8');
-                const progressDiv = $('<div>').addClass('progress').attr('data-line', line);
-                const progress = $('<div>').addClass('progress-bar').css({
-                    width: `${completion}%`,
-                    background: '#25babc'
-                });
-
-                const progressValue = $('<div>').addClass('progress-value').html(
-                    `<span>${completion}</span>%`);
-                const progressTitle = $('<div>').addClass('progressbar-title').html(
-                    'Rate completed ' + line);
-
-                progress.append(progressValue).append(progressTitle);
-                progressDiv.append(progress);
-                progressCol.append(progressDiv);
-                progressContainer.append(progressCol);
-
-            }
-
-            function show_check_list(ID_checklist) {
-                console.log(ID_checklist);
-                $.ajax({
-                    type: "GET",
-                    url: '{{ route('check.list.search') }}',
-                    data: {
-                        item_check: ID_checklist,
-                    },
-                    success: function(response) {
-                        // console.log(response.data_checklist);
-                        // $('#table-check-list').DataTable().destroy();
-                        var count = 0;
-                        var data = [];
-                        $.each(response.data_checklist, function(index, value) {
-                            count++;
-                            var status_OK =
-                                '<input type="radio" class="btn-check status_OK" name="options-outlined_' +
-                                value.id +
-                                '" autocomplete="off"  check_id="' +
-                                value.id + '" id="status_OK_' + value
-                                .id + '">' +
-                                '<label class="btn btn-outline-success" for="status_OK_' +
-                                value
-                                .id + '">OK</label>';
-
-                            // ' <input type="checkbox" value="OK" class="status_OK" check_id="' +
-                            // value.id + '" id="status_OK_' + value.id + '" > ';
-                            var status_NG =
-                                '<input type="radio" class="btn-check status_NG" name="options-outlined_' +
-                                value.id +
-                                '" autocomplete="off"  check_id="' +
-                                value.id + '" id="status_NG_' + value
-                                .id + '">' +
-                                '<label class="btn btn-outline-danger" for="status_NG_' +
-                                value
-                                .id + '">NG</label>';
-
-
-                            // ' <input type="checkbox" value="NG" class="status_NG" check_id="' +
-                            // value.id + '" id="status_NG_' + value.id + '" > ';
-                            var problem =
-                                '<input name="problem"  type="text" id="' +
-                                value.id +
-                                '" class="form-control problem">';
-
-                            data.push([
-                                count,
-                                value.Hang_muc,
-                                status_OK,
-                                status_NG,
-                                problem,
-                            ]);
-                        });
-                        $('#table-check-list').DataTable().destroy();
-                        $('#table-check-list').DataTable({
-                            data: data,
-                            "info": false,
-                            'ordering': false,
-                            'searching': false,
-                            "lengthMenu": [
-                                [-1],
-                                ["Show all"]
-                            ]
-                        });
-
-                        // document.querySelectorAll(".status_OK").forEach(function(okCheckbox) {
-                        //     okCheckbox.addEventListener('change', function() {
-                        //         // Lấy id của mục hiện tại
-                        //         const itemId = okCheckbox.getAttribute('check_id');
-                        //         console.log(itemId);
-                        //         // const ngCheckbox = document.querySelector('.status_NG[data-id="' + itemId +
-                        //         //     '"]');
-                        //         const Id = "status_NG_" + itemId;
-                        //         const ngCheckbox = document.getElementById(Id);
-
-
-                        //         // Nếu checkbox OK được chọn, bỏ chọn checkbox NG
-                        //         if (okCheckbox.checked) {
-                        //             ngCheckbox.checked = false;
-                        //         }
-                        //     });
-                        // });
-
-                        // document.querySelectorAll('.status_NG').forEach(function(ngCheckbox) {
-                        //     ngCheckbox.addEventListener('change', function() {
-                        //         // Lấy id của mục hiện tại
-                        //         const itemId = ngCheckbox.getAttribute('check_id');
-                        //         const Id = "status_OK_" + itemId;
-                        //         console.log(itemId);
-                        //         // const okCheckbox = document.querySelector('.status_OK[data-id="' + itemId +
-                        //         //     '"]');
-                        //         const okCheckbox = document.getElementById(Id);
-
-                        //         // Nếu checkbox NG được chọn, bỏ chọn checkbox OK
-                        //         if (ngCheckbox.checked) {
-                        //             okCheckbox.checked = false;
-                        //         }
-                        //     });
-                        // });
-
-
-                    }
-                });
-            }
-
-            function show_check_list_edit(ID_checklist) {
-                console.log(ID_checklist);
-                $.ajax({
-                    type: "GET",
-                    url: '{{ route('check.list.edit.search') }}',
-                    data: {
-                        id_checklist: ID_checklist,
-                    },
-                    success: function(response) {
-                        console.log(response.data_checklist);
-                        // $('#table-check-list').DataTable().destroy();
-                        var count = 0;
-                        var data = [];
-                        $.each(response.data_checklist, function(index, value) {
-                            count++;
-
-                            if (value.Check_status == "OK") {
-                                var status_OK =
-                                    '<input type="radio" class="btn-check status_OK" name="options-outlined_' +
-                                    value.id +
-                                    '" autocomplete="off"  check_id="' +
-                                    value.id + '" id="status_OK_' +
-                                    value.id + '" checked>' +
-                                    '<label class="btn btn-outline-success" for="status_OK_' +
-                                    value
-                                    .id + '">OK</label>';
-
-                                var status_NG =
-                                    '<input type="radio" class="btn-check status_NG" name="options-outlined_' +
-                                    value.id +
-                                    '" autocomplete="off"  check_id="' +
-                                    value.id + '" id="status_NG_' +
-                                    value.id + '">' +
-                                    '<label class="btn btn-outline-danger" for="status_NG_' +
-                                    value
-                                    .id + '">NG</label>';
-                            } else {
-                                var status_OK =
-                                    '<input type="radio" class="btn-check status_OK" name="options-outlined_' +
-                                    value.id +
-                                    '" autocomplete="off"  check_id="' +
-                                    value.id + '" id="status_OK_' +
-                                    value.id + '">' +
-                                    '<label class="btn btn-outline-success" for="status_OK_' +
-                                    value
-                                    .id + '">OK</label>';
-
-                                var status_NG =
-                                    '<input type="radio" class="btn-check status_NG" name="options-outlined_' +
-                                    value.id +
-                                    '" autocomplete="off"  check_id="' +
-                                    value.id + '" id="status_NG_' +
-                                    value.id + '" checked>' +
-                                    '<label class="btn btn-outline-danger" for="status_NG_' +
-                                    value
-                                    .id + '">NG</label>';
-
-                            }
-                            if (value.Status == null) {
-                                var Status = "";
-                            } else {
-                                var Status = value.Status;
-                            }
-
-                            var problem =
-                                '<input name="problem"  type="text" id="' +
-                                value.id +
-                                '" class="form-control problem" value="' +
-                                Status + '">';
-
-                            data.push([
-                                count,
-                                value.Hang_muc,
-                                status_OK,
-                                status_NG,
-                                problem,
-                            ]);
-                        });
-                        $('#table-check-list').DataTable().destroy();
-                        $('#table-check-list').DataTable({
-                            data: data,
-                            "info": false,
-                            'ordering': false,
-                            'searching': false,
-                            "lengthMenu": [
-                                [-1],
-                                ["Show all"]
-                            ]
-                        });
-
-
-                    }
-                });
-            }
-
-            function search() {
-                if (tables) {
-                    $('#table_check_list_search').DataTable().destroy();
-                }
-                var line_search = $('#Line_search option:selected').text();
-                var Machine_search = $('#Machine_search option:selected').text();
-                var shift_search = $('#shift_search option:selected').text();
-                var Status_search = $('#Status_search option:selected').text();
-                var Code_machine = $('#Code_machine').val();
-                var date_form = ($('#date_form').val());
-                if ($('#date_form').val() == 0) {
-                    alert('Vui lòng chọn thời gian kiểm tra');
-                } else {
-                    $.ajax({
-                        type: "POST",
-                        url: '{{ route('check.list.overview') }}',
-                        dataType: 'json',
-                        data: {
-                            line: line_search,
-                            shift: shift_search,
-                            date_form: date_form,
-                            Status: Status_search,
-                            Code_machine: Code_machine,
-                            Machine_search: Machine_search
-                        },
-                        success: function(users) {
-                            var count = 0;
-                            var data = [];
-                            var colum = [];
-                            var data;
-                            console.log(users.data);
-                            $.each(users.data, function(index, value) {
-                                count++;
-                                if (value.Check_status == "Completed") {
-                                    var view =
-                                        '<button type="button" value="' +
-                                        value
-                                        .id +
-                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-success view-show check editbtn btn-sm" id="' +
-                                        value.ID_checklist +
-                                        '">View</button>' +
-                                        ' <input type="hidden" value="' +
-                                        value.ID_checklist +
-                                        '" id="' + value.id + '">' +
-                                        '<button type="button" value="' +
-                                        value
-                                        .id +
-                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-warning view-edit check editbtn btn-sm" id="' +
-                                        value.ID_checklist +
-                                        '">Edit</button>' +
-                                        ' <input type="hidden" value="' +
-                                        value.ID_checklist +
-                                        '" id="' + value.id + '">' +
-                                        '<button type="button" value="' +
-                                        value
-                                        .id +
-                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger view-delete check editbtn btn-sm" id="' +
-                                        value.ID_checklist +
-                                        '">Delete</button>' +
-                                        ' <input type="hidden" value="' +
-                                        value.ID_checklist +
-                                        '" id="' + value.id + '">';
-                                } else if (value.Check_status ==
-                                    "Pending") {
-                                    var view =
-                                        '<button type="button" value="' +
-                                        value
-                                        .id +
-                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-primary  view-check check editbtn btn-sm" id="' +
-                                        value.ID_checklist +
-                                        '">Check</button>' +
-                                        '<input type="hidden" value ="' +
-                                        value.ID_checklist +
-                                        '" id="' + value.id + '">';
-                                } else {
-                                    var view =
-                                        '<button type="button" value="' +
-                                        value
-                                        .id +
-                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger view-delete check editbtn btn-sm" id="' +
-                                        value.ID_checklist +
-                                        '">Delete All</button>' +
-                                        ' <input type="hidden" value="' +
-                                        value.ID_checklist +
-                                        '" id="' + value.id + '">';
-                                }
-                                data.push([
-                                    count,
-                                    value.Locations,
-                                    value.Model,
-                                    value.Machine,
-                                    value.Code_machine,
-                                    value.item_checklist,
-                                    value.Khung_check,
-                                    view,
-                                ]);
-                            });
-
-                            var header =
-                                '<thead class="table-success" style="text-align: center; vertical-align:middle">' +
-                                '<tr style="text-align: center">' +
-                                '<th style="text-align: center">STT</th>' +
-                                '<th style="text-align: center">Line</th>' +
-                                '<th style="text-align: center">Model</th>' +
-                                '<th style="text-align: center">Machine</th>' +
-                                '<th style="text-align: center">Code QL</th>' +
-                                '<th style="text-align: center">Check List</th>' +
-                                '<th style="text-align: center">Khung check</th>' +
-                                '<th style="text-align: center">Edit</th>' +
-                                '</tr>'
-                            '</thead>'
-
-                            $('#table_check_list_search').html(header);
-                            tables = $('#table_check_list_search').DataTable({
-                                data: data,
-                                "info": true,
-                                'ordering': false,
-                                'autowidth': true,
-                                // "dom": 'Bfrtip',
-                                select: {
-                                    style: 'single',
-                                },
-
-                            });
-                        }
-                    });
-                }
-            };
-
-
-            var id_checklist_detail = 0;
-            $(document).on('click', '.view-check', function(e) {
-                e.preventDefault();
-                // show_model_check();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'none'; // Ẩn button
-                id_checklist_detail = $(this).val();
-                id_checklist = this.id;
-
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    console.log(rowData);
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Machine option').text(rowData[3]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#Line option').text(rowData[1]);
-                    $('#Checklist_item option').text(rowData[5]);
-                    $('#Khung_gio option').text(rowData[6]);
-                    // $('#ID_machine').val(rowData[4]);
-                    // $('#Line option').each(function() {
-                    //     if ($(this).text() === rowData[1]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Machine option').each(function() {
-                    //     if ($(this).text() === rowData[3]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Checklist_item option').each(function() {
-                    //     if ($(this).text() === rowData[5]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Khung_gio option').each(function() {
-                    //     if ($(this).text() === rowData[6]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-
-                    // $('#Model option').each(function() {
-                    //     if ($(this).text() === rowData[2]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    date = rowData[9];
-                    shift = rowData[7];
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', false);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
-                }
-
-
-                show_check_list(id_checklist)
-
-            });
-
-            $(document).on('click', '.view-edit', function(e) {
-                e.preventDefault();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'unset'; // Ẩn button
-                id_checklist_detail = $(this).val();
-                id_checklist = this.id;
-
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    // $('#Machine option').text(rowData[3]);
-
-                    // $('#line option').text(rowData[1]);
-
-                    // $('#Checklist_item option').text(rowData[5]);
-                    // $('#Khung_gio option').text(rowData[6]);
-                    // $('#Model option:selected').text(rowData[2]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#line option').each(function() {
-                        if ($(this).text() === rowData[1]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Machine option').each(function() {
-                        if ($(this).text() === rowData[3]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Checklist_item option').each(function() {
-                        if ($(this).text() === rowData[5]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Khung_gio option').each(function() {
-                        if ($(this).text() === rowData[6]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-
-                    $('#Model option').each(function() {
-                        if ($(this).text() === rowData[2]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    date = rowData[9];
-                    shift = rowData[7];
-
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', false);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
-                }
-
-
-                show_check_list_edit(id_checklist_detail)
-
-            });
-
-            $(document).on('click', '.view-show', function(e) {
-                e.preventDefault();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'none'; // Ẩn button
-                id_checklist_detail = $(this).val();
-                id_checklist = this.id;
-
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Machine option').text(rowData[3]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#line option').text(rowData[1]);
-                    $('#Checklist_item option').text(rowData[5]);
-                    $('#Khung_gio option').text(rowData[6]);
-                    $('#Model option:selected').text(rowData[2]);
-                    date = rowData[9];
-                    shift = rowData[7];
-
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', true);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
-                }
-
-
-                show_check_list_edit(id_checklist_detail)
-
-            });
-
-
-            $(document).on('click', '.view-delete', function() {
-                const idChecklist = $(this).val(); // Lấy ID của checklist từ nút
-                // id_checklist_detail = $(this).val();
-                const row = $(this).closest(
-                    'tr'); // Lưu tham chiếu đến dòng chứa nút
-                if (confirm('Bạn có chắc chắn muốn xóa không?')) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: "{{ route('delete.check.list', ':id') }}"
-                            .replace(':id', idChecklist),
-                        success: function(response) {
-                            if (response.status === 200) {
-                                toastr.success('Xóa thành công');
-                                // alert('Xóa thành công');
-                                // Cập nhật lại bảng hoặc xóa hàng đã xóa
-                                $('#table_check_list_search')
-                                    .DataTable().row(row).remove()
-                                    .draw();
-
-                            } else {
-                                alert('Có lỗi xảy ra. Không thể xóa.');
-                            }
-                        },
-                        error: function() {
-                            alert('Có lỗi xảy ra. Không thể xóa.');
-                        }
-                    });
-                }
-            });
-
-
-            $(document).on('click', '#save-check-list', function(e) {
-                e.preventDefault();
-                let shouldExit = false;
-                const line = $('#Line option:selected').text();
-                const Model = $('#Model option:selected').text();
-                const Machine = $('#Machine option:selected').text();
-                const Khung_gio = $('#Khung_gio option:selected').text();
-                const ID_machine = $('#ID_machine').val();
-                const Checklist_item = $('#Checklist_item option:selected').text();
-                const data = {
-                    id_checklist: id_checklist_detail,
-                    Model,
-                    date,
-                    ID_machine,
-                    details: [] // Thêm một mảng để chứa các chi tiết
-                };
-                $('#table-check-list').DataTable().rows().every(function() {
-                    if (shouldExit) {
-                        return false; // Nếu flag là true, thoát khỏi vòng lặp
-                    }
-                    const rowData = this.data();
-                    const problems = $(this.node()).find('.problem').val();
-                    const status_OK = $(this.node()).find('.status_OK')
-                        .prop('checked');
-                    const status_NG = $(this.node()).find('.status_NG')
-                        .prop('checked');
-                    if (!status_OK && !status_NG) {
-                        shouldExit = true;
-                        return;
-                    } else {
-                        if (status_OK) {
-                            var status = 'OK';
-                        } else {
-                            var status = 'NG';
-                        }
-                        data.details.push({
-                            Locations: line,
-                            Model: Model,
-                            ID_item_checklist: "1",
-                            Machine: Machine,
-                            Hang_muc: rowData[1],
-                            item_checklist: Checklist_item,
-                            Khung_check: Khung_gio,
-                            Shift: shift,
-                            Code_machine: ID_machine,
-                            Check_status: status,
-                            Status: problems,
-                            // Remark: process,
-                            Date_check: date
-                        });
-                    }
-
-
-                });
-
-                if (Model === "---") {
-                    return alert(
-                        "Vui lòng chọn model, nếu không có thì chọn COMMON");
-                } else if (shouldExit) {
-                    alert("Kiểm tra hạng mục checklist chưa check");
-                } else {
-                    // Gửi yêu cầu AJAX với cả hai dữ liệu
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('save.check.list', ':table') }}"
-                            .replace(':table',
-                                'checklist_result'),
-                        dataType: 'json',
-                        data: JSON.stringify(
-                            data), // Chuyển đổi thành chuỗi JSON
-                        contentType: 'application/json',
-                        success: function(response) {
-                            if (response.status === 400) {
-                                toastr.danger('Update plan check list');
-                                // return alert('Update plan check list');
-                            }
-                            toastr.success('Lưu check-list thành công');
-                            // alert('Lưu check-list thành công');
-                            $('#table_check_list').DataTable().clear();
-                            show_overview();
-                            $('#modal-check').modal('hide');
-                        },
-                        error: function() {
-                            // alert('Lưu check-list thất bại');
-                            toastr.danger('Lưu check-list thất bại');
-
-                        }
-                    });
-                    search();
-                }
-
-
-
-            });
-
-
-            $(document).on('click', '#update-check-list', function(e) {
-                e.preventDefault();
-                var data = [];
-                // var data2 = [];
-                let shouldExit = false;
-                var line = $('#Line option:selected').text();
-                var Model = $('#Model option:selected').text();
-                var Machine = $('#Machine option:selected').text();
-                var Khung_gio = $('#Khung_gio option:selected').text();
-                var ID_machine = $('#ID_machine').val();
-                var Checklist_item = $('#Checklist_item option:selected').text();
-                $('#table-check-list').DataTable().rows().every(function() {
-                    if (shouldExit) {
-                        return false; // Nếu flag là true, thoát khỏi vòng lặp
-                    }
-                    const rowData = this.data();
-                    const problems = $(this.node()).find('.problem').val();
-                    const status_OK = $(this.node()).find('.status_OK')
-                        .prop('checked');
-                    const status_NG = $(this.node()).find('.status_NG')
-                        .prop('checked');
-                    if (!status_OK && !status_NG) {
-                        shouldExit = true;
-                        return;
-                    } else {
-                        if (status_OK) {
-                            var status = 'OK';
-                        } else {
-                            var status = 'NG';
-                        }
-                        data.push({
-                            id_checklist_result: id_checklist_detail,
-                            Locations: line,
-                            Model: Model,
-                            ID_item_checklist: "1",
-                            Machine: Machine,
-                            Hang_muc: rowData[1],
-                            item_checklist: Checklist_item,
-                            Khung_check: Khung_gio,
-                            Shift: shift,
-                            Code_machine: ID_machine,
-                            Check_status: status,
-                            Status: problems,
-                            // Remark: process,
-                            Date_check: date
-
-                        });
-                    }
-
-
-                });
-
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('update.check.list.detail', ':table') }}"
-                        .replace(':table', id_checklist_detail),
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    success: function(users) {
-                        // alert('Update check-list Thành công');
-                        toastr.success('Update check-list Thành công')
-                        $('#table_check_list').DataTable().clear();
-                        $('#modal-check').modal('hide');
-                    }
-                });
-
-
-
-                search();
-            });
-
-            function editTable(table_edit, table) {
-
-                $('#' + table_edit).Tabledit({
-                    url: "check-list/edit-table/" + table,
-                    method: 'POST',
-                    dataType: 'json',
-                    columns: {
-                        identifier: [0, 'id'],
-                        editable: colum_table,
-                    },
-                    restoreButton: true,
-                    deleteButton: false,
-                    uploadButton: false,
-                    onSuccess: function(data, textStatus, jqXHR) {
-                        if (data.action == 'delete') {
-                            $('#' + data.id).remove();
-                            $('#' + table_id).DataTable().ajax.reload();
-                        }
-
-                    }
-                });
-            }
-
-            $('#table_check_list_view').on('draw.dt', function() {
-                editTable('table_check_list_view', table_edit);
-            });
-
             $(document).on('click', '#close-model', function(e) {
                 e.preventDefault();
-                $('#table_check_list').DataTable().clear();
-                $('#table_check_list thead tr').remove();
-                $('#modal-check').modal('hide');
-                show_model_check();
+                $('#modal-created').modal('hide');
+                document.getElementById('form_data').reset();
+
             });
-
-            $(document).on('click', '.close-model-scan', function(e) {
-                e.preventDefault();
-                $('#modal-scan').modal('hide');
-                html5QrcodeScanner.clear();
-            });
-
-
         });
-    </script>
+    </script> --}}
 @endsection
