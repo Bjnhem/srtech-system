@@ -355,6 +355,7 @@
             $(document).on('click', '#add-product', function() {
                 var product_id = $('#ID_SP').val();
                 var selectedProduct = allProducts.find(p => p.id == product_id);
+      
                 if (!selectedProduct) {
                     alert("Không tìm thấy sản phẩm. Vui lòng kiểm tra lại!");
                     return;

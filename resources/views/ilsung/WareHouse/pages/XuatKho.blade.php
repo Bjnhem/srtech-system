@@ -109,6 +109,7 @@
             let allProducts = []; // Dữ liệu sản phẩm có trong kho
             let productWarehouses = {}; // Danh sách các kho có chứa sản phẩm
             let editingRow = null; // Lưu trữ dòng đang chỉnh sửa
+            let warehouseArray = [];
 
             function loadInitialData() {
                 $.ajax({
@@ -118,13 +119,13 @@
                     success: function(response) {
                         // Lưu dữ liệu sản phẩm và kho
                         allProducts = Object.values(response.products);
-                        // allProducts = response.products;
+                        warehouseArray = response.warehouse;
                         console.log(allProducts);
                         productWarehouses = groupWarehousesByProduct(response.products);
 
-                        console.log(productWarehouses);
                         // Cập nhật danh sách sản phẩm vào dropdown
                         updateProductDropdown();
+                        handleWarehouseData(warehouseArray);
                     }
                 });
             }
@@ -207,7 +208,7 @@
                 $('#ID_SP').on('select2:select', function(e) {
                     let selectedID = e.params.data.id;
                     let matchedProduct = filteredProducts.find(p => p.id === parseInt(selectedID));
-                    
+
                     $('#name').val(selectedID).trigger('change');
                     $('#Type').val(matchedProduct.Type).trigger('change'); // Điền Type
                     $('#image_prod').attr('src', matchedProduct.image ? "{{ asset('') }}/" +
@@ -236,6 +237,48 @@
                     placeholder: "Chọn kho chuyển",
                     allowClear: true
                 });
+
+            }
+
+            function handleWarehouseData(warehouses) {
+                let OUT = [];
+                let IN = [];
+                $('#warehouse_2').empty(); // Xóa dữ liệu cũ
+
+                // Thêm tùy chọn mặc định
+                // $('#warehouse_1').append($('<option>', {
+                //     value: "",
+                //     text: "Chọn kho chuyển"
+                // }));
+                $('#warehouse_2').append($('<option>', {
+                    value: "",
+                    text: "Chọn kho nhận"
+                }));
+
+                // Phân loại kho
+                warehouses.forEach(warehouse => {
+                    if (warehouse.status === "OUT") OUT.push({
+                        id: warehouse.id,
+                        text: warehouse.name
+                    });
+                    if (warehouse.status === "IN") IN.push({
+                        id: warehouse.id,
+                        text: warehouse.name
+                    });
+                });
+
+                // Cập nhật select2 cho warehouse_1 và warehouse_2
+                // $('#warehouse_1').select2({
+                //     placeholder: "Chọn kho chuyển",
+                //     allowClear: true,
+                //     data: OUT
+                // });
+
+                $('#warehouse_2').select2({
+                    placeholder: "Chọn kho nhận",
+                    allowClear: true,
+                    data: OUT
+                });
             }
 
 
@@ -246,17 +289,102 @@
                 $('#quantity').attr('max', maxQuantity);
             });
 
+            function reset_form() {
+
+                // Reset form sau khi thêm hoặc cập nhật
+                $('#image_prod').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                $('#ID_SP').val('').trigger('change');
+                $('#name').val('').trigger('change');
+                $('#Type').val('All');
+                $('#warehouse_1').val('').trigger('change');
+                $('#warehouse_2').val('').trigger('change');
+                $('#quantity').val('');
+            }
             // Thêm sản phẩm vào bảng
+
+            // $(document).on('click', '#add-product', function() {
+            //     var product_id = $('#ID_SP').val();
+            //     var selectedProduct = allProducts.find(p => p.id == product_id);
+            //     if (!selectedProduct) {
+            //         alert("Không tìm thấy sản phẩm. Vui lòng kiểm tra lại!");
+            //         return;
+            //     }
+
+            //     var ID_SP = $('#ID_SP option:selected').text();
+            //     var name = $('#name option:selected').text();
+            //     var Type = $('#Type').val();
+            //     var warehouse_1 = $('#warehouse_1 option:selected').text();
+            //     var warehouse_1_id = $('#warehouse_1').val();
+            //     var warehouse_2 = $('#warehouse_2 option:selected').text();
+            //     var warehouse_2_id = $('#warehouse_2').val();
+            //     var quantity = $('#quantity').val();
+
+            //     // Kiểm tra dữ liệu trước khi thêm vào bảng
+            //     if (!ID_SP || !name || !Type || !warehouse_1 || !warehouse_2 || !quantity) {
+            //         alert("Vui lòng điền đầy đủ thông tin.");
+            //         return;
+            //     }
+
+            //     var imageUrl = selectedProduct.Image ? "{{ asset('') }}/" +
+            //         selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}";
+
+
+            //     // Nếu đang chỉnh sửa, cập nhật dòng hiện tại
+            //     if (editingRow) {
+            //         $(editingRow).find('td').eq(1).text(ID_SP).data('product_id', product_id); // Lưu ID kho
+            //         $(editingRow).find('td').eq(2).text(name).data('product_id', product_id); // Lưu ID kho
+            //         $(editingRow).find('td').eq(3).text(warehouse_1).data('warehouse-id',
+            //             warehouse_1_id); // Lưu ID kho
+            //         $(editingRow).find('td').eq(4).text(warehouse_2).data('warehouse-id',
+            //             warehouse_2_id); // Lưu ID kho
+            //         $(editingRow).find('td').eq(5).text(quantity);
+            //         $(editingRow).find('td').eq(0).html('<img src="' + imageUrl +
+            //             '" alt="Hình ảnh sản phẩm" width="50">');
+
+            //         // Đặt lại trạng thái "Sửa" và "Thêm sản phẩm"
+            //         $('#add-product').text('Thêm sản phẩm');
+            //         editingRow = null;
+
+            //     } else {
+            //         // Thêm một hàng vào bảng
+            //         var newRow = '<tr>' +
+            //             '<td><img src="' + imageUrl + '" alt="Hình ảnh sản phẩm" width="40"></td>' +
+            //             '<td data-product-id="' + product_id + '">' + ID_SP + '</td>' +
+            //             '<td data-product-id="' + product_id + '">' + name + '</td>' +
+            //             '<td data-warehouse-id="' + warehouse_1_id + '">' + warehouse_1 + '</td>' +
+            //             '<td data-warehouse-id="' + warehouse_2_id + '">' + warehouse_2 + '</td>' +
+            //             '<td>' + quantity + '</td>' +
+            //             '<td>' +
+            //             '<button class="btn btn-warning btn-sm edit-product">Sửa</button> ' +
+            //             '<button class="btn btn-danger btn-sm remove-product">Xóa</button>' +
+            //             '</td>' +
+            //             '</tr>';
+            //         $('#table-result tbody').append(newRow);
+
+            //     }
+
+            //     reset_form();
+
+            // });
+
             $(document).on('click', '#add-product', function() {
                 let product_id = $('#ID_SP').val();
-                let selectedProduct = allProducts.find(p => p.id == product_id);
-                let warehouse_1 = $('#warehouse_1 option:selected').text();
+                var ID_SP = $('#ID_SP option:selected').text();
+                var name = $('#name option:selected').text();
                 let warehouse_1_id = $('#warehouse_1').val();
+
+
+                let selectedProduct = allProducts.find(p => p.id == product_id);
+                var selectedWarehouse = warehouseArray.find(p => p.id == warehouse_1_id);
+                let warehouse_1 = selectedWarehouse.name;
                 let warehouse_2 = $('#warehouse_2 option:selected').text();
                 let warehouse_2_id = $('#warehouse_2').val();
                 let quantity = parseInt($('#quantity').val(), 10);
                 let maxQuantity = parseInt($('#quantity').attr('max'), 10);
+                var imageUrl = selectedProduct.image ? "{{ asset('') }}/" +
+                    selectedProduct.image : "{{ asset('checklist-ilsung/image/gallery.png') }}";
 
+                console.log(warehouse_2);
                 if (!product_id || !warehouse_1_id || !warehouse_2_id || !quantity) {
                     alert("Vui lòng điền đầy đủ thông tin.");
                     return;
@@ -267,46 +395,74 @@
                     return;
                 }
 
+
                 // Nếu đang chỉnh sửa, cập nhật dòng
                 if (editingRow) {
-                    $(editingRow).find('td').eq(1).text(selectedProduct.name).data('product-id',
-                        product_id);
-                    $(editingRow).find('td').eq(2).text(warehouse_1).data('warehouse-id', warehouse_1_id);
-                    $(editingRow).find('td').eq(3).text(warehouse_2).data('warehouse-id', warehouse_2_id);
-                    $(editingRow).find('td').eq(4).text(quantity);
+                    $(editingRow).find('td').eq(1).text(ID_SP).data('product_id', product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(2).text(name).data('product_id', product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(3).text(warehouse_1).data('warehouse-id',
+                        warehouse_1_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(4).text(warehouse_2).data('warehouse-id',
+                        warehouse_2_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(5).text(quantity);
+                    $(editingRow).find('td').eq(0).html('<img src="' + imageUrl +
+                        '" alt="Hình ảnh sản phẩm" width="50">');
+
+                    // Đặt lại trạng thái "Sửa" và "Thêm sản phẩm"
                     $('#add-product').text('Thêm sản phẩm');
                     editingRow = null;
                 } else {
                     // Thêm dòng mới
-                    $('#table-result tbody').append(`
-                        <tr>
-                            <td>${selectedProduct.name}</td>
-                            <td data-warehouse-id="${warehouse_1_id}">${warehouse_1}</td>
-                            <td data-warehouse-id="${warehouse_2_id}">${warehouse_2}</td>
-                            <td>${quantity}</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm edit-product">Sửa</button>
-                                <button class="btn btn-danger btn-sm remove-product">Xóa</button>
-                            </td>
-                        </tr>
-                    `);
+                    var newRow = '<tr>' +
+                        '<td><img src="' + imageUrl + '" alt="Hình ảnh sản phẩm" width="40"></td>' +
+                        '<td data-product-id="' + product_id + '">' + ID_SP + '</td>' +
+                        '<td data-product-id="' + product_id + '">' + name + '</td>' +
+                        '<td data-warehouse-id="' + warehouse_1_id + '">' + warehouse_1 + '</td>' +
+                        '<td data-warehouse-id="' + warehouse_2_id + '">' + warehouse_2 + '</td>' +
+                        '<td>' + quantity + '</td>' +
+                        '<td>' +
+                        '<button class="btn btn-warning btn-sm edit-product">Sửa</button> ' +
+                        '<button class="btn btn-danger btn-sm remove-product">Xóa</button>' +
+                        '</td>' +
+                        '</tr>';
+                    $('#table-result tbody').append(newRow);
                 }
 
-                resetForm();
+                reset_form();
             });
 
             // Sửa dòng trong bảng
-            $(document).on('click', '.edit-product', function() {
-                let row = $(this).closest('tr');
+            $(document).on('click', '.edit-product', function(e) {
+                event.preventDefault();
+                var row = $(this).closest('tr');
+                var product_id = row.find('td').eq(1).data('product-id'); // Lấy ID 
+                var warehouse_1 = row.find('td').eq(3).data('warehouse-id'); // Lấy ID kho chuyển
+                var warehouse_2 = row.find('td').eq(4).data('warehouse-id'); // Lấy ID kho nhận
+                var quantity = row.find('td').eq(5).text();
+
+
+                var selectedProduct = allProducts.find(product => product.id === product_id);
+                // console.log(selectedProduct);
+
+                if (selectedProduct) {
+                    // Điền dữ liệu vào form
+                    $('#ID_SP').val(product_id).trigger('change');
+                    $('#name').val(product_id).trigger('change');
+                    $('#Type').val(selectedProduct.Type).trigger(
+                        'change'); // Điền đúng Type vào trường #Type
+                    $('#warehouse_1').val(warehouse_1).trigger('change');
+                    $('#warehouse_2').val(warehouse_2).trigger('change');
+                    $('#quantity').val(quantity);
+                    $('#image_prod').attr('src', selectedProduct.image ? "{{ asset('') }}/" +
+                        selectedProduct.image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
+                }
+                // Lưu dòng đang sửa
                 editingRow = row;
 
-                $('#name').val(row.find('td').eq(0).data('product-id')).trigger('change');
-                $('#warehouse_1').val(row.find('td').eq(1).data('warehouse-id')).trigger('change');
-                $('#warehouse_2').val(row.find('td').eq(2).data('warehouse-id')).trigger('change');
-                $('#quantity').val(row.find('td').eq(3).text());
-
+                // Thay nút "Thêm sản phẩm" thành "Cập nhật"
                 $('#add-product').text('Cập nhật');
             });
+
 
             // Xóa dòng trong bảng
             $(document).on('click', '.remove-product', function() {
@@ -314,52 +470,87 @@
             });
 
             // Lưu dữ liệu
-            $(document).on('click', '#save', function() {
+            $(document).on('click', '#save', function(e) {
+
+                e.preventDefault(); // Ngăn chặn form submit mặc định
                 if ($('#table-result tbody tr').length === 0) {
                     alert("Không có dữ liệu trong bảng. Vui lòng thêm sản phẩm trước khi lưu.");
-                    return;
+                    return; // Dừng thực hiện nếu bảng trống
                 }
-
-                let products = [];
+                var products = [];
                 $('#table-result tbody tr').each(function() {
-                    let row = $(this);
+                    var row = $(this);
                     products.push({
-                        product_id: row.find('td').eq(0).data('product-id'),
-                        from_warehouse_id: row.find('td').eq(1).data('warehouse-id'),
-                        to_warehouse_id: row.find('td').eq(2).data('warehouse-id'),
-                        quantity: row.find('td').eq(3).text()
+                        product_id: row.find('td:nth-child(2)').data('product-id'),
+                        warehouse_id: row.find('td:nth-child(4)').data('warehouse-id'),
+                        To: row.find('td:nth-child(5)').data('warehouse-id'),
+                        quantity: row.find('td:nth-child(6)').text(),
                     });
                 });
 
+                console.log(products);
+                // Gửi dữ liệu qua AJAX
                 $.ajax({
-                    type: "POST",
+                    type: 'POST',
                     url: "{{ route('warehouse.export') }}",
                     data: {
                         _token: '{{ csrf_token() }}',
                         products: products
                     },
                     success: function(response) {
+                        // location.reload();
                         if (response.status == 200) {
                             toastr.success(response.success);
-                            resetForm();
+                            reset_form();
                             $('#table-result tbody').html('');
+
+                            loadInitialData();
+
                         }
                     },
                     error: function() {
-                        alert("Có lỗi xảy ra khi xuất kho.");
+                        alert("Có lỗi xảy ra khi nhập kho.");
                     }
                 });
             });
+            // $(document).on('click', '#save', function() {
+            //     if ($('#table-result tbody tr').length === 0) {
+            //         alert("Không có dữ liệu trong bảng. Vui lòng thêm sản phẩm trước khi lưu.");
+            //         return;
+            //     }
 
-            // Reset form
-            function resetForm() {
-                $('#ID_SP').val('').trigger('change');
-                $('#name').val('').trigger('change');
-                $('#warehouse_1').val('').trigger('change');
-                $('#warehouse_2').val('').trigger('change');
-                $('#quantity').val('');
-                editingRow = null;
-            }
+            //     let products = [];
+            //     $('#table-result tbody tr').each(function() {
+            //         let row = $(this);
+            //         products.push({
+            //             product_id: row.find('td').eq(0).data('product-id'),
+            //             from_warehouse_id: row.find('td').eq(2).data('warehouse-id'),
+            //             to_warehouse_id: row.find('td').eq(1).data('warehouse-id'),
+            //             quantity: row.find('td').eq(3).text()
+            //         });
+            //     });
+
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "{{ route('warehouse.export') }}",
+            //         data: {
+            //             _token: '{{ csrf_token() }}',
+            //             products: products
+            //         },
+            //         success: function(response) {
+            //             if (response.status == 200) {
+            //                 toastr.success(response.success);
+            //                 resetForm();
+            //                 $('#table-result tbody').html('');
+            //             }
+            //         },
+            //         error: function() {
+            //             alert("Có lỗi xảy ra khi xuất kho.");
+            //         }
+            //     });
+            // });
+
+
 
             loadInitialData();
         });

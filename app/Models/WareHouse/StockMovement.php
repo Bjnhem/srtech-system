@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class StockMovement extends Model
 {
     use HasFactory;
-    protected $fillable = ['product_id', 'warehouse_id', 'type', 'quantity', 'target_warehouse_id','Remark'];
+    protected $table = 'stock_movements';
+    protected $fillable = ['product_id', 'warehouse_id', 'type', 'quantity', 'target_warehouse_id', 'Remark'];
 
     public function product()
     {
@@ -20,8 +21,8 @@ class StockMovement extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function targetWarehouse()
-    {
-        return $this->belongsTo(Warehouse::class, 'target_warehouse_id');
-    }
+    // public function targetWarehouse()
+    // {
+    //     return $this->belongsTo(Warehouse::class, 'target_warehouse_id');
+    // }
 }

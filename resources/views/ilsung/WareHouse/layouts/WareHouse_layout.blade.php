@@ -46,7 +46,7 @@
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}">
     {{-- <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/font_awesome.min.css') }}"> --}}
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> --}}
 
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
     <link rel="stylesheet"
