@@ -32,6 +32,7 @@ class WarehouseController extends Controller
         $type = $request->input('Type'); // Lọc theo loại sản phẩm (nếu có)
         $query = Product::with('stockMovements.warehouse');
         $kho = Warehouse::all();
+        $products_all = Product::all();
         if ($type && $type !== 'All') {
             $query->where('type', $type);
         }
@@ -52,7 +53,7 @@ class WarehouseController extends Controller
                             'id' => $product->id,
                             'name' => $product->name,
                             'ID_SP' => $product->ID_SP,
-                            'image' => $product->Image,
+                            'mage' => $product->Image,
                             'Type' => $product->Type,
                             'stock_movements' => [],
                         ];
@@ -69,6 +70,55 @@ class WarehouseController extends Controller
 
         return response()->json([
             'products' => $data, // Trả về dữ liệu đã nhóm theo sản phẩm
+            'products_all' => $products_all, // Trả về dữ liệu đã nhóm theo sản phẩm
+            'warehouse' => $kho,
+        ]);
+    }
+
+    public function show_master_transfer(Request $request)
+    {
+        $type = $request->input('Type'); // Lọc theo loại sản phẩm (nếu có)
+        $query = Product::with('stockMovements.warehouse');
+        $kho = Warehouse::all();
+        $products_all = Product::all();
+        if ($type && $type !== 'All') {
+            $query->where('type', $type);
+        }
+
+        $products = $query->get();
+
+        // Chuẩn bị dữ liệu kho
+        $warehouses = Warehouse::all()->keyBy('id');
+        $data = [];
+
+        foreach ($products as $product) {
+            foreach ($product->stockMovements as $stock) {
+                $warehouse = $warehouses->get($stock->warehouse_id);
+                if ($warehouse) {
+                    // Kiểm tra nếu sản phẩm chưa có trong mảng dữ liệu
+                    if (!isset($data[$product->id])) {
+                        $data[$product->id] = [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'ID_SP' => $product->ID_SP,
+                            'Image' => $product->Image,
+                            'Type' => $product->Type,
+                            'stock_movements' => [],
+                        ];
+                    }
+                    // Thêm thông tin về kho vào sản phẩm
+                    $data[$product->id]['stock_movements'][] = [
+                        'warehouse_id' => $warehouse->id,
+                        'warehouse_name' => $warehouse->name,
+                        'available_qty' => $stock->quantity,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'products_search' => $data, // Trả về dữ liệu đã nhóm theo sản phẩm
+            'products_all' => $products_all, // Trả về dữ liệu đã nhóm theo sản phẩm
             'warehouse' => $kho,
         ]);
     }

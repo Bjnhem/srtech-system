@@ -35,14 +35,11 @@
                     <input type="hidden" name="id" value="">
 
                     <div class="row">
-                        <div class="col-2">
-
-                            <div class="form-group col-6 d-flex justify-content-center" style="width: 40vh">
-                                {{-- <label for="name">Hình ảnh:</label> --}}
-                                <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="" id="image_prod"
+                        <div class="col-2 d-flex justify-content-center align-items-center">
+                            <div class="form-group text-center" style="width: 170px;">
+                                <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="" id="image_prod" 
                                     class="img-fluid img-thumbnail">
                             </div>
-
                         </div>
                         <div class="col-10">
                             <div class="row">

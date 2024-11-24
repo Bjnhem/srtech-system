@@ -161,11 +161,14 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::get('/search-master-export', [WarehouseController::class, 'search_master'])->name('WareHouse.show.product.infor.export');
     Route::post('/export', [WarehouseController::class, 'exportStock'])->name('warehouse.export');
 
+    // Route xuất kho
+    Route::get('/chuyen-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.chuyen.kho');
+    Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
+    // Route::get('/search-master-export', [WarehouseController::class, 'search_master'])->name('WareHouse.show.product.infor.export');
+    Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
 
-  
 
- 
-   
+
     Route::get('/Chuyen-kho', [HomeWareHouseController::class, 'index_chuyen_kho'])->name('WareHouse.chuyen.kho');
     Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
 
@@ -204,7 +207,6 @@ Route::prefix('WareHouse/Master')->group(function () {
     Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');
     Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
     Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
-  
 });
 
 

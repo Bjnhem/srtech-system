@@ -10,16 +10,12 @@
                 <form action="" method="POST">
                     @csrf
                     <input type="hidden" name="id" value="">
-
                     <div class="row">
-                        <div class="col-2">
-
-                            <div class="form-group col-6 d-flex justify-content-center" style="width: 40vh">
-                                {{-- <label for="name">Hình ảnh:</label> --}}
+                        <div class="col-2 d-flex justify-content-center align-items-center">
+                            <div class="form-group text-center" style="width: 170px;">
                                 <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="" id="image_prod"
                                     class="img-fluid img-thumbnail">
                             </div>
-
                         </div>
                         <div class="col-10">
                             <div class="row">
@@ -45,25 +41,19 @@
                                 </div>
                                 <div class="col-sm-12 col-xl-7 mb-3">
                                     <label for="name">Tên sản phẩm</label>
-                                    {{-- <input type="text" class="form-control" name="name" id="name"> --}}
                                     <select name="name" id="name" class="form-select">
                                         <option value="">Chọn sản phẩm</option>
                                     </select>
                                 </div>
-
                                 <br>
-
-
                                 <div class="col-sm-6 col-xl-3 mb-3">
                                     <label for="warehouse_id_1">Kho chuyển</label>
-                                    {{-- <input type="text" class="form-control" name="warehouse_1" id="warehouse_1"> --}}
                                     <select name="warehouse_1" id="warehouse_1" class="form-control">
 
                                     </select>
                                 </div>
                                 <div class=" col-sm-6 col-xl-3 mb-3">
                                     <label for="warehouse_id_2">Kho nhận</label>
-                                    {{-- <input type="text" class="form-control" name="warehouse_2" id="warehouse_2"> --}}
                                     <select name="warehouse_2" id="warehouse_2" class="form-control"> </select>
                                 </div>
 
@@ -74,11 +64,12 @@
                                 <div class="col-sm-6 col-xl-3 mb-3">
                                     {{-- <label for="quantity_1">Action:</label> --}}
                                     <button type="button" class="btn btn-primary" id="add-product">Thêm sản phẩm</button>
+                                    <button type="button" class="btn btn-success" id="save">Save</button>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {{-- <h3>Sản phẩm đã chọn</h3> --}}
                     <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
                         <thead class="table-success">
                             <tr>
@@ -155,6 +146,39 @@
 
                 return grouped;
             }
+
+            // function groupWarehousesByProduct(products, selectedType = null) {
+
+            //     let grouped = {};
+            //     // Lọc sản phẩm theo loại nếu được chỉ định
+            //     let filteredProducts = selectedType ?
+            //         Object.values(products).filter(product => product.type === selectedType) : Object.values(
+            //             products);
+
+            //     // Duyệt qua các sản phẩm sau khi đã lọc
+            //     filteredProducts.forEach(product => {
+            //         // Khởi tạo nhóm cho loại sản phẩm nếu chưa có
+            //         if (!grouped[product.type]) {
+            //             grouped[product.type] = {};
+            //         }
+
+            //         // Khởi tạo nhóm cho ID sản phẩm nếu chưa có
+            //         if (!grouped[product.type][product.id]) {
+            //             grouped[product.type][product.id] = [];
+            //         }
+
+            //         // Duyệt qua các chuyển kho của sản phẩm và thêm vào nhóm
+            //         product.stock_movements.forEach(stock => {
+            //             grouped[product.type][product.id].push({
+            //                 warehouse_id: stock.warehouse_id,
+            //                 warehouse_name: stock.warehouse_name,
+            //                 available_qty: stock.available_qty
+            //             });
+            //         });
+            //     });
+
+            //     return grouped;
+            // }
 
             // Cập nhật dropdown sản phẩm
             function updateProductDropdown(type) {

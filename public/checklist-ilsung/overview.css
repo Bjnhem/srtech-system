@@ -505,7 +505,8 @@ img.company-logo:hover {
     transform: scale(1.02);
 }
 
-#add-product {
+#add-product,
+#save {
     margin-top: 1.4rem;
     cbt
 }
@@ -531,4 +532,14 @@ img.company-logo:hover {
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #444;
     line-height: 40px !important;
+}
+
+.action-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.action-btn {
+    transition: background-color 0.3s, color 0.3s;
 }
