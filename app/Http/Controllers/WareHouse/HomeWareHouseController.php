@@ -35,12 +35,8 @@ class HomeWareHouseController extends Controller
 
    public function index_ton_kho()
    {
-    $stockData = DB::table('product_warehouse')
-    ->join('products', 'product_warehouse.product_id', '=', 'products.id')
-    ->join('warehouses', 'product_warehouse.warehouse_id', '=', 'warehouses.id')
-    ->select('products.name as product', 'warehouses.name as warehouse', 'product_warehouse.quantity')
-    ->get();
-    return view('ilsung.WareHouse.pages.ChuyenKho', compact('stockData'));
+  
+    return view('ilsung.WareHouse.pages.Stock');
 
   }
 

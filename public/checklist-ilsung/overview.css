@@ -339,12 +339,10 @@
         width: 100% !important;
         max-width: unset;
     }
-
     .modal-dialog.mid-large {
         width: 100% !important;
         max-width: unset;
     }
-
     .modal-dialog {
         margin: unset !important;
     }
@@ -506,9 +504,8 @@ img.company-logo:hover {
 }
 
 #add-product,
-#save {
+.save-transfer {
     margin-top: 1.4rem;
-    cbt
 }
 
 .select2-container .select2-selection--single,
@@ -525,7 +522,6 @@ img.company-logo:hover {
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-
     display: none;
 }
 
@@ -542,4 +538,23 @@ img.company-logo:hover {
 
 .action-btn {
     transition: background-color 0.3s, color 0.3s;
+}
+
+
+/* Giới hạn chiều cao của modal-body và thêm thanh cuộn */
+
+.modal-body {
+    max-height: 80vh;
+    /* Giới hạn chiều cao modal */
+    overflow-y: auto;
+    /* Thêm thanh cuộn dọc */
+}
+
+
+/* Đảm bảo bảng không bị bóp méo trên màn hình nhỏ */
+
+.table th,
+.table td {
+    white-space: nowrap;
+    /* Không xuống dòng văn bản */
 }

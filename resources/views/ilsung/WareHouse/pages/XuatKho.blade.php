@@ -310,7 +310,7 @@
             $('#warehouse_1').on('select2:select', function(e) {
                 let selectedOption = $(this).find('option:selected');
                 let maxQuantity = selectedOption.data('quantity');
-                $('#quantity').attr('max', maxQuantity);
+                            $('#quantity').attr('max', maxQuantity);
             });
 
             function reset_form() {

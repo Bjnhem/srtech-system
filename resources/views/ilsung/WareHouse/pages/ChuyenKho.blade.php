@@ -78,12 +78,14 @@
 
                                 <div class="col-sm-6 col-xl-3 mb-3">
                                     <label for="quantity">Số lượng</label>
-                                    <input type="number" name="quantity" id="quantity" class="form-control" required>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" required
+                                        value="1">
                                 </div>
                                 <div class="col-sm-6 col-xl-3 mb-3">
                                     {{-- <label for="quantity_1">Action:</label> --}}
-                                    <button type="button" class="btn btn-primary" id="add-product">Thêm sản phẩm</button>
-                                    <button type="button" class="btn btn-success" id="save">Save</button>
+                                    <button type="button" class="btn btn-primary" id="add-product">Thêm</button>
+                                    <button type="button" class="btn btn-success save-transfer"
+                                        id="save">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +123,7 @@
             let productWarehouses_all = []; // Danh sách các kho có chứa sản phẩm
             let editingRow = null; // Lưu trữ dòng đang chỉnh sửa
             let warehouseArray = [];
-            let action = 'export';
+            let action = 'import';
             var type = $('#Type').val();
             let Products;
 
@@ -131,11 +133,12 @@
                     url: "{{ route('WareHouse.show.master.transfer') }}", // Route lấy danh sách sản phẩm có trong kho
                     dataType: "json",
                     data: {
-                        Type: type
+                        Type: type,
+                        action: action
                     },
                     success: function(response) {
                         Products_all = Object.values(response.products_all);
-                        reset_form()
+                        // reset_form()
                         // Lưu dữ liệu sản phẩm và kho
                         if (action == 'import') {
                             allProducts = Object.values(response.products_all);
@@ -156,12 +159,16 @@
                         warehouseArray = response.warehouse;
 
                         // console.log(warehouseArray);
-                        console.log(productWarehouses);
+                        // console.log(productWarehouses);
 
                         // Cập nhật danh sách sản phẩm vào dropdown
                         updateProductDropdown(productWarehouses);
 
-
+                        // $('#Type').on('change', function() {
+                        //     if ($(this).val() != type) {
+                        //         loadInitialData(action, type);
+                        //     }
+                        // });
                     }
                 });
             }
@@ -315,8 +322,7 @@
 
             // Cập nhật danh sách kho chuyển dựa trên sản phẩm được chọn
             function updateWarehouseDropdown(product_id, action, type) {
-                console.log(product_id);
-                console.log(action);
+                event.preventDefault();
                 let OUT = [];
                 let IN = [];
                 let data_kho_stock = [];
@@ -354,8 +360,7 @@
                                 data_kho_stock.push({
                                     id: productWarehouse.warehouse_id,
                                     text: `${productWarehouse.warehouse_name} (Tồn: ${productWarehouse.available_qty})`, // Hiển thị tên kho và số lượng tồn
-                                    'data-quantity': productWarehouse
-                                        .available_qty
+                                    'data-quantity': productWarehouse.available_qty
                                 });
 
                             });
@@ -365,11 +370,17 @@
                     $('#warehouse_1').select2({
                         placeholder: "Chọn kho chuyển",
                         allowClear: true,
-                        data: data_kho_stock
+                        data: data_kho_stock,
+                        templateSelection: function(data) {
+                            if (!data.id) return data.text;
+                            $(data.element).attr('data-quantity', data['data-quantity']);
+                            return data.text;
+                        }
                     });
                     $('#warehouse_1').on('select2:select', function(e) {
-                        let selectedOption = $(this).find('option:selected');
-                        let maxQuantity = selectedOption.data('quantity');
+                        let selectedData = e.params.data;
+                        let maxQuantity = selectedData['data-quantity'];
+                        console.log("Max Quantity:", maxQuantity);
                         $('#quantity').attr('max', maxQuantity);
                     });
                 }
@@ -413,7 +424,7 @@
                 $('#image_prod').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
                 $('#ID_SP').val('').trigger('change');
                 $('#name').val('').trigger('change');
-                $('#Type').val('All');
+                $('#Type').val(type);
                 $('#warehouse_1').val('').trigger('change');
                 $('#warehouse_2').val('').trigger('change');
                 $('#quantity').val('');
@@ -427,7 +438,7 @@
                 // Lấy giá trị hành động từ thuộc tính data-action
                 action = $(this).data('action');
                 type = $('#Type').val();
-      
+
                 loadInitialData(action, type);
             });
 
@@ -437,25 +448,29 @@
                 var ID_SP = $('#ID_SP option:selected').text();
                 var name = $('#name option:selected').text();
                 let warehouse_1_id = $('#warehouse_1').val();
-                let selectedProduct = allProducts.find(p => p.id == product_id);
-                var selectedWarehouse = warehouseArray.find(p => p.id == warehouse_1_id);
-                let warehouse_1 = selectedWarehouse.name;
+
                 let warehouse_2 = $('#warehouse_2 option:selected').text();
                 let warehouse_2_id = $('#warehouse_2').val();
                 let quantity = parseInt($('#quantity').val(), 10);
                 let maxQuantity = parseInt($('#quantity').attr('max'), 10);
-                var imageUrl = selectedProduct.Image ? "{{ asset('') }}/" +
-                    selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}";
+
 
                 if (!product_id || !warehouse_1_id || !warehouse_2_id || !quantity) {
                     alert("Vui lòng điền đầy đủ thông tin.");
                     return;
                 }
 
+                let selectedProduct = allProducts.find(p => p.id == product_id);
+                var selectedWarehouse = warehouseArray.find(p => p.id == warehouse_1_id);
+                let warehouse_1 = selectedWarehouse.name;
+                var imageUrl = selectedProduct.Image ? "{{ asset('') }}/" +
+                    selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}";
                 if (quantity > maxQuantity) {
                     alert("Số lượng vượt quá tồn kho. Vui lòng kiểm tra lại.");
                     return;
                 }
+
+
                 // Nếu đang chỉnh sửa, cập nhật dòng
                 if (editingRow) {
                     $(editingRow).find('td').eq(1).text(ID_SP).data('product_id', product_id); // Lưu ID kho
@@ -469,7 +484,7 @@
                         '" alt="Hình ảnh sản phẩm" width="50">');
 
                     // Đặt lại trạng thái "Sửa" và "Thêm sản phẩm"
-                    $('#add-product').text('Thêm sản phẩm');
+                    $('#add-product').text('Thêm');
                     editingRow = null;
                 } else {
                     // Thêm dòng mới
@@ -528,6 +543,7 @@
                 $(this).closest('tr').remove();
             });
 
+
             // Lưu dữ liệu
             $(document).on('click', '#save', function(e) {
 
@@ -537,13 +553,23 @@
                     return; // Dừng thực hiện nếu bảng trống
                 }
                 var products = [];
+                var warehouse_id;
+                var To;
                 $('#table-result tbody tr').each(function() {
                     var row = $(this);
+                    if (action == 'import') {
+                        warehouse_id = row.find('td:nth-child(5)').data('warehouse-id');
+                        To = row.find('td:nth-child(4)').data('warehouse-id');
+                    } else {
+                        warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
+                        To = row.find('td:nth-child(5)').data('warehouse-id');
+                    }
                     products.push({
                         product_id: row.find('td:nth-child(2)').data('product-id'),
-                        warehouse_id: row.find('td:nth-child(4)').data('warehouse-id'),
-                        To: row.find('td:nth-child(5)').data('warehouse-id'),
+                        warehouse_id: warehouse_id,
+                        To: To,
                         quantity: row.find('td:nth-child(6)').text(),
+                        action: action
                     });
                 });
 
@@ -551,7 +577,7 @@
                 // Gửi dữ liệu qua AJAX
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('warehouse.export') }}",
+                    url: "{{ route('warehouse.transfer') }}",
                     data: {
                         _token: '{{ csrf_token() }}',
                         products: products
@@ -559,12 +585,11 @@
                     success: function(response) {
                         // location.reload();
                         if (response.status == 200) {
-                            toastr.success(response.success);
+                            var success = action + ' ' + response.success;
+                            toastr.success(success);
                             reset_form();
                             $('#table-result tbody').html('');
-
-                            loadInitialData();
-
+                            loadInitialData(action, type);
                         }
                     },
                     error: function() {
@@ -572,6 +597,9 @@
                     }
                 });
             });
+
+
+
             loadInitialData(action, type);
         });
     </script>
