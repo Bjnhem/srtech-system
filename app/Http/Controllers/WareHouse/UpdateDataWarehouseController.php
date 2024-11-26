@@ -135,7 +135,7 @@ class UpdateDataWarehouseController extends Controller
         $query = Product::query();
 
         // Chỉ lọc theo Type nếu Type không phải là null
-      
+
         if (!empty($id_sp)) {
             $query->where('ID_SP', $id_sp);
         } else {
@@ -216,6 +216,7 @@ class UpdateDataWarehouseController extends Controller
                     'ID_SP' => $request->input('ID_SP'),
                     'name' => $request->input('name'),
                     'Code_Purchase' => $request->input('Code_Purchase'),
+                    'stock_limit' => $request->input('stock_limit'),
                     'Image' => $imageName, // Xử lý ảnh nếu có
                 ]);
                 return redirect()->back()->with('success', 'Product updated successfully!');
@@ -245,6 +246,7 @@ class UpdateDataWarehouseController extends Controller
                 'Model' => $modelName,
                 'name' => $request->input('name'),
                 'Code_Purchase' => $request->input('Code_Purchase'),
+                'stock_limit' => $request->input('stock_limit'),
                 'Image' => $this->handleImageUpload($request), // Xử lý ảnh nếu có
             ]);
 

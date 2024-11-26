@@ -12,6 +12,7 @@ use App\Http\Controllers\checklist\HomeController as ChecklistHomeController;
 use App\Http\Controllers\checklist\PlanController;
 use App\Http\Controllers\DataTableController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OQC\OQCController;
 use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
@@ -180,6 +181,43 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::get('/stock', [HomeWareHouseController::class, 'index_ton_kho'])->name('warehouse.stock');
     Route::get('/stock-data', [WarehouseController::class, 'getStock'])->name('warehouse.stock.data');
     Route::get('/stock-data-detail', [WarehouseController::class, 'getHistory'])->name('warehouse.stock.data.history');
+    Route::get('/stock-data-history', [WarehouseController::class, 'getHistorydata'])->name('warehouse.data.history');
+
+    Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
+    Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
+});
+
+// Route OQC
+
+Route::middleware('auth')->prefix('OQC')->group(function () {
+
+    // Route nhập data
+    Route::get('/Nhap-data', [OQCController::class, 'index_nhap_kho'])->name('WareHouse.nhap.kho');
+    Route::get('/show-master-import', [OQCController::class, 'show_master_import'])->name('WareHouse.show.master');
+    Route::get('/search-master-import', [OQCController::class, 'search_master'])->name('WareHouse.show.product.infor');
+    Route::post('/import', [OQCController::class, 'importStock'])->name('warehouse.import');
+
+    // // Route xuất kho
+    // Route::get('/Xuat-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.xuat.kho');
+    // Route::get('/show-master-export', [WarehouseController::class, 'show_master_export'])->name('WareHouse.show.master.export');
+    // Route::get('/search-master-export', [WarehouseController::class, 'search_master'])->name('WareHouse.show.product.infor.export');
+    // Route::post('/export', [WarehouseController::class, 'exportStock'])->name('warehouse.export');
+
+
+    // // Route nhập xuất
+    // Route::get('/nhap-xuat', [HomeWareHouseController::class, 'index_chuyen_kho'])->name('WareHouse.chuyen.kho');
+    // Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
+    // Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
+
+
+
+    // // Route::get('/Chuyen-kho', [HomeWareHouseController::class, 'index_chuyen_kho'])->name('WareHouse.chuyen.kho');
+    // Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
+
+    // Route::get('/stock', [HomeWareHouseController::class, 'index_ton_kho'])->name('warehouse.stock');
+    // Route::get('/stock-data', [WarehouseController::class, 'getStock'])->name('warehouse.stock.data');
+    // Route::get('/stock-data-detail', [WarehouseController::class, 'getHistory'])->name('warehouse.stock.data.history');
+    // Route::get('/stock-data-history', [WarehouseController::class, 'getHistorydata'])->name('warehouse.data.history');
 
     Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
     Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');

@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function Home_index()
     {
 
-        return view('ilsung.pages.Home.Home_index');
+        return view('ilsung.Warehouse.pages.Home.Home_index');
         // return view('ilsung.pages.Overview-checklist');
     }
 
@@ -38,7 +38,7 @@ class HomeController extends Controller
     {
 
         // return view('ilsung.pages.Home.Home_index');
-        return view('ilsung.pages.OQC.Home_index');
+        return view('ilsung.OQC.pages.Overview');
     }
 
 
@@ -56,7 +56,7 @@ class HomeController extends Controller
     {
 
         $line_search = 'Line 01';
-        $assets = [ 'animation'];
+        $assets = ['animation'];
         $line_id = line::where('Line_name', $line_search)->pluck('id')->first();
         return view('ilsung.pages.Check-checklist', compact('line_id', 'assets'));
     }
