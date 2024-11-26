@@ -1,7 +1,7 @@
 @extends('ilsung.layouts.Home_layout')
 
 @section('content')
-<div class="container">
+<div class="container h-150">
     <div class="row justify-content-center align-items-center">
         <!-- Checklist Card -->
         <div class="col-lg-4 col-md-4 mb-4">

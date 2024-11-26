@@ -12,7 +12,9 @@ use App\Http\Controllers\checklist\HomeController as ChecklistHomeController;
 use App\Http\Controllers\checklist\PlanController;
 use App\Http\Controllers\DataTableController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OQC\HomeOQCController;
 use App\Http\Controllers\OQC\OQCController;
+use App\Http\Controllers\OQC\UpdateDataOQCController;
 use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\PermissionController;
@@ -187,15 +189,48 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
 });
 
+
+
+Route::prefix('WareHouse/Master')->group(function () {
+
+    Route::get('/data-sanpham', [UpdateDataWarehouseController::class, 'data_sanpham'])->name('Warehouse.update.data.sanpham');
+    Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('Warehouse.update.data.kho');
+    Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
+    Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
+
+
+    Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data,machine');
+
+    Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
+    Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
+
+
+
+    Route::get('/data-checklist-item', [UpdateDataWarehouseController::class, 'data_checklist_item'])->name('update.data.checklist.item');
+    Route::get('/show-data-table-checklist-item', [UpdateDataWarehouseController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
+    Route::get('/data-checklist-item_search', [UpdateDataWarehouseController::class, 'data_item_master'])->name('update.data.item_check');
+
+
+
+    Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
+    Route::get('/show-data-table-product', [UpdateDataWarehouseController::class, 'showData'])->name('Warehouse.update.show.data.product');
+    Route::post('/product/save', [UpdateDataWarehouseController::class, 'store_products'])->name('product.save');
+    Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
+    Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
+    Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');
+    Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
+    Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
+});
+
 // Route OQC
 
 Route::middleware('auth')->prefix('OQC')->group(function () {
 
     // Route nhập data
-    Route::get('/Nhap-data', [OQCController::class, 'index_nhap_kho'])->name('WareHouse.nhap.kho');
-    Route::get('/show-master-import', [OQCController::class, 'show_master_import'])->name('WareHouse.show.master');
-    Route::get('/search-master-import', [OQCController::class, 'search_master'])->name('WareHouse.show.product.infor');
-    Route::post('/import', [OQCController::class, 'importStock'])->name('warehouse.import');
+    Route::get('/Nhap-plan', [HomeOQCController::class, 'index_plan'])->name('OQC.plan');
+    Route::get('/Nhap-loss', [HomeOQCController::class, 'index_loss'])->name('OQC.loss');
+    Route::get('/feedback', [HomeOQCController::class, 'index_feedback'])->name('OQC.feedback');
+    // Route::post('/import', [OQCController::class, 'importStock'])->name('warehouse.import');
 
     // // Route xuất kho
     // Route::get('/Xuat-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.xuat.kho');
@@ -223,12 +258,20 @@ Route::middleware('auth')->prefix('OQC')->group(function () {
     Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
 });
 
-Route::prefix('WareHouse/Master')->group(function () {
+Route::prefix('OQC/Master')->group(function () {
+    Route::get('', [HomeOQCController::class, 'index_master'])->name('OQC.update.master');
+    Route::get('/data-sanpham', [UpdateDataWarehouseController::class, 'data_sanpham'])->name('OQC.update.data.sanpham');
+    Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('OQC.update.data.kho');
+    Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('OQC.update.data.model');
+    Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('OQC.table.update.data');
 
-    Route::get('/data-sanpham', [UpdateDataWarehouseController::class, 'data_sanpham'])->name('Warehouse.update.data.sanpham');
-    Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('Warehouse.update.data.kho');
-    Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
-    Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
+
+    Route::resource('plans', OQCController::class);
+    Route::post('plans/import', [OQCController::class, 'import'])->name('plans.import');
+
+    Route::get('/warehouse/download-template', [UpdateDataOQCController::class, 'downloadTemplate'])->name('OQC.download.template');
+    Route::post('/warehouse/upload-plan', [UpdateDataOQCController::class, 'updateFromExcel'])->name('OQC.table.update.data');
+
 
 
 
@@ -246,15 +289,14 @@ Route::prefix('WareHouse/Master')->group(function () {
 
 
     Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
-    Route::get('/show-data-table-product', [UpdateDataWarehouseController::class, 'showData'])->name('Warehouse.update.show.data.product');
-    Route::post('/product/save', [UpdateDataWarehouseController::class, 'store_products'])->name('product.save');
+    Route::get('/show-data-table-plan', [UpdateDataOQCController::class, 'showData'])->name('OQC.update.show.data.plan');
+    Route::post('/plan/save', [UpdateDataOQCController::class, 'store_plan'])->name('plan.save');
     Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
     Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
-    Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');
-    Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
-    Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
+    Route::get('/show-data-table', [UpdateDataOQCController::class, 'show_data_table'])->name('OQC.update.show.data');
+    Route::post('/add-data-table', [UpdateDataOQCController::class, 'add_data_row_table'])->name('OQC.update.add.data');
+    Route::post('/delete-data-table', [UpdateDataOQCController::class, 'delete_data_row_table'])->name('OQC.update.delete.data');
 });
-
 
 
 

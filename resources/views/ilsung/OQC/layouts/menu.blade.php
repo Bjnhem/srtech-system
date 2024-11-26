@@ -6,45 +6,45 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('Home.WareHouse')) }}" aria-current="page"
-            href="{{ route('Home.WareHouse') }}">
+        <a class="nav-link {{ activeRoute(route('Home.OQC')) }}" aria-current="page"
+            href="{{ route('Home.OQC') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/business.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Overview</span>
         </a>
     </li>
-    {{-- <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('WareHouse.nhap.kho')) }}" aria-current="page" href="{{ route('WareHouse.nhap.kho') }}">
+    <li class="nav-item">
+        <a class="nav-link {{ activeRoute(route('OQC.plan')) }}" aria-current="page" href="{{ route('OQC.plan') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/business.png') }}" alt="Camera" width="20"
                 height="20">
-            <span class="item-name">Nhập Kho</span>
+            <span class="item-name">Plan</span>
         </a>
-    </li> --}}
+    </li>
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('WareHouse.chuyen.kho')) }}" aria-current="page"
-            href="{{ route('WareHouse.chuyen.kho') }}">
+        <a class="nav-link {{ activeRoute(route('OQC.loss')) }}" aria-current="page"
+            href="{{ route('OQC.loss') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/planner.png') }}" alt="Camera" width="20"
                 height="20">
-            <span class="item-name">Nhập xuất</span>
+            <span class="item-name">Nhập lỗi</span>
         </a>
     </li>
 
-    {{-- <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('WareHouse.xuat.kho')) }}" aria-current="page"
-            href="{{ route('WareHouse.xuat.kho') }}">
+    <li class="nav-item">
+        <a class="nav-link {{ activeRoute(route('OQC.feedback')) }}" aria-current="page"
+            href="{{ route('OQC.feedback') }}">
                     <img class=" icon" src="{{ asset('checklist-ilsung/icon/checklist.png') }}" alt="Camera" width="20"
                 height="20">
-            <span class="item-name">Xuất Kho</span>
+            <span class="item-name">Feedback</span>
         </a>
-    </li> --}}
-    <li class="nav-item">
+    </li>
+    {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('warehouse.stock')) }}" aria-current="page"
             href="{{ route('warehouse.stock') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/checklist.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Tồn Kho</span>
         </a>
-    </li>
+    </li> --}}
 
     <li>
         <hr class="hr-horizontal">
@@ -61,8 +61,8 @@
     {{-- database --}}
 
     <li class="nav-item">
-        <a class="nav-link  {{ Request::is('WareHouse/Master*') ? 'active' : '' }}" aria-current="page"
-            href="{{ route('WareHouse.update.master') }}">
+        <a class="nav-link  {{ Request::is('OQC/Master*') ? 'active' : '' }}" aria-current="page"
+            href="{{ route('OQC.update.master') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera"
                 width="20" height="20">
             <span class="item-name">Database</span>
