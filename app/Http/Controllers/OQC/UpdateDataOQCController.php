@@ -335,7 +335,7 @@ class UpdateDataOQCController extends Controller
 
     public function downloadTemplate()
     {
-        $filePath = 'templates/production_plan_template.xlsx'; // Đường dẫn file mẫu
+        $filePath = 'templates/production_plan_form.xlsx'; // Đường dẫn file mẫu
         if (!Storage::exists($filePath)) {
             return response()->json(['error' => 'File mẫu không tồn tại'], 404);
         }
