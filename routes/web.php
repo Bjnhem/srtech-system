@@ -14,6 +14,7 @@ use App\Http\Controllers\DataTableController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OQC\HomeOQCController;
 use App\Http\Controllers\OQC\OQCController;
+use App\Http\Controllers\OQC\OQCLosssController;
 use App\Http\Controllers\OQC\UpdateDataOQCController;
 use App\Http\Controllers\Security\RolePermission;
 use App\Http\Controllers\Security\RoleController;
@@ -242,9 +243,10 @@ Route::prefix('OQC/Master')->group(function () {
     Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('OQC.table.update.data');
 
     // route nhập data loss
-    Route::get('line-losses', [OQCController::class, 'index']);
-    Route::post('line-losses', [OQCController::class, 'store']);
-    
+    Route::get('/plan/data', [OQCLosssController::class, 'getPlanData'])->name('OQC.loss.data.plan');
+    Route::get('/plan/dropdown', [OQCLosssController::class, 'getDropdownData'])->name('OQC.loss.data.plan.search');
+    Route::get('/plan/prod-qty', [OQCLosssController::class, 'getProdQty'])->name('OQC.loss.data.plan.search.prod.qty');
+
 
     // route update plan
     Route::get('/show-data-table-plan', [UpdateDataOQCController::class, 'showData'])->name('OQC.update.show.data.plan');

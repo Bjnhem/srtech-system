@@ -34,7 +34,7 @@
     {{-- <link rel="stylesheet" href="{{asset('vendor/aos/dist/aos.css')}}" /> --}}
     {{-- <link rel="stylesheet" href="{{ asset('laravel-filemanager/css/lfm.css') }}" /> --}}
     {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/custom-admin.css') }}" /> --}}
-    <link rel="stylesheet" href="{{ asset('checklist-ilsung/overview.css') }}" />
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/OQC.css') }}" />
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/icon.css') }}" />
 
     {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/css/bootstrap.css') }}" type="text/css" /> --}}
@@ -170,7 +170,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>

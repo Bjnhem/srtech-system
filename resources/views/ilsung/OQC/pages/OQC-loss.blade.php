@@ -1,113 +1,114 @@
 @extends('ilsung.OQC.layouts.OQC_layout')
 @section('content')
-    <div class="card table-responsive" style="border: none">
+    <div class="card table-responsive card-loss" style="border: none;">
         <div class="card-header">
-            <button type="button" id="Home" class="btn btn-success"
-                onclick="window.location='{{ route('WareHouse.update.master') }}'"><span class="icon-home"></span></button>
-            <button type="button" id="creat" class="btn btn-primary" data-toggle="modal"
-                data-target="#addLossModal">Add</button>
+            <h3 class="header-title">Quản lý lỗi OQC Final</h3>
+            {{-- <h3 class="header-title">Quản Lý Kho</h3> --}}
         </div>
         <div class="card-body">
-            <!-- Filter Form -->
-            <div class="row">
-                <div class="col-sm-6 col-xl-4 mb-3 bottommargin-sm">
-                    <label for="date_search">Date Search</label>
-                    <div class="input-daterange component-datepicker input-group">
-                        <input type="text" class="form-control text-start" id="date_search" placeholder="YYYY-MM-DD"
-                            autocomplete="off">
+            <!-- Master Plan & Data Input -->
+            <div class="row content-top">
+                <!-- Master Plan Section -->
+                <div class="col-lg-6 master-plan">
+                    <h4 class="section-title">Master Plan</h4>
+                    <div class="row">
+                        <div class="col-12 mb-3 bottommargin-sm">
+                            <label for="">Date Search</label>
+                            <div class="input-daterange component-datepicker input-group">
+                                <input type="text" value="" class="form-control text-start" id="date_search"
+                                    placeholder="YYYY-MM-DD" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="shift_search">Shift</label>
+                            <select id="shift_search" class="form-select">
+                                <option value="A">Ca ngày</option>
+                                <option value="C">Ca đêm</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="Line_search">Line</label>
+                            <select id="Line_search" class="form-select">
+                                <option value="All">All</option>
+                                <option value="Line 1">Line 1</option>
+                                <option value="Line 2">Line 2</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="khung_gio">Khung giờ</label>
+                            <select id="khung_gio" class="form-select">
+                                {{-- <option value="All">All</option> --}}
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="model">Model</label>
+                            <input type="text" class="form-control" id="model" readonly>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="prod_qty">Prod. Qty</label>
+                            <input type="text" class="form-control" id="prod_qty" readonly>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="ng_qty">NG Qty</label>
+                            <input type="text" class="form-control" id="ng_qty" readonly>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <label for="shift_search">Shift</label>
-                    <select name="shift" id="shift_search" class="form-select">
-                        <option value="All">All</option>
-                        <option value="A">Ca ngày</option>
-                        <option value="C">Ca đêm</option>
-                    </select>
-                </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <label for="Line_search">Line</label>
-                    <select name="Line" id="Line_search" class="form-select">
-                        <option value="All">All</option>
-                        <option value="Line 1">Line 1</option>
-                        <option value="Line 2">Line 2</option>
-                        <option value="Line 3">Line 3</option>
-                        <!-- Thêm các Line khác nếu cần -->
-                        <option value="Line 16">Line 16</option>
-                    </select>
+
+                <!-- Data Lỗi Input Section -->
+                <div class="col-lg-6 data-loi-input">
+                    <h4 class="section-title">Data Lỗi Input</h4>
+                    <form id="lossForm">
+                        <div class="row">
+                            <input type="hidden" id="quantity" name="quantity" value="1" required>
+                            <div class="col-6 mb-3">
+                                <label for="code_id">Code ID</label>
+                                <input type="text" id="code_id" name="code_id" class="form-control" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="category">Loại lỗi</label>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="NG tape">NG tape</option>
+                                    <option value="NG soldering">NG soldering</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="error_name">Tên lỗi</label>
+                                <select id="error_name" name="error_name" class="form-select" required>
+                                    <option value="Thiếu Tape BIT">Thiếu Tape BIT</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="remark">Remark</label>
+                                <input type="text" id="remark" name="remark" class="form-control">
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary w-100">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Table -->
-            <table class="table table-bordered table-hover table-sm" id="table-result" style="width:100%">
-                <thead class="table-success">
-                    <tr>
-                        <th rowspan="2">Ngày</th>
-                        <th rowspan="2">Shift</th>
-                        <th rowspan="2">Line</th>
-                        <th rowspan="2">Model</th>
-                        <th colspan="6">Khung giờ</th>
-                        <th rowspan="2">Hành động</th>
-                    </tr>
-                    <tr>
-                        <th>Total</th>
-                        <th>Khung A</th>
-                        <th>Khung B</th>
-                        <th>Khung C</th>
-                        <th>Khung D</th>
-                        <th>Khung E</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <!-- Dữ liệu sẽ được hiển thị ở đây -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Modal for adding Loss -->
-    <div class="modal fade" id="addLossModal" tabindex="-1" role="dialog" aria-labelledby="addLossModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addLossModalLabel">Add Loss Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Loss input form -->
-                    <form id="lossForm">
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="code_id">Code ID</label>
-                                <input type="text" class="form-control" id="code_id" name="code_id" required>
-                            </div>
-                            <div class="col-6">
-                                <label for="error_type">Loại lỗi</label>
-                                <input type="text" class="form-control" id="error_type" name="error_type" required>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-6">
-                                <label for="error_name">Tên lỗi</label>
-                                <input type="text" class="form-control" id="error_name" name="error_name" required>
-                            </div>
-                            <div class="col-6">
-                                <label for="quantity">Số lượng</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" value="1"
-                                    required>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <label for="remark">Remark</label>
-                                <textarea class="form-control" id="remark" name="remark"></textarea>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                    </form>
+            <!-- Data Inputs Loss Detail -->
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered table-hover table-sm mt-3" id="table-result">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Ngày</th>
+                                {{-- <th>Shift</th>
+                            <th>Line</th>
+                            <th>Model</th> --}}
+                                <th>Khung_gio</th>
+                                <th>Code ID</th>
+                                <th>Trường lỗi</th>
+                                <th>Tên lỗi</th>
+                                <th>Remark</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -115,48 +116,9 @@
 @endsection
 
 @section('admin-js')
-    <!-- Javascript -->
-    <script>
-        // When the form is submitted
-        $('#lossForm').submit(function(e) {
-            e.preventDefault();
-
-            // Collect data from form
-            let formData = {
-                code_id: $('#code_id').val(),
-                error_type: $('#error_type').val(),
-                error_name: $('#error_name').val(),
-                quantity: $('#quantity').val(),
-                remark: $('#remark').val(),
-            };
-
-            // Insert data into the table
-            let row = `<tr>
-                <td>${$('#date_search').val()}</td>
-                <td>${$('#shift_search').val()}</td>
-                <td>${$('#Line_search').val()}</td>
-                <td>Model Data</td>
-                <td>Total Data</td>
-                <td>${formData.quantity}</td>
-                <td>${formData.remark}</td>
-                <td>
-                    <button class="btn btn-info btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>`;
-
-            // Append the new row to the table
-            $('#table-body').append(row);
-
-            // Close the modal
-            $('#addLossModal').modal('hide');
-
-            // Reset form fields
-            $('#lossForm')[0].reset();
-        });
-    </script>
-    {{-- <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
-    <script>
+    <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
+  
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Lấy các ô nhập liệu
             const inputFields = ['a', 'b', 'c', 'd', 'e']; // Các ID của khung giờ
@@ -188,7 +150,7 @@
             // Cập nhật href của thẻ a
             document.getElementById('download-template').setAttribute('href', url);
         });
-    </script>
+    </script> --}}
     <script>
         $(document).ready(function() {
             var table_name = 'Plan';
@@ -198,14 +160,23 @@
             var tables;
             let id;
 
-            $('#table_name').val(table_name);
+            let dateInput;
+            let shiftSelect;
+            let lineSelect;
+            let modelSelect;
+            let prodQtyInput;
+            let timeSelect;
+
+            
             var currentDate = new Date();
             var date = currentDate.toISOString().split('T')[0];
-            $('#date_search,#date').val(date);
+            $('#date_search').val(date);
             $('.component-datepicker.input-daterange').datepicker({
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
+
+            $('#table_name').val(table_name);
 
             // tables = $('#table-result').DataTable({
             //     processing: true,
@@ -284,8 +255,9 @@
             // });
 
 
-            $('#date_search, #shift_search, #Line_search').on('change', function() {
-                tables.ajax.reload();
+            $('#date_search, #shift_search, #line_search').on('change', function() {
+                show_data_check();
+                // tables.ajax.reload();
             });
 
 
@@ -322,41 +294,78 @@
                 }
             }
 
-            function show_model_check() {
+            function show_data_check() {
+                // Lấy giá trị của các trường nhập liệu
+                dateInput = $("#date_search").val();
+                shiftSelect = $("#shift_search").val();
+                lineSelect = $("#line_search").val();
+                console.log(dateInput);
+                console.log(shiftSelect);
+                console.log(lineSelect);
+
+                // Kiểm tra nếu ngày không được chọn
+                if (!dateInput) {
+                    toastr.error('Vui lòng chọn ngày!');
+                    return;
+                }
+
+                // Gửi yêu cầu AJAX đến controller để lấy dữ liệu
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('check.list.masster') }}",
+                    url: "{{ route('OQC.loss.data.plan.search') }}", // Route đã định nghĩa trong Laravel
                     dataType: "json",
+                    data: {
+                        date: dateInput,
+                        shift: shiftSelect,
+                        line: lineSelect,
+                    },
                     success: function(response) {
+                        // Kiểm tra phản hồi từ server
+                        if (response.status == '400') {
+                            toastr.error(response.messcess); // Hiển thị lỗi nếu có
+                        } else {
+                            // Xóa các option cũ trong dropdown
+                            $('#shift_search,#line_search,#model_search').empty();
 
-                        $('#Model').empty();
-                        $('#Model').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-                        $('#Model_search').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
+                            // Thêm các option mới vào dropdown shift
+                            if (response.shifts && response.shifts.length > 0) {
+                                $.each(response.shifts, function(index, value) {
+                                    $('#shift_search').append($('<option>', {
+                                        value: value.shift,
+                                        text: value.shift,
+                                    }));
+                                });
+                            }
 
-                        $.each(response.model, function(index, value) {
-                            $('#Model').append($('<option>', {
-                                value: value.id,
-                                text: value.model,
-                            }));
+                            // Thêm các option mới vào dropdown line
+                            if (response.lines && response.lines.length > 0) {
+                                $.each(response.lines, function(index, value) {
+                                    $('#line_search').append($('<option>', {
+                                        value: value.line,
+                                        text: value.line,
+                                    }));
+                                });
+                            }
 
-                            $('#Model_search').append($('<option>', {
-                                value: value.id,
-                                text: value.model,
-                            }));
-                        });
-
+                            // Thêm các option mới vào dropdown model
+                            if (response.models && response.models.length > 0) {
+                                $.each(response.models, function(index, value) {
+                                    $('#model_search').append($('<option>', {
+                                        value: value.id,
+                                        text: value.model,
+                                    }));
+                                });
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Xử lý lỗi nếu có lỗi trong quá trình AJAX
+                        toastr.error('Có lỗi xảy ra, vui lòng thử lại!');
                     }
                 });
-
-
             }
 
+            show_data_check();
             // show_model_check();
 
             $(document).on('click', '#creat', function(e) {
@@ -448,5 +457,5 @@
                 document.getElementById('form_data').reset();
             });
         });
-    </script> --}}
+    </script>
 @endsection
