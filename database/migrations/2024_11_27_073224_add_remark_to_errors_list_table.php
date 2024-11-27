@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateErrorsListTable extends Migration
+class AddRemarkToErrorsListTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreateErrorsListTable extends Migration
      */
     public function up()
     {
-        Schema::create('errors_list', function (Blueprint $table) {
-            $table->id();
-            $table->string('category');
-            $table->string('name');
-            $table->string('remark');
-            $table->timestamps();
+        Schema::table('errors_list', function (Blueprint $table) {
+            $table->string('remark')->nullable()->after('name'); // Thêm cột 'remark'
         });
     }
-    
 
     /**
      * Reverse the migrations.
@@ -30,6 +25,8 @@ class CreateErrorsListTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('errors_list');
+        Schema::table('errors_list', function (Blueprint $table) {
+            $table->dropColumn('remark'); // Xóa cột 'remark' nếu rollback
+        });
     }
 }

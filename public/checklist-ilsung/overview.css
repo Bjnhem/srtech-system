@@ -954,3 +954,29 @@ button:hover {
         margin-bottom: 20px;
     }
 }
+
+Áp dụng border cho tất cả các ô trong bảng .table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+    /* Màu của border có thể tùy chỉnh */
+}
+
+
+/* Cải thiện kiểu dáng của hàng tiêu đề */
+
+.table-success th {
+    /* background-color: #28a745; */
+    /* Màu nền của tiêu đề */
+    color: white;
+    /* Màu chữ */
+    border-bottom: 2px solid #dee2e6;
+    /* Border dưới hàng tiêu đề */
+}
+
+
+/* Đảm bảo rằng các ô có colspan cũng có border */
+
+.table-bordered th[colspan],
+.table-bordered td[colspan] {
+    border: 1px solid #dee2e6;
+}

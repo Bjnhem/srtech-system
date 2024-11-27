@@ -14,6 +14,12 @@ use League\Csv\Reader;
 use Yajra\DataTables\DataTables;
 use App\Imports\PlansImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use App\Exports\ErrorExport;
+use App\Imports\ErrorListImport;
+use App\Models\OQC\ErrorList;
 
 class UpdateDataOQCController extends Controller
 {
@@ -21,110 +27,138 @@ class UpdateDataOQCController extends Controller
     //
     public function data_model()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-model');
+        return view('ilsung.OQC.pages.update_master.data-model');
     }
 
-    public function data_sanpham()
+    public function data_line()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-sanpham');
+        return view('ilsung.OQC.pages.update_master.data-line');
     }
 
-    public function data_kho()
+
+
+    // controller loss
+    public function data_loss()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-kho');
+        return view('ilsung.OQC.pages.update_master.data-loss');
     }
 
-    public function show_data_table(Request $request)
+    public function showData_loss(Request $request)
     {
-        if ($request->input('table') == "Model_master") {
-            $table = 'App\Models\\' . $request->input('table');
-        } else {
-            $table = 'App\Models\WareHouse\\' . $request->input('table');
+        $category = $request->input('category');
+
+        $query = ErrorList::query();
+
+        if ($category !== "All") {
+            $query->where('category', $category);
         }
-        if ($request->ajax()) {
-            if (class_exists($table)) {
-                $data = $table::all();
-                $colum = array_keys($data->first()->getAttributes());
-                $colums = array_diff($colum, ['created_at', 'updated_at']);
-                $data = $table::select($colums)->orderBy('id', 'asc')->get();
+        $filteredRecords = $query->count();
+        $totalRecords = ErrorList::count();
 
-                return response()->json([
-                    'data' => $data,
-                    'colums' => $colums,
-                    'status' => 200,
+        $start = (int)$request->input('start', 0);
+        $length = (int)$request->input('length', 10);
 
-                ]);
-            }
-            return abort(404);
-        }
-        return abort(404);
-    }
-    public function update_table(Request $request)
-    {
-        // Xác thực request
-        $validator = Validator::make($request->all(), [
-            'csv_file' => 'required|file|mimes:csv,txt',
-            'id' => 'required|string',
+        $products = $query->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => (int)$request->input('draw'),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $products
         ]);
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'error' => 'Dữ liệu không hợp lệ.',
-            ]);
-        }
+    public function showData_item()
+    {
 
-        // Lấy model
-        $modelName = $request->input('id');
-        $allowedModels = ['Product', 'Warehouse', 'Model_master']; // Danh sách model hợp lệ
-        if (!in_array($modelName, $allowedModels)) {
-            return response()->json([
-                'status' => 400,
-                'error' => 'Model không hợp lệ.',
-            ]);
-        }
-        if ($modelName == "Model_master") {
-            $table = 'App\Models\\' . $modelName;
-        } else {
-            $table = 'App\Models\WareHouse\\' . $modelName;
-        }
+        $category = ErrorList::distinct()->pluck('category');
+        return response()->json([
+            'category' => $category
+        ]);
+    }
 
-
-        // Lưu file CSV
-        if (Storage::exists("csv/data.csv")) {
-            Storage::delete("csv/data.csv");
-        }
-        $path = $request->file('csv_file')->storeAs('csv', 'data.csv');
-        $path_2 = storage_path("app/" . $path);
+    public function updateFromExcel_loss(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+        $errors = []; // Mảng chứa các dòng lỗi
 
         try {
-            // Đọc file CSV
-            $csv = Reader::createFromPath($path_2, 'r');
-            $csv->setHeaderOffset(0);
+            // Chuyển đổi dữ liệu từ file Excel thành mảng
+            $data = Excel::toArray(new ErrorListImport, $request->file('excel_file'));
 
-            // Cập nhật dữ liệu
-            foreach ($csv as $record) {
-                if (!isset($record['id'])) {
-                    continue; // Bỏ qua nếu thiếu 'id'
+            // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
+            if (is_array($data) && count($data) > 0) {
+                foreach ($data[0] as $index => $row) {
+                    if ($index == 0) {
+                        continue;  // Bỏ qua dòng tiêu đề
+                    }
+
+                    // Kiểm tra các trường cần thiết (category, name)
+                    $category = isset($row[0]) ? trim($row[0]) : '';
+                    $name = isset($row[1]) ? trim($row[1]) : '';
+                    $remark = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
+
+                    // dd($row);
+                    // dd($category, $name, $remark);
+
+
+                    // Kiểm tra giá trị trống
+                    if (empty($category) || empty($name)) {
+                        $errors[] = [
+                            'row' => $index + 1,  // Dòng bị lỗi
+                            'error' => 'Dữ liệu thiếu thông tin quan trọng',
+                            'data' => $row,
+                        ];
+                        continue; // Bỏ qua dòng này nếu thiếu dữ liệu quan trọng
+                    }
+
+                    // Kiểm tra xem bản ghi đã tồn tại chưa
+                    $existingRecord = DB::table('errors_list')
+                        ->where('category', $category)
+                        ->where('name', $name)
+                        ->first();
+
+                    if ($existingRecord) {
+                        // Nếu đã tồn tại thì cập nhật bản ghi
+                        DB::table('errors_list')
+                            ->where('id', $existingRecord->id)
+                            ->update([
+                                'category' => $category,
+                                'name' => $name,
+                                'remark' => $remark,
+                            ]);
+                    } else {
+                        // Nếu chưa tồn tại thì thêm mới bản ghi
+                        DB::table('errors_list')
+                            ->insert([
+                                'category' => $category,
+                                'name' => $name,
+                                'remark' => $remark,
+                            ]);
+                    }
                 }
 
-                $table::updateOrCreate(
-                    ['id' => $record['id']],
-                    $record
-                );
+                // Nếu có lỗi, xuất file Excel chứa lỗi
+                if (!empty($errors)) {
+                    return Excel::download(new ErrorExport($errors), 'errors.xlsx');
+                }
+
+                return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công từ file Excel.');
+            } else {
+                return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
             }
-
-            // Xóa file sau khi xử lý
-            Storage::delete($path);
-
-            return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công.');
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'error' => 'Có lỗi xảy ra: ' . $e->getMessage(),
-            ]);
+            \Log::error('Excel import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
         }
     }
+
+
+
+    // controller plan
+
     public function showData(Request $request)
     {
         $date = $request->input('Date');
@@ -157,80 +191,6 @@ class UpdateDataOQCController extends Controller
             'recordsFiltered' => $filteredRecords,
             'data' => $products
         ]);
-    }
-
-
-    public function store_products(Request $request)
-    {
-        // Validate the incoming form data
-        $request->validate([
-            'Type' => 'required|string',
-            'ID_SP' => 'nullable|string',
-            'Model' => 'nullable|string',
-            'name' => 'nullable|string',
-            'Code_Purchase' => 'nullable|string',
-            'Image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        // Get the ID from the form (hidden input)
-        $id = $request->input('id');
-        $type = $request->input('Type');
-        $modelId = $request->input('Model');
-        $modelName = Model_master::find($modelId)->model;
-        // Kiểm tra nếu ID đã có trong cơ sở dữ liệu
-        if ($id) {
-            // Nếu có ID, tìm và cập nhật bản ghi
-            $product = Product::find($id);  // Tìm sản phẩm theo ID
-
-            if ($product) {
-                $imageName = $product->Image;
-                // Cập nhật thông tin sản phẩm
-                if ($request->hasFile('Image')) {
-                    // Nếu có ảnh mới, tải lên ảnh mới
-                    $imageName = $this->handleImageUpload($request);
-                }
-                $product->update([
-                    'Type' => $type,
-                    'Model' => $modelName,
-                    'ID_SP' => $request->input('ID_SP'),
-                    'name' => $request->input('name'),
-                    'Code_Purchase' => $request->input('Code_Purchase'),
-                    'stock_limit' => $request->input('stock_limit'),
-                    'Image' => $imageName, // Xử lý ảnh nếu có
-                ]);
-                return redirect()->back()->with('success', 'Product updated successfully!');
-            } else {
-                return redirect()->back()->with('error', 'Product not found.');
-            }
-        } else {
-            // Nếu không có ID, tạo mới sản phẩm
-            // Generate new ID_SP
-            $lastId = Product::where('Type', $type)->latest('ID_SP')->first(); // Get the latest ID_SP for the selected Type
-
-            $newId = '';
-            if ($lastId) {
-                // Nếu có sản phẩm trước đó, tăng giá trị ID_SP
-                preg_match('/(\d+)$/', $lastId->ID_SP, $matches);
-                $newNumber = intval($matches[0]) + 1;
-                $newId = "EQM-" . strtoupper($type) . "-" . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
-            } else {
-                // Nếu không có sản phẩm, tạo ID_SP bắt đầu từ EQM-TYPE-10000
-                $newId = "EQM-" . strtoupper($type) . "-10000";
-            }
-
-            // Tạo mới bản ghi sản phẩm
-            $product = Product::create([
-                'ID_SP' => $newId,
-                'Type' => $type,
-                'Model' => $modelName,
-                'name' => $request->input('name'),
-                'Code_Purchase' => $request->input('Code_Purchase'),
-                'stock_limit' => $request->input('stock_limit'),
-                'Image' => $this->handleImageUpload($request), // Xử lý ảnh nếu có
-            ]);
-
-            return redirect()->back()->with('success', 'Product saved successfully!');
-        }
     }
 
     public function store_plan(Request $request)
@@ -271,12 +231,207 @@ class UpdateDataOQCController extends Controller
         }
     }
 
+    public function updateFromExcel(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+        $errors = []; // Mảng chứa các dòng lỗi
+        try {
+            // Chuyển đổi dữ liệu từ file Excel thành mảng
+            $data = Excel::toArray(new PlansImport, $request->file('excel_file'));
+
+            // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
+            if (is_array($data) && count($data) > 0) {
+                foreach ($data[0] as $index => $row) {
+                    // Kiểm tra giá trị trống
+                    if (empty($row['shift']) || empty($row['line'])) {
+                        $errors[] = [
+                            'row' => $index + 1,  // Dòng bị lỗi
+                            'error' => 'Shift hoặc Line bị thiếu',
+                            'data' => $row,
+                        ];
+                        continue; // Bỏ qua dòng này nếu thiếu dữ liệu quan trọng
+                    }
+
+                    // Chuyển đổi giá trị ngày tháng từ số (Excel) sang định dạng ngày tháng chuẩn
+                    try {
+                        $date = Date::excelToDateTimeObject($row['date']);
+                        $formattedDate = $date->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $errors[] = [
+                            'row' => $index + 1,
+                            'error' => 'Ngày không hợp lệ',
+                            'data' => $row,
+                        ];
+                        continue;
+                    }
+
+                    // Làm sạch dữ liệu và loại bỏ dấu phẩy trong số liệu
+                    $prod = str_replace(',', '', $row['prod']);
+                    $a = isset($row['a']) && ($row['a'] !== null && $row['a'] !== 0) ? str_replace(',', '', $row['a']) : 0;
+                    $b = isset($row['b']) && ($row['b'] !== null && $row['b'] !== 0) ? str_replace(',', '', $row['b']) : 0;
+                    $c = isset($row['c']) && ($row['c'] !== null && $row['c'] !== 0) ? str_replace(',', '', $row['c']) : 0;
+                    $d = isset($row['d']) && ($row['d'] !== null && $row['d'] !== 0) ? str_replace(',', '', $row['d']) : 0;
+                    $e = isset($row['e']) && ($row['e'] !== null && $row['e'] !== 0) ? str_replace(',', '', $row['e']) : 0;
+
+                    // Kiểm tra xem bản ghi đã tồn tại chưa
+                    $existingRecord = DB::table('plans')
+                        ->where('date', $formattedDate)
+                        ->where('shift', $row['shift'])
+                        ->where('line', $row['line'])
+                        ->first();
+
+                    if ($existingRecord) {
+                        // Cập nhật bản ghi nếu đã tồn tại
+                        DB::table('plans')
+                            ->where('id', $existingRecord->id)
+                            ->update([
+                                'model' => $row['model'],
+                                'prod' => $prod,
+                                'a' => $a,
+                                'b' => $b,
+                                'c' => $c,
+                                'd' => $d,
+                                'e' => $e,
+                            ]);
+                    } else {
+                        // Thêm mới bản ghi nếu chưa tồn tại
+                        DB::table('plans')
+                            ->insert([
+                                'date' => $formattedDate,
+                                'shift' => $row['shift'],
+                                'line' => $row['line'],
+                                'model' => $row['model'],
+                                'prod' => $prod,
+                                'a' => $a,
+                                'b' => $b,
+                                'c' => $c,
+                                'd' => $d,
+                                'e' => $e,
+                            ]);
+                    }
+                }
+
+                // Nếu có lỗi, xuất file Excel chứa lỗi
+                if (!empty($errors)) {
+                    return Excel::download(new ErrorExport($errors), 'errors.xlsx');
+                }
+
+                return redirect()->back()->with('success', 'Cập nhật kế hoạch thành công từ file Excel.');
+            } else {
+                return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Excel import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
+        }
+    }
+
+
+
+    public function show_data_table(Request $request)
+    {
+        if ($request->input('table') == "ErrorList" || $request->input('table') == "Plan") {
+            $table = 'App\Models\OQC\\' . $request->input('table');
+        } else {
+            $table = 'App\Models\\' . $request->input('table');
+        }
+
+        // $table = 'App\Models\\' . $request->input('table');
+        if ($request->ajax()) {
+            if (class_exists($table)) {
+                $data = $table::all();
+                $colum = array_keys($data->first()->getAttributes());
+                $colums = array_diff($colum, ['created_at', 'updated_at']);
+                $data = $table::select($colums)->orderBy('id', 'asc')->get();
+
+                return response()->json([
+                    'data' => $data,
+                    'colums' => $colums,
+                    'status' => 200,
+
+                ]);
+            }
+            return abort(404);
+        }
+        return abort(404);
+    }
+
+    public function update_table(Request $request)
+    {
+        // Xác thực request
+        $validator = Validator::make($request->all(), [
+            'csv_file' => 'required|file|mimes:csv,txt',
+            'id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Dữ liệu không hợp lệ.',
+            ]);
+        }
+
+        // Lấy model
+        $modelName = $request->input('id');
+        $allowedModels = ['Product', 'Warehouse', 'Model_master']; // Danh sách model hợp lệ
+        if (!in_array($modelName, $allowedModels)) {
+            return response()->json([
+                'status' => 400,
+                'error' => 'Model không hợp lệ.',
+            ]);
+        }
+        if ($request->input('table') == "ErrorList" || $request->input('table') == "Plan") {
+            $table = 'App\Models\OQC\\' . $request->input('table');
+        } else {
+            $table = 'App\Models\\' . $request->input('table');
+        }
+
+        // Lưu file CSV
+        if (Storage::exists("csv/data.csv")) {
+            Storage::delete("csv/data.csv");
+        }
+        $path = $request->file('csv_file')->storeAs('csv', 'data.csv');
+        $path_2 = storage_path("app/" . $path);
+
+        try {
+            // Đọc file CSV
+            $csv = Reader::createFromPath($path_2, 'r');
+            $csv->setHeaderOffset(0);
+
+            // Cập nhật dữ liệu
+            foreach ($csv as $record) {
+                if (!isset($record['id'])) {
+                    continue; // Bỏ qua nếu thiếu 'id'
+                }
+
+                $table::updateOrCreate(
+                    ['id' => $record['id']],
+                    $record
+                );
+            }
+
+            // Xóa file sau khi xử lý
+            Storage::delete($path);
+
+            return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công.');
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'error' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+
+
     public function delete_data_row_table(Request $request)
     {
-        if ($request->input('table') == "errors_list") {
-            $table = 'App\Models\\' . $request->input('table');
-        } else {
+        if ($request->input('table') == "ErrorList" || $request->input('table') == "Plan") {
             $table = 'App\Models\OQC\\' . $request->input('table');
+        } else {
+            $table = 'App\Models\\' . $request->input('table');
         }
         $id = $request->input('id_row');
         if ($request->ajax()) {
@@ -297,10 +452,11 @@ class UpdateDataOQCController extends Controller
 
     public function add_data_row_table(Request $request)
     {
-        if ($request->input('table') == "Model_master") {
-            $table = 'App\Models\\' . $request->input('table');
+
+        if ($request->input('table') == "ErrorList" || $request->input('table') == "Plan") {
+            $table = 'App\Models\OQC\\' . $request->input('table');
         } else {
-            $table = 'App\Models\WareHouse\\' . $request->input('table');
+            $table = 'App\Models\\' . $request->input('table');
         }
         $models = new $table;
         $tables = $models->getTable();
@@ -333,27 +489,98 @@ class UpdateDataOQCController extends Controller
     }
 
 
-    public function downloadTemplate()
+    public function downloadTemplate($file_name)
     {
-        $filePath = 'templates/production_plan_form.xlsx'; // Đường dẫn file mẫu
-        if (!Storage::exists($filePath)) {
+
+        // Lấy đường dẫn file từ request
+
+
+        $filePath = 'templates/' . $file_name;
+
+        // Kiểm tra xem file có tồn tại không
+        if (!$filePath || !Storage::exists($filePath)) {
+            // Nếu file không tồn tại, trả về lỗi
             return response()->json(['error' => 'File mẫu không tồn tại'], 404);
         }
-        return Storage::download($filePath, 'production_plan_template.xlsx');
+
+        // Trả về file mẫu cho người dùng tải về
+        return Storage::download($filePath, $file_name);
     }
 
-    public function updateFromExcel(Request $request)
-    {
-        $request->validate([
-            'excel_file' => 'required|file|mimes:xlsx,xls',
-        ]);
+    // public function updateFromExcel(Request $request)
+    // {
+    //     $request->validate([
+    //         'excel_file' => 'required|file|mimes:xlsx,xls',
+    //     ]);
 
-        try {
-            Excel::import(new PlansImport, $request->file('excel_file'));
-            return redirect()->back()->with('success', 'Cập nhật kế hoạch thành công từ file Excel.');
-        } catch (\Exception $e) {
-            \Log::error('Excel import error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
-        }
-    }
+    //     try {
+    //         // Chuyển đổi dữ liệu từ file Excel thành mảng
+    //         $data = Excel::toArray(new PlansImport, $request->file('excel_file'));
+
+    //         // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
+    //         if (is_array($data) && count($data) > 0) {
+    //             foreach ($data[0] as $row) { // Dữ liệu Excel thường nằm trong mảng con thứ 0
+    //                 // Chuyển đổi giá trị ngày tháng từ số (Excel) sang định dạng ngày tháng chuẩn
+    //                 $date = Date::excelToDateTimeObject($row['date']);
+    //                 $formattedDate = $date->format('Y-m-d');
+
+    //                 // Làm sạch dữ liệu và loại bỏ dấu phẩy trong số liệu
+    //                 $prod = str_replace(',', '', $row['prod']);
+    //                 $a = str_replace(',', '', $row['a']);
+    //                 $b = str_replace(',', '', $row['b']);
+    //                 $c = str_replace(',', '', $row['c']);
+    //                 $d = str_replace(',', '', $row['d']);
+    //                 $e = str_replace(',', '', $row['e']);
+
+    //                 // Kiểm tra xem bản ghi đã tồn tại chưa
+    //                 $existingRecord = DB::table('plans') // Thay 'production_plans' bằng tên bảng thực tế
+    //                     ->where('date', $formattedDate)
+    //                     ->where('shift', $row['shift'])
+    //                     ->where('line', $row['line'])
+    //                     ->first();
+
+    //                 if ($existingRecord) {
+    //                     // Cập nhật bản ghi nếu đã tồn tại
+    //                     DB::table('plans') // Thay 'production_plans' bằng tên bảng thực tế
+    //                         ->where('id', $existingRecord->id)
+    //                         ->update([
+    //                             'model' => $row['model'],
+    //                             'prod' => $prod,
+    //                             'a' => $a,
+    //                             'b' => $b,
+    //                             'c' => $c,
+    //                             'd' => $d,
+    //                             'e' => $e,
+    //                         ]);
+    //                 } else {
+    //                     // Thêm mới bản ghi nếu chưa tồn tại
+    //                     DB::table('plans') // Thay 'production_plans' bằng tên bảng thực tế
+    //                         ->insert([
+    //                             'date' => $formattedDate,
+    //                             'shift' => $row['shift'],
+    //                             'line' => $row['line'],
+    //                             'model' => $row['model'],
+    //                             'prod' => $prod,
+    //                             'a' => $a,
+    //                             'b' => $b,
+    //                             'c' => $c,
+    //                             'd' => $d,
+    //                             'e' => $e,
+    //                         ]);
+    //                 }
+    //             }
+
+    //             return redirect()->back()->with('success', 'Cập nhật kế hoạch thành công từ file Excel.');
+    //         } else {
+    //             return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         \Log::error('Excel import error: ' . $e->getMessage());
+    //         return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
+    //     }
+    // }
+
+
+
+
 }

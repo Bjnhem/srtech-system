@@ -9,5 +9,5 @@ class ErrorList extends Model
 {
     use HasFactory;
     protected $table = 'errors_list';
-    protected $fillable = ['category',  'name'];
+    protected $fillable = ['category',  'name','remark'];
 }

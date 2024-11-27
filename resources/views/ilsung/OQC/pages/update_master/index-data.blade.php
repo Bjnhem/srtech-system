@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-3 col-md-6">
-            <a href="{{ route('Warehouse.update.data.model') }}">
+            <a href="{{ route('OQC.update.data.model') }}">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -21,7 +21,7 @@
             </a>
         </div>
         <div class="col-lg-3 col-md-6">
-            <a href="{{ route('Warehouse.update.data.kho') }}">
+            <a href="{{ route('OQC.update.data.line') }}">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -30,7 +30,7 @@
                                     width="30" height="30">
                             </div>
                             <div class="text-end">
-                               Danh sách kho
+                                Danh sách line
                                 <h2 class="counter counter_line" style="visibility: visible;">60</h2>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
 
         </div>
         <div class="col-lg-3 col-md-6">
-            <a href="{{ route('Warehouse.update.data.sanpham') }}">
+            <a href="{{ route('OQC.update.data.loss') }}">
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -49,7 +49,7 @@
                                     width="30" height="30">
                             </div>
                             <div class="text-end">
-                            Sản phẩm
+                                Danh sách lỗi
                                 <h2 class="counter counter_machine" style="visibility: visible;">80</h2>
                             </div>
                         </div>
@@ -57,11 +57,28 @@
                 </div>
             </a>
         </div>
-        
+        <div class="col-lg-3 col-md-6">
+            <a href="{{ route('OQC.plan') }}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="bg-success text-white rounded p-3">
+                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/machine.png') }}" alt="Camera"
+                                    width="30" height="30">
+                            </div>
+                            <div class="text-end">
+                                Upload Plan
+                                <h2 class="counter counter_machine" style="visibility: visible;">80</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
 
     </div>
 @endsection
 
 @section('admin-js')
-   
 @endsection
