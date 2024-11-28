@@ -12,15 +12,17 @@ class LineLoss extends Model
 
     // Định nghĩa tên bảng (nếu không theo chuẩn Laravel)
     protected $table = 'line_losses';
+    public $timestamps = false;  // Nếu bạn không sử dụng `created_at` và `updated_at`, bạn có thể tắt timestamps
 
     // Định nghĩa các trường có thể gán đại trà
     protected $fillable = [
         'plan_id',
         'error_list_id',
-        'loss_type',
+        'Code_ID',
         'remark',
-        'loss_amount',
+        'NG_qty',
         'time_slot',
+        'prod_qty',
     ];
 
     // Mối quan hệ với bảng plans

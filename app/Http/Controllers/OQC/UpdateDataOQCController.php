@@ -4,9 +4,8 @@ namespace App\Http\Controllers\OQC;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Model_master;
+
 use App\Models\OQC\Plan;
-use App\Models\WareHouse\Product;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +18,11 @@ use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Exports\ErrorExport;
 use App\Imports\ErrorListImport;
+use App\Models\line;
 use App\Models\OQC\ErrorList;
+use App\Models\OQC\LineLoss;
+use Illuminate\Database\Eloquent\Model;
+
 
 class UpdateDataOQCController extends Controller
 {
@@ -220,6 +223,22 @@ class UpdateDataOQCController extends Controller
             if ($plan) {
                 // Cập nhật thông tin kế hoạch
                 $plan->update($request->all());
+                // Lấy các time_slot từ form
+                $timeSlots = ['a', 'b', 'c', 'd', 'e'];
+
+                // Lặp qua các time_slot và cập nhật prod_qty trong bảng line_losses
+                foreach ($timeSlots as $timeSlot) {
+                    if ($request->has($timeSlot)) {
+                        // Cập nhật giá trị prod_qty cho từng time_slot
+                        LineLoss::where('plan_id', $plan->id)
+                            ->where('time_slot', $timeSlot)
+                            ->update([
+                                'prod_qty' => $request->input($timeSlot) // Cập nhật prod_qty theo giá trị từ form
+                            ]);
+                    }
+                }
+
+
                 return redirect()->back()->with('success', 'Kế hoạch được cập nhật thành công!');
             } else {
                 return redirect()->back()->with('error', 'Không tìm thấy kế hoạch.');
@@ -327,6 +346,19 @@ class UpdateDataOQCController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
         }
     }
+    public function getdata_plan(Request $request)
+    {
+
+        $model = Model::all();
+        $line = line::all();
+
+        return response()->json([
+            'model' => $model,
+            'line' => $line,
+
+        ]);
+    }
+
 
 
 

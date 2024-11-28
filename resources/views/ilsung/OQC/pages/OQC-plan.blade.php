@@ -3,12 +3,19 @@
 @section('content')
     <div class="card table-responsive" style="border: none">
         <div class="card-header">
-            <button type="button" id="Home" class="btn btn-success"
-                onclick="window.location='{{ route('WareHouse.update.master') }}'"><span class="icon-home"></span></button>
-            <button type="button" id="creat" class="btn btn-primary">Add</button>
+            <h3 class="header-title">Quản lý Plan</h3>
+
+
 
         </div>
         <div class="card-body ">
+            <div class="button-action mb-4">
+                <button type="button" id="Home" class="btn btn-success"
+                    onclick="window.location='{{ route('WareHouse.update.master') }}'"><span
+                        class="icon-home"></span></button>
+                <button type="button" id="creat" class="btn btn-primary">Add</button>
+            </div>
+
             <div class="row">
                 <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
                     <label for="">Date Search</label>
@@ -35,7 +42,7 @@
                         <option value="Line 16">Line 16</option>
                     </select> </div>
             </div>
-            <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
+            <table class="table table-bordered table-hover table-sm" id="table-result" style="width:100%">
                 <thead class="table-success">
 
                     <tr>
@@ -59,7 +66,7 @@
         </div>
     </div>
 
-    
+
     <div class="modal" id="modal-created">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -125,12 +132,7 @@
                                         <div class="col-sm-6 col-xl-3 mb-3">
                                             <span>Line:</span>
                                             <select name="line" id="line" class="form-select">
-                                                <!-- Tạo 16 line -->
-                                                <option value="Line 1">Line 1</option>
-                                                <option value="Line 2">Line 2</option>
-                                                <option value="Line 3">Line 3</option>
-                                                <!-- ... Thêm các line khác ... -->
-                                                <option value="Line 16">Line 16</option>
+
                                             </select>
                                         </div>
                                         <!-- Model sản phẩm -->
@@ -317,6 +319,51 @@
                 tables.ajax.reload();
             });
 
+            function show_data_check() {
+                // Gửi yêu cầu AJAX đến controller để lấy dữ liệu
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('OQC.loss.data.plan.search') }}", // Route đã định nghĩa trong Laravel
+                    dataType: "json",
+                    data: {
+                        date: dateInput,
+                    },
+                    success: function(response) {
+                        // Kiểm tra phản hồi từ server
+                        if (response.status == '400') {
+                            toastr.error(response.messcess); // Hiển thị lỗi nếu có
+                        } else {
+                            // Thêm các option mới vào dropdown shift
+
+                            $('#Line_search').empty();
+                            // Thêm các option mới vào dropdown line
+                            if (response.lines && response.lines.length > 0) {
+                                $.each(response.lines, function(index, value) {
+                                    if (value.shift == shift_show) {
+                                        $('#Line_search').append($('<option>', {
+                                            value: value.line,
+                                            text: value.line,
+                                        }));
+                                    }
+
+                                });
+
+
+
+                            }
+
+
+
+
+                            show_data_qty_plan_check();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Xử lý lỗi nếu có lỗi trong quá trình AJAX
+                        toastr.error('Có lỗi xảy ra, vui lòng thử lại!');
+                    }
+                });
+            }
 
             function save_update_data() {
                 const data = new FormData(document.getElementById('form_data'));
@@ -354,31 +401,27 @@
             function show_model_check() {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('check.list.masster') }}",
+                    url: "{{ route('OQC.table.update.data.show') }}",
                     dataType: "json",
                     success: function(response) {
 
-                        $('#Model').empty();
-                        $('#Model').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-                        $('#Model_search').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
-
+                        $('#model,#line').empty();
                         $.each(response.model, function(index, value) {
-                            $('#Model').append($('<option>', {
-                                value: value.id,
+                            $('#model').append($('<option>', {
+                                value: value.model,
                                 text: value.model,
                             }));
 
-                            $('#Model_search').append($('<option>', {
-                                value: value.id,
-                                text: value.model,
-                            }));
                         });
+
+                        $.each(response.line, function(index, value) {
+                            $('#line').append($('<option>', {
+                                value: value.line_name,
+                                text: value.line_name,
+                            }));
+
+                        });
+
 
                     }
                 });
@@ -386,7 +429,7 @@
 
             }
 
-            // show_model_check();
+            show_model_check();
 
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();

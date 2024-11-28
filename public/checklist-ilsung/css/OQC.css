@@ -339,12 +339,10 @@
         width: 100% !important;
         max-width: unset;
     }
-
     .modal-dialog.mid-large {
         width: 100% !important;
         max-width: unset;
     }
-
     .modal-dialog {
         margin: unset !important;
     }
@@ -728,13 +726,11 @@ img.company-logo:hover {
         font-size: 0.8rem;
         /* Giảm thêm kích thước chữ */
     }
-
     .table th,
     .table td {
         padding: 6px;
         /* Giảm padding cho màn hình nhỏ */
     }
-
     .table th {
         white-space: nowrap;
         /* Tránh xuống dòng cho tiêu đề */
@@ -953,7 +949,6 @@ button:hover {
     .container {
         padding: 10px;
     }
-
     .col-lg-4,
     .col-md-4 {
         margin-bottom: 20px;
@@ -987,8 +982,13 @@ button:hover {
 }
 
 
-
 /* css OQC */
+
+
+/* CSS Hoàn Thiện và Cải Tiến */
+
+
+/* Section Title */
 
 .card .section-title {
     font-size: 18px;
@@ -1001,35 +1001,121 @@ button:hover {
     color: #333;
 }
 
-.master-plan,
-.data-loi-input {
-    border: 1px solid #dee2e6;
+
+/* Card Layout */
+
+.card-loss {
+    border: none;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #28a745;
+    color: #fff;
+    font-weight: bold;
     padding: 15px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
+    border-bottom: 2px solid #28a745;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    padding: 30px;
 }
+
+
+/* Master Plan & Data Input Section */
+
+.master-plan,
+.data-loi-input {
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-detail {
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Form Layout */
 
 .content-top {
     display: flex;
     gap: 20px;
-    justify-content: space-between;
 }
 
 .master-plan,
 .data-loi-input {
     flex: 1;
     background-color: #f9f9f9;
-    padding: 15px;
+    padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+
+
+/* Input & Select Styling */
+
+label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input.form-control,
+select.form-select {
+    border-radius: 4px;
+    /* border: 1px solid #ced4da; */
+    padding: 5px 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.875rem;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+
+/* Button Styling */
+
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+
+/* Table Styling */
 
 .table-responsive {
     margin-top: 20px;
@@ -1038,15 +1124,179 @@ button:hover {
 #table-result {
     width: 100%;
     text-align: center;
+    font-size: 0.875rem;
 }
 
-.table-bordered th, 
+.table-bordered th,
 .table-bordered td {
     vertical-align: middle;
+    padding: 10px;
+}
+
+.table-bordered th {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    font-size: 0.875rem;
+}
+
+.table-bordered td {
+    border: 1px solid #dee2e6;
 }
 
 
-.card-loss .card-body {
-    padding: 1.5rem 1.5rem;
+/* Action Buttons */
+
+#table-result .btn {
+    padding: 5px 10px;
+    font-size: 0.875rem;
+    margin-right: 5px;
 }
 
+
+/* Modal Form */
+
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+/* .modal-header {
+    background-color: #28a745;
+    color: #fff;
+    border-bottom: none;
+} */
+
+.modal-footer {
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+/* Responsive Adjustments */
+
+@media (max-width: 768px) {
+    .content-top {
+        flex-direction: column;
+    }
+    .master-plan,
+    .data-loi-input {
+        margin-bottom: 20px;
+    }
+}
+
+
+/* Data Loss Detail Section */
+
+.data-detail {
+    /* border: 1px solid #dee2e6; */
+    padding: 0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 0px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.data-detail .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #28a745;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #333;
+}
+
+
+/* Search Section */
+
+.data-detail .row>.col-3 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.data-detail label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.data-detail input.form-control,
+.data-detail select.form-select {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 5px 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.875rem;
+}
+
+.data-detail input.form-control:focus,
+.data-detail select.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+
+/* Table Section */
+
+.data-detail #table-result {
+    width: 100%;
+    text-align: center;
+    font-size: 0.875rem;
+    margin-top: 20px;
+}
+
+.data-detail .table-bordered th,
+.data-detail .table-bordered td {
+    vertical-align: middle;
+    padding: 10px;
+}
+
+.data-detail .table-bordered th {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    font-size: 0.875rem;
+}
+
+.data-detail .table-bordered td {
+    /* border: 1px solid #dee2e6; */
+}
+
+
+/* Action Buttons */
+
+.data-detail #table-result .btn {
+    padding: 5px 10px;
+    font-size: 0.875rem;
+    margin-right: 5px;
+}
+
+
+/* Responsive Adjustments */
+
+@media (max-width: 768px) {
+    .data-detail .row {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+.button-action {
+    justify-content: e;
+    display: flex;
+    gap: 10px;
+    justify-content: end;
+}
+
+.data-detail .card-body {
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.data-detail .card {
+    background-color: #f9f9f9;
+}

@@ -246,12 +246,19 @@ Route::prefix('OQC/Master')->group(function () {
     Route::get('/plan/data', [OQCLosssController::class, 'getPlanData'])->name('OQC.loss.data.plan');
     Route::get('/plan/dropdown', [OQCLosssController::class, 'getDropdownData'])->name('OQC.loss.data.plan.search');
     Route::get('/plan/prod-qty', [OQCLosssController::class, 'getProdQty'])->name('OQC.loss.data.plan.search.prod.qty');
+    Route::get('/show-data-table-loss-detail', [OQCLosssController::class, 'showData_loss_detail'])->name('OQC.update.show.data.loss.detail');
+    Route::post('/add-data-table-loss', [OQCLosssController::class, 'add_data_row_table'])->name('OQC.update.add.data.loss.detail');
+    Route::post('/delete-data-table-loss', [OQCLosssController::class, 'delete_data_row_table'])->name('OQC.update.delete.data.loss.detail');
+    Route::get('/get-data_loss_search', [OQCLosssController::class, 'data_loss_search'])->name('OQC.loss.search');
+
+
 
 
     // route update plan
     Route::get('/show-data-table-plan', [UpdateDataOQCController::class, 'showData'])->name('OQC.update.show.data.plan');
     Route::post('/plan/save', [UpdateDataOQCController::class, 'store_plan'])->name('plan.save');
     Route::post('/upload-plan', [UpdateDataOQCController::class, 'updateFromExcel'])->name('OQC.table.update.data');
+    Route::get('/show-data-master', [UpdateDataOQCController::class, 'getdata_plan'])->name('OQC.table.update.data.show');
 
 
     // Route upload data excel
