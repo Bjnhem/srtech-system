@@ -1300,3 +1300,56 @@ select.form-select:focus {
 .data-detail .card {
     background-color: #f9f9f9;
 }
+
+.chart-container {
+    max-width: 100%;
+    height: 400px;
+    margin: auto;
+}
+
+.table {
+    font-size: 14px;
+    border-collapse: collapse;
+}
+
+thead th {
+    vertical-align: middle;
+}
+
+.table-bordered td,
+.table-bordered th {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.bg-dark {
+    background-color: #343a40 !important;
+    color: white !important;
+}
+
+.text-danger {
+    font-weight: bold;
+    color: red;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-white {
+    color: #fff !important;
+}
+
+.text-dark {
+    color: #212529 !important;
+}

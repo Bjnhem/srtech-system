@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Exports\ErrorExport;
 use App\Imports\ErrorListImport;
 use App\Models\line;
+use App\Models\Model_master;
 use App\Models\OQC\ErrorList;
 use App\Models\OQC\LineLoss;
 use Illuminate\Database\Eloquent\Model;
@@ -349,7 +350,7 @@ class UpdateDataOQCController extends Controller
     public function getdata_plan(Request $request)
     {
 
-        $model = Model::all();
+        $model = Model_master::all();
         $line = line::all();
 
         return response()->json([

@@ -8,7 +8,11 @@ use App\Models\OQC\LineLoss;
 use App\Models\OQC\Plan;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+
 
 
 
@@ -247,5 +251,364 @@ class OQCLosssController extends Controller
             ]);
         }
         return abort(404);
+    }
+
+
+    public function calculateSummary()
+    {
+        // Xóa dữ liệu cũ trong bảng summary
+        DB::table('line_losses_summary')->truncate();
+
+        // Tổng hợp dữ liệu theo các mức thời gian
+        $timeGroups = [
+            'day' => DB::raw('DATE(plans.date) as date'), // Lấy ngày từ bảng plans
+        ];
+
+        // Tính Prod [ea]
+        $prodData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id') // Join bảng plans với line_losses
+            ->select(
+                'plans.model', // Lấy model từ bảng plans
+                DB::raw("'Prod [ea]' as item"),
+                $timeGroups['day'],  // Nhóm theo ngày từ bảng plans
+                DB::raw('SUM(DISTINCT plans.prod) as value') // Lấy tổng số lượng prod từ bảng plans, tránh trùng lặp
+            )
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)')) // Nhóm theo model và ngày trong bảng plans
+            ->get();
+        // Tính Q'ty NG [ea]
+        $ngData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id') // Join bảng plans với line_losses
+            ->select(
+                'plans.model', // Lấy model từ bảng plans
+                DB::raw("'Q\'ty NG [ea]' as item"),
+                $timeGroups['day'],  // Nhóm theo ngày từ bảng plans
+                DB::raw('SUM(line_losses.NG_qty) as value') // Lấy tổng số lượng prod từ bảng plans, tránh trùng lặp
+            )
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)')) // Nhóm theo model và ngày trong bảng plans
+            ->get();
+
+        // Tính Rate [%] (Rate = Q'ty NG / Prod * 100)
+        $rateData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id') // Join bảng plans với line_losses
+            ->select(
+                'plans.model',
+                DB::raw("'Rate [%]' as item"),
+                $timeGroups['day'],  // Nhóm theo ngày từ bảng plans
+                DB::raw('CASE WHEN SUM(DISTINCT plans.prod) > 0 THEN ROUND((SUM(line_losses.NG_qty) / SUM(DISTINCT plans.prod)) * 100, 2) 
+                ELSE 0 END as value')
+            )
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)')) // Nhóm theo model và ngày trong bảng plans
+            ->get();
+
+        // Kết hợp tất cả dữ liệu và insert vào bảng summary
+        $combinedData = collect([$prodData, $ngData, $rateData])->collapse();
+
+        // Lặp qua dữ liệu và insert vào bảng tổng hợp
+        foreach ($combinedData as $data) {
+            DB::table('line_losses_summary')->insert([
+                'model'     => $data->model,
+                'item'      => $data->item,
+                'year'      => date('Y', strtotime($data->date)), // Lấy năm từ cột date
+                'month'     => date('m', strtotime($data->date)), // Lấy tháng từ cột date
+                'week'      => date('W', strtotime($data->date)), // Lấy tuần từ cột date
+                'date'      => $data->date,
+                'value'     => $data->value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
+
+
+    // public function showSummary()
+    // {
+    //     // Lấy dữ liệu từ bảng line_losses_summary
+    //     $summaryData = DB::table('line_losses_summary')
+    //         ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+    //         ->orderBy('date') // Sắp xếp theo ngày
+    //         ->get();
+
+    //     // Tính toán tổng hợp dữ liệu theo tháng, tuần, năm
+    //     $groupedData = [];
+
+    //     foreach ($summaryData as $row) {
+    //         // Nhóm dữ liệu theo model và item
+    //         if (!isset($groupedData[$row->model])) {
+    //             $groupedData[$row->model] = [];
+    //         }
+
+    //         if (!isset($groupedData[$row->model][$row->item])) {
+    //             $groupedData[$row->model][$row->item] = [
+    //                 'year' => [],
+    //                 'month' => [],
+    //                 'week' => [],
+    //                 'day' => [],
+    //                 'prod' => 0,  // Tổng số Prod
+    //                 'ng_qty' => 0, // Tổng số NG_qty
+    //             ];
+    //         }
+
+    //         // Thêm dữ liệu cho từng ngày
+    //         $groupedData[$row->model][$row->item]['day'][$row->date] = $row->value;
+
+    //         // Tính tổng số liệu cho từng tuần
+    //         $weekKey = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+    //         if (!isset($groupedData[$row->model][$row->item]['week'][$weekKey])) {
+    //             $groupedData[$row->model][$row->item]['week'][$weekKey] = 0;
+    //         }
+    //         $groupedData[$row->model][$row->item]['week'][$weekKey] += $row->value;
+
+    //         // Tính tổng số liệu cho từng tháng
+    //         $monthKey = $row->year . '-' . str_pad($row->month, 2, '0', STR_PAD_LEFT);
+    //         if (!isset($groupedData[$row->model][$row->item]['month'][$monthKey])) {
+    //             $groupedData[$row->model][$row->item]['month'][$monthKey] = 0;
+    //         }
+    //         $groupedData[$row->model][$row->item]['month'][$monthKey] += $row->value;
+
+    //         // Tính tổng số liệu cho từng năm
+    //         $yearKey = $row->year;
+    //         if (!isset($groupedData[$row->model][$row->item]['year'][$yearKey])) {
+    //             $groupedData[$row->model][$row->item]['year'][$yearKey] = 0;
+    //         }
+    //         $groupedData[$row->model][$row->item]['year'][$yearKey] += $row->value;
+
+    //         // Cộng dồn tổng số Prod và NG_qty
+    //         if ($row->item == 'Prod [ea]') {
+    //             $groupedData[$row->model][$row->item]['prod'] += $row->value;
+    //         } elseif ($row->item == "Q'ty NG [ea]") {
+    //             $groupedData[$row->model][$row->item]['ng_qty'] += $row->value;
+    //         }
+    //     }
+
+    //     // Tính tỷ lệ Rate cho từng model, item theo các khoảng thời gian
+    //     foreach ($groupedData as $model => $items) {
+    //         foreach ($items as $item => $data) {
+    //             foreach (['year', 'month', 'week', 'day'] as $timePeriod) {
+    //                 // Tính tỷ lệ theo từng thời kỳ (năm, tháng, tuần, ngày)
+    //                 foreach ($data[$timePeriod] as $key => $value) {
+    //                     $prod = $data['prod'];
+    //                     $ng_qty = $data['ng_qty'];
+    //                     $rate = ($prod > 0) ? ($ng_qty / $prod) * 100 : 0;
+    //                     $groupedData[$model][$item][$timePeriod][$key] = [
+    //                         'value' => $value,
+    //                         'rate' => $rate,  // Lưu tỷ lệ tính được
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Truyền dữ liệu vào view
+    //     return view('ilsung.OQC.pages.Overview', ['groupedData' => $groupedData]);
+
+    // }
+
+    public function showSummary()
+    {
+        // Lấy dữ liệu từ bảng line_losses_summary
+        $summaryData = DB::table('line_losses_summary')
+            ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+            ->orderBy('date') // Sắp xếp theo ngày
+            ->get();
+
+        // Tính toán tổng hợp dữ liệu theo tháng, tuần, năm
+        $groupedData = [];
+        $allModelData = [
+            'prod' => 0,  // Tổng số Prod
+            'ng_qty' => 0, // Tổng số NG_qty
+        ];
+
+        foreach ($summaryData as $row) {
+            // Nhóm dữ liệu theo model và item
+            if (!isset($groupedData[$row->model])) {
+                $groupedData[$row->model] = [];
+            }
+
+            if (!isset($groupedData[$row->model][$row->item])) {
+                $groupedData[$row->model][$row->item] = [
+                    'year' => [],
+                    'month' => [],
+                    'week' => [],
+                    'day' => [],
+                    'prod' => 0,  // Tổng số Prod
+                    'ng_qty' => 0, // Tổng số NG_qty
+                ];
+            }
+
+            // Thêm dữ liệu cho từng ngày
+            $groupedData[$row->model][$row->item]['day'][$row->date] = $row->value;
+
+            // Tính tổng số liệu cho từng tuần
+            $weekKey = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+            if (!isset($groupedData[$row->model][$row->item]['week'][$weekKey])) {
+                $groupedData[$row->model][$row->item]['week'][$weekKey] = 0;
+            }
+            $groupedData[$row->model][$row->item]['week'][$weekKey] += $row->value;
+
+            // Tính tổng số liệu cho từng tháng
+            $monthKey = $row->year . '-' . str_pad($row->month, 2, '0', STR_PAD_LEFT);
+            if (!isset($groupedData[$row->model][$row->item]['month'][$monthKey])) {
+                $groupedData[$row->model][$row->item]['month'][$monthKey] = 0;
+            }
+            $groupedData[$row->model][$row->item]['month'][$monthKey] += $row->value;
+
+            // Tính tổng số liệu cho từng năm
+            $yearKey = $row->year;
+            if (!isset($groupedData[$row->model][$row->item]['year'][$yearKey])) {
+                $groupedData[$row->model][$row->item]['year'][$yearKey] = 0;
+            }
+
+            $groupedData[$row->model][$row->item]['year'][$yearKey] += $row->value;
+
+            // Cộng dồn tổng số Prod và NG_qty
+            if ($row->item == 'Prod [ea]') {
+                $groupedData[$row->model][$row->item]['prod'] += $row->value;
+                $allModelData['prod'] += $row->value; // Cộng dồn cho All model
+            } elseif ($row->item == "Q'ty NG [ea]") {
+                $groupedData[$row->model][$row->item]['ng_qty'] += $row->value;
+                $allModelData['ng_qty'] += $row->value; // Cộng dồn cho All model
+            }
+        }
+
+        // Tính tỷ lệ Rate cho từng model, item theo các khoảng thời gian
+        foreach ($groupedData as $model => $items) {
+            foreach ($items as $item => $data) {
+                foreach (['year', 'month', 'week', 'day'] as $timePeriod) {
+                    // Tính tỷ lệ theo từng thời kỳ (năm, tháng, tuần, ngày)
+                    foreach ($data[$timePeriod] as $key => $value) {
+                        $prod = $data['prod'];
+                        $ng_qty = $data['ng_qty'];
+                        $rate = ($prod > 0) ? ($ng_qty / $prod) * 100 : 0;
+                        $groupedData[$model][$item][$timePeriod][$key] = [
+                            'value' => $value,
+                            'rate' => $rate,  // Lưu tỷ lệ tính được
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Tính tỷ lệ cho All Model
+        $allModelRate = ($allModelData['prod'] > 0) ? ($allModelData['ng_qty'] / $allModelData['prod']) * 100 : 0;
+
+        // // Thêm dữ liệu "All model"
+        // $groupedData['All model'] = [
+        //     'Prod [ea]' => [
+        //         'prod' => $allModelData['prod'],
+        //         'ng_qty' => $allModelData['ng_qty'],
+        //         'rate' => $allModelRate,
+
+        //     ],
+        //     "Q'ty NG [ea]" => [
+        //         'prod' => $allModelData['prod'],
+        //         'ng_qty' => $allModelData['ng_qty'],
+        //         'rate' => $allModelRate,
+        //     ],
+
+        //     "Rate [%]" => [
+        //         'prod' => $allModelData['prod'],
+        //         'ng_qty' => $allModelData['ng_qty'],
+        //         'rate' => $allModelRate,
+        //     ],
+        //     // Dữ liệu cho các mục khác như 'Rate Target', 'Rate', v.v.
+        // ];
+
+        // Truyền dữ liệu vào view
+        return view('ilsung.OQC.pages.Overview', ['groupedData' => $groupedData]);
+    }
+
+
+    public function getData() 
+    {
+        // Lấy ngày hôm nay
+        $today = Carbon::today();
+
+        // Xác định phạm vi ngày
+        $sevenDaysAgo = $today->clone()->subDays(7)->startOfDay(); // 7 ngày gần nhất
+
+        // Tạo tên cột động
+        $headers = [
+            'Model',
+            'Item',
+            '7D', // Cột 7 ngày gần nhất
+            $today->clone()->subDays(6)->format('d-M'),
+            $today->clone()->subDays(5)->format('d-M'),
+            $today->clone()->subDays(4)->format('d-M'),
+            $today->clone()->subDays(3)->format('d-M'),
+            $today->clone()->subDays(2)->format('d-M'),
+            $today->clone()->subDays(1)->format('d-M'),
+            $today->format('d-M'),
+        ];
+
+        // Khoảng thời gian cho 7 ngày gần nhất
+        $timeRange = [$sevenDaysAgo, $today];
+
+        // Lấy dữ liệu từ bảng line_losses_summary cho khoảng thời gian 7 ngày
+        $today = Carbon::today();
+        $days = 7; // 7 ngày gần nhất
+        $dates = []; // Mảng lưu các ngày (24-Nov, 25-Nov, 26-Nov,...)
+
+        for ($i = 0; $i < $days; $i++) {
+            $dates[] = $today->clone()->subDays($i)->format('d-M'); // Tạo dãy ngày
+        }
+
+        // Lấy dữ liệu từ bảng line_loss_sum
+        $summaryData = DB::table('line_loss_sum')
+            ->whereBetween('date', [$today->clone()->subDays(6)->format('Y-m-d'), $today->format('Y-m-d')])
+            ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+            ->get();
+
+        // Khởi tạo cấu trúc dữ liệu
+        $groupedData = [];
+        foreach ($summaryData as $row) {
+            if (!isset($groupedData[$row->model])) {
+                $groupedData[$row->model] = [];
+            }
+
+            if (!isset($groupedData[$row->model][$row->item])) {
+                $groupedData[$row->model][$row->item] = [
+                    'prod' => 0,
+                    'ng_qty' => 0,
+                    'rate' => [],
+                    'day' => [],
+                ];
+            }
+
+            // Lưu giá trị vào cấu trúc dữ liệu
+            $groupedData[$row->model][$row->item]['day'][$row->date] = $row->value;
+
+            if ($row->item == 'Prod [ea]') {
+                $groupedData[$row->model][$row->item]['prod'] += $row->value;
+            } elseif ($row->item == "Q'ty NG [ea]") {
+                $groupedData[$row->model][$row->item]['ng_qty'] += $row->value;
+            }
+
+            // Tính tỷ lệ NG cho mỗi ngày (Rate %)
+            if ($row->item == 'Rate [%]') {
+                $groupedData[$row->model][$row->item]['rate'][$row->date] = $row->value;
+            }
+        }
+
+        // Tính tỷ lệ NG cho Prod và Q'ty NG
+        foreach ($groupedData as $model => $items) {
+            foreach ($items as $item => $data) {
+                foreach ($data['day'] as $date => $value) {
+                    $prod = $data['prod'];
+                    $ng_qty = $data['ng_qty'];
+
+                    if ($prod > 0) {
+                        $rate = ($ng_qty / $prod) * 100;
+                        $groupedData[$model][$item]['rate'][$date] = $rate;
+                    }
+                }
+            }
+        }
+
+        // Trả về dữ liệu dưới dạng JSON
+        return response()->json([
+            'headers' => $headers,
+            'data' => $groupedData,
+        ]);
     }
 }

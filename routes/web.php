@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
     //router home
     Route::get('/', [HomeController::class, 'Home_index'])->name('Home.index');
     Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])->name('Home.WareHouse');
-    Route::get('/OQC', [HomeController::class, 'Home_OQC'])->name('Home.OQC');
+    Route::get('/OQC', [OQCLosssController::class, 'showSummary'])->name('Home.OQC');
     Route::get('/Checklist', [HomeController::class, 'Home_checklist'])->name('Home.checklist');
 
 
@@ -251,7 +251,9 @@ Route::prefix('OQC/Master')->group(function () {
     Route::post('/delete-data-table-loss', [OQCLosssController::class, 'delete_data_row_table'])->name('OQC.update.delete.data.loss.detail');
     Route::get('/get-data_loss_search', [OQCLosssController::class, 'data_loss_search'])->name('OQC.loss.search');
 
-
+    // Route trang imap_fetch_overview
+    Route::get('/get-data_overview', [OQCLosssController::class, 'calculateSummary'])->name('OQC.caculate.overview');
+    Route::get('/oqc/data', [OQCLosssController::class, 'getData'])->name('oqc.data');
 
 
     // route update plan
