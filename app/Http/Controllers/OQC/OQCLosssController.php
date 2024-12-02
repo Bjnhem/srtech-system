@@ -191,7 +191,6 @@ class OQCLosssController extends Controller
 
     }
 
-
     public function delete_data_row_table(Request $request)
     {
         if ($request->input('table') == "ErrorList" || $request->input('table') == "Plan" || $request->input('table') == "LineLoss") {
@@ -268,7 +267,7 @@ class OQCLosssController extends Controller
         $prodData = DB::table('line_losses')
             ->join('plans', 'line_losses.plan_id', '=', 'plans.id') // Join bảng plans với line_losses
             ->select(
-                'plans.model', // Lấy model từ bảng plans
+                'plans.model',
                 DB::raw("'Prod [ea]' as item"),
                 $timeGroups['day'],  // Nhóm theo ngày từ bảng plans
                 DB::raw('SUM(DISTINCT plans.prod) as value') // Lấy tổng số lượng prod từ bảng plans, tránh trùng lặp
@@ -306,13 +305,13 @@ class OQCLosssController extends Controller
         // Lặp qua dữ liệu và insert vào bảng tổng hợp
         foreach ($combinedData as $data) {
             DB::table('line_losses_summary')->insert([
-                'model'     => $data->model,
-                'item'      => $data->item,
-                'year'      => date('Y', strtotime($data->date)), // Lấy năm từ cột date
-                'month'     => date('m', strtotime($data->date)), // Lấy tháng từ cột date
-                'week'      => date('W', strtotime($data->date)), // Lấy tuần từ cột date
-                'date'      => $data->date,
-                'value'     => $data->value,
+                'model' => $data->model,
+                'item' => $data->item,
+                'year' => date('Y', strtotime($data->date)), // Lấy năm từ cột date
+                'month' => date('m', strtotime($data->date)), // Lấy tháng từ cột date
+                'week' => date('W', strtotime($data->date)), // Lấy tuần từ cột date
+                'date' => $data->date,
+                'value' => $data->value,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -780,22 +779,6 @@ class OQCLosssController extends Controller
         $groupedData = [];
         $allModelsData = [];
 
-        // $allModelsData = [
-        //     'Model' => 'All Models', // Tên model tổng hợp
-        //     'Item' => 'Total',
-        //     $today->copy()->format('Y') => 0,
-        //     'M' . $today->copy()->subMonths(3)->format('m') => 0,
-        //     'M' . $today->copy()->subMonths(2)->format('m') => 0,
-        //     'M' . $today->copy()->subMonths(1)->format('m') => 0,
-        //     'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
-        //     'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
-        //     'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
-        //     $today->clone()->subDays(3)->format('d-M') => 0,
-        //     $today->clone()->subDays(2)->format('d-M') => 0,
-        //     $today->clone()->subDays(1)->format('d-M') => 0,
-        // ];
-
-
         foreach ($summaryData as $row) {
 
             // Nhóm dữ liệu theo model và item
@@ -818,7 +801,9 @@ class OQCLosssController extends Controller
                     $today->clone()->subDays(2)->format('d-M') => 0,
                     $today->clone()->subDays(1)->format('d-M') => 0,
                 ];
+            }
 
+            if (!isset($allModelsData['All Models'][$row->item])) {
                 $allModelsData['All Models'][$row->item] = [
                     $today->copy()->format('Y') => 0,
                     'M' . $today->copy()->subMonths(3)->format('m') => 0,
@@ -832,8 +817,6 @@ class OQCLosssController extends Controller
                     $today->clone()->subDays(1)->format('d-M') => 0,
                 ];
             }
-
-
             // Các khoảng thời gian cần kiểm tra (tháng, tuần, ngày, năm)
             $timePeriods = [
                 'months' => [3, 2, 1], // Tháng 3, 2, 1
@@ -882,10 +865,28 @@ class OQCLosssController extends Controller
             }
         }
 
-        $data= array_merge([$allModelsData], $groupedData);
-        
-
         foreach ($groupedData as $model => $values) {
+            // Lấy số liệu NG và Prod cho mỗi model
+            $ng = $values["Q'ty NG [ea]"];
+            $prod = $values["Prod [ea]"];
+            // Tạo mảng lưu tỷ lệ Rate
+            $rate = [];
+
+            // Lặp qua từng thời điểm và tính tỷ lệ Rate
+            foreach ($ng as $period => $ngValue) {
+                // Kiểm tra nếu có sản phẩm (prod[$period]) và prod[$period] không phải là 0
+                if (isset($prod[$period]) && $prod[$period] != 0) {
+                    $rate[$period] = round(($ngValue / $prod[$period]) * 100, 2);
+                } else {
+                    $rate[$period] = '-'; // Nếu không có sản phẩm hoặc sản phẩm = 0, gán tỷ lệ là 0
+                }
+            }
+            // Cập nhật tỷ lệ Rate vào dữ liệu
+            $groupedData[$model]["Rate [%]"] = $rate;
+        }
+
+
+        foreach ($allModelsData as $model => $values) {
             // Lấy số liệu NG và Prod cho mỗi model
             $ng = $values["Q'ty NG [ea]"];
             $prod = $values["Prod [ea]"];
@@ -903,29 +904,130 @@ class OQCLosssController extends Controller
                 }
             }
             // Cập nhật tỷ lệ Rate vào dữ liệu
-            $groupedData[$model]["Rate [%]"] = $rate;
+            $allModelsData[$model]["Rate [%]"] = $rate;
         }
-        // Tính tỷ lệ Rate cho All Models
-        // $allModelsNG = $allModelsData["Q'ty NG [ea]"];
-        // $allModelsProd = $allModelsData["Prod [ea]"];
-        // $allModelsRate = [];
+        $mergedData = array_merge(['All Models' => $allModelsData], $groupedData);
+        if (isset($mergedData['All Models']['All Models'])) {
+            $mergedData['All Models'] = $mergedData['All Models']['All Models'];
+        }
 
-        // foreach ($allModelsNG as $period => $ngValue) {
-        //     if (isset($allModelsProd[$period]) && $allModelsProd[$period] != 0) {
-        //         $allModelsRate[$period] = round(($ngValue / $allModelsProd[$period]) * 100, 2);
-        //     } else {
-        //         $allModelsRate[$period] = '-'; // Nếu không có sản phẩm hoặc sản phẩm = 0, gán tỷ lệ là 0
-        //     }
-        // }
+        foreach ($mergedData as $model => $metrics) {
+            // Kiểm tra nếu $model là "All Models"
+            if ($model === 'All Models') {
+                foreach ($metrics as $metricName => $metricValues) {
+                    // Xác định các khoảng thời gian từ "Q'ty NG [ea]"
+                    if ($metricName === "Q'ty NG [ea]") {
+                        foreach ($metricValues as $time => $value) {
+                            // Gán giá trị vào "Target Rate [%]" ngay sau "Q'ty NG [ea]"
+                            $mergedData[$model]['Target Rate [%]'][$time] = 3; // Hoặc áp dụng công thức nếu cần
+                        }
 
-        // // Cập nhật tỷ lệ Rate cho All Models
-        // $allModelsData["Rate [%]"] = $allModelsRate;
+                        // Chèn "Target Rate [%]" ngay sau "Q'ty NG [ea]"
+                        $metricsArray = $metrics; // Lưu trữ các metrics ban đầu
+                        $targetRate = $mergedData[$model]['Target Rate [%]']; // Lấy dữ liệu từ Target Rate
+                        unset($metricsArray['Target Rate [%]']); // Xóa nếu đã có phần tử này
+                        $metricsArray = array_merge(
+                            array_slice($metricsArray, 0, 1), // Phần tử trước "Q'ty NG [ea]"
+                            ['Target Rate [%]' => $targetRate], // Chèn "Target Rate [%]"
+                            array_slice($metricsArray, 1) // Phần tử còn lại sau "Q'ty NG [ea]"
+                        );
+                        $mergedData[$model] = $metricsArray; // Cập nhật lại dữ liệu cho model
+                        break; // Không cần kiểm tra thêm các metric khác
+                    }
+                }
+            }
+        }
+
+        // $groupedData['All Models'] = $allModelsData;
+
 
         // Trả về dữ liệu dưới dạng JSON
         return response()->json([
             'headers' => $headers,
-            'data' => $groupedData,
-            'data2' => $allModelsData,
+            'data' => $mergedData,
+            'data2' => $mergedData,
         ]);
+    }
+
+
+    public function show_loss_list()
+    {
+
+        $today = Carbon::today();
+        $timeframes = [
+            'Y' => $today->copy()->format('Y'),
+            'M' . $today->copy()->subMonths(3)->format('m'),
+            'M' . $today->copy()->subMonths(2)->format('m'),
+            'M' . $today->copy()->subMonths(1)->format('m'),
+            'W' . $today->copy()->subWeeks(3)->isoWeek(),
+            'W' . $today->copy()->subWeeks(2)->isoWeek(),
+            'W' . $today->copy()->subWeeks(1)->isoWeek(),
+            $today->clone()->subDays(3)->format('d-M'),
+            $today->clone()->subDays(2)->format('d-M'),
+            $today->clone()->subDays(1)->format('d-M'),
+        ];
+
+        // Truy vấn lấy số lượng lỗi theo từng mốc thời gian
+        $line_losses = DB::table('line_losses')
+            ->join('errors_list', 'line_losses.error_list_id', '=', 'errors_list.id') // JOIN bảng errors_list
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id') // JOIN bảng plans để lấy ngày từ plan_id
+            ->select(
+                'errors_list.name as defect_name',
+                'line_losses.error_list_id',
+                DB::raw('SUM(line_losses.NG_qty) as total_NG_qty'),
+                DB::raw('DATE_FORMAT(plans.date, "%Y-%m") as month'), // Sử dụng ngày từ bảng plans
+                DB::raw('WEEKOFYEAR(plans.date) as week'), // Sử dụng ngày từ bảng plans
+                DB::raw('DATE_FORMAT(plans.date, "%d-%m") as day') // Sử dụng ngày từ bảng plans
+            )
+            ->whereYear('plans.date', $today->year) // Lọc theo năm từ bảng plans
+            ->whereIn(DB::raw('DATE_FORMAT(plans.date, "%Y-%m")'), $timeframes)
+            ->orWhereIn(DB::raw('WEEKOFYEAR(plans.date)'), array_map(function ($week) use ($today) {
+                return $today->copy()->subWeeks(3)->isoWeek();
+            }, $timeframes))
+            ->orWhereIn(DB::raw('DATE_FORMAT(plans.date, "%d-%m")'), array_map(function ($date) use ($today) {
+                return $today->clone()->subDays(1)->format('d-M');
+            }, $timeframes))
+            ->groupBy('line_losses.error_list_id', 'errors_list.name', 'plans.date') // Nhóm theo các cột cần thiết
+            ->get();
+
+        // Chuyển dữ liệu sang dạng cần thiết để hiển thị
+        $data = [];
+        foreach ($line_losses as $item) {
+            $data[] = [
+                'defect_name' => $item->defect_name,
+                'year' => $item->total_NG_qty,
+                'M3' => $line_losses->firstWhere('month', 'M3')?->total_NG_qty ?? 0,
+                'M2' => $line_losses->firstWhere('month', 'M2')?->total_NG_qty ?? 0,
+                'M1' => $line_losses->firstWhere('month', 'M1')?->total_NG_qty ?? 0,
+                'W3' => $line_losses->firstWhere('week', 'W3')?->total_NG_qty ?? 0,
+                'W2' => $line_losses->firstWhere('week', 'W2')?->total_NG_qty ?? 0,
+                'W1' => $line_losses->firstWhere('week', 'W1')?->total_NG_qty ?? 0,
+                '3D' => $line_losses->firstWhere('day', '3D')?->total_NG_qty ?? 0,
+                '2D' => $line_losses->firstWhere('day', '2D')?->total_NG_qty ?? 0,
+                '1D' => $line_losses->firstWhere('day', '1D')?->total_NG_qty ?? 0,
+            ];
+        }
+
+        // Chuyển dữ liệu sang dạng cần thiết để hiển thị
+        $headers = [
+            'Loss',
+            $today->copy()->format('Y'),
+            'M' . $today->copy()->subMonths(3)->format('m'),
+            'M' . $today->copy()->subMonths(2)->format('m'),
+            'M' . $today->copy()->subMonths(1)->format('m'),
+            'W' . $today->copy()->subWeeks(3)->isoWeek(),
+            'W' . $today->copy()->subWeeks(2)->isoWeek(),
+            'W' . $today->copy()->subWeeks(1)->isoWeek(),
+            $today->clone()->subDays(3)->format('d-M'),
+            $today->clone()->subDays(2)->format('d-M'),
+            $today->clone()->subDays(1)->format('d-M'),
+        ];
+
+        return response()->json([
+            'headers' => $headers,
+            'data' => $data,
+
+        ]);
+
     }
 }

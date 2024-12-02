@@ -254,6 +254,7 @@ Route::prefix('OQC/Master')->group(function () {
     // Route trang imap_fetch_overview
     Route::get('/get-data_overview', [OQCLosssController::class, 'calculateSummary'])->name('OQC.caculate.overview');
     Route::get('/oqc/data', [OQCLosssController::class, 'getData'])->name('oqc.data');
+    Route::get('/oqc/data-defect', [OQCLosssController::class, 'show_loss_list'])->name('oqc.data.defect');
 
 
     // route update plan

@@ -29,14 +29,14 @@
         </a>
     </li>
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('OQC.feedback')) }}" aria-current="page"
             href="{{ route('OQC.feedback') }}">
                     <img class=" icon" src="{{ asset('checklist-ilsung/icon/checklist.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Feedback</span>
         </a>
-    </li>
+    </li> --}}
     {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('warehouse.stock')) }}" aria-current="page"
             href="{{ route('warehouse.stock') }}">
