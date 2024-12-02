@@ -433,6 +433,7 @@ class OQCLosssController extends Controller
                     'day' => [],
                     'prod' => 0,  // Tổng số Prod
                     'ng_qty' => 0, // Tổng số NG_qty
+                    'rate' => 0, // Tổng số NG_qty
                 ];
             }
 
@@ -518,97 +519,413 @@ class OQCLosssController extends Controller
         return view('ilsung.OQC.pages.Overview', ['groupedData' => $groupedData]);
     }
 
-
-    public function getData() 
+    public function getData2()
     {
         // Lấy ngày hôm nay
         $today = Carbon::today();
-
-        // Xác định phạm vi ngày
-        $sevenDaysAgo = $today->clone()->subDays(7)->startOfDay(); // 7 ngày gần nhất
 
         // Tạo tên cột động
         $headers = [
             'Model',
             'Item',
-            '7D', // Cột 7 ngày gần nhất
-            $today->clone()->subDays(6)->format('d-M'),
-            $today->clone()->subDays(5)->format('d-M'),
-            $today->clone()->subDays(4)->format('d-M'),
+            $today->copy()->format('Y'),
+            'M' . $today->copy()->subMonths(3)->format('m'),
+            'M' . $today->copy()->subMonths(2)->format('m'),
+            'M' . $today->copy()->subMonths(1)->format('m'),
+            'W' . $today->copy()->subWeeks(3)->isoWeek(),
+            'W' . $today->copy()->subWeeks(2)->isoWeek(),
+            'W' . $today->copy()->subWeeks(1)->isoWeek(),
             $today->clone()->subDays(3)->format('d-M'),
             $today->clone()->subDays(2)->format('d-M'),
             $today->clone()->subDays(1)->format('d-M'),
-            $today->format('d-M'),
         ];
 
-        // Khoảng thời gian cho 7 ngày gần nhất
-        $timeRange = [$sevenDaysAgo, $today];
+        $khung_gio = [
+            $today->copy()->format('Y'),
+            'M' . $today->copy()->subMonths(3)->format('m'),
+            'M' . $today->copy()->subMonths(2)->format('m'),
+            'M' . $today->copy()->subMonths(1)->format('m'),
+            'W' . $today->copy()->subWeeks(3)->isoWeek(),
+            'W' . $today->copy()->subWeeks(2)->isoWeek(),
+            'W' . $today->copy()->subWeeks(1)->isoWeek(),
+            $today->clone()->subDays(3)->format('d-M'),
+            $today->clone()->subDays(2)->format('d-M'),
+            $today->clone()->subDays(1)->format('d-M'),
+        ];
 
-        // Lấy dữ liệu từ bảng line_losses_summary cho khoảng thời gian 7 ngày
-        $today = Carbon::today();
-        $days = 7; // 7 ngày gần nhất
-        $dates = []; // Mảng lưu các ngày (24-Nov, 25-Nov, 26-Nov,...)
 
-        for ($i = 0; $i < $days; $i++) {
-            $dates[] = $today->clone()->subDays($i)->format('d-M'); // Tạo dãy ngày
-        }
+        $today = Carbon::today(); // Lấy ngày hôm nay
 
-        // Lấy dữ liệu từ bảng line_loss_sum
-        $summaryData = DB::table('line_loss_sum')
-            ->whereBetween('date', [$today->clone()->subDays(6)->format('Y-m-d'), $today->format('Y-m-d')])
-            ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+        // 3 mốc thời gian bạn muốn: 3 tháng, 3 tuần, và 3 ngày trước
+        $startOfThreeMonthsAgo = $today->clone()->subMonths(3)->startOfMonth();
+        $startOfThreeWeeksAgo = $today->clone()->subWeeks(3)->startOfWeek();
+        $startOfThreeDaysAgo = $today->clone()->subDays(3)->startOfDay();
+
+        // Truy vấn theo ngày (từ 3 ngày trước)
+        $dataByDay = DB::table('line_losses_summary')
+            ->select('model', 'item', 'date', DB::raw('SUM(value) as total_value'))
+            ->where('date', '>=', $startOfThreeDaysAgo)
+            ->groupBy('model', 'item', 'date')
             ->get();
 
-        // Khởi tạo cấu trúc dữ liệu
+        // Truy vấn theo tuần (từ 3 tuần trước)
+        $dataByWeek = DB::table('line_losses_summary')
+            ->select('model', 'item', 'year', 'week', DB::raw('SUM(value) as total_value'))
+            ->where('year', '>=', $startOfThreeWeeksAgo->year)  // Lọc theo năm và tuần
+            ->where('week', '>=', $startOfThreeWeeksAgo->weekOfYear)
+            ->groupBy('model', 'item', 'year', 'week')
+            ->get();
+
+        // Truy vấn theo tháng (từ 3 tháng trước)
+        $dataByMonth = DB::table('line_losses_summary')
+            ->select('model', 'item', 'year', 'month', DB::raw('SUM(value) as total_value'))
+            ->where('year', '>=', $startOfThreeMonthsAgo->year)  // Lọc theo năm và tháng
+            ->where('month', '>=', $startOfThreeMonthsAgo->month)
+            ->groupBy('model', 'item', 'year', 'month')
+            ->get();
+
+
+        function update_rate($data)
+        {
+
+            $prodValue = 0;
+            $ngValue = 0;
+            // Lặp qua dữ liệu của model và phân loại các giá trị
+            foreach ($data as $item) {
+                if ($item->item == 'Prod [ea]') {
+                    $prodValue = $item->value; // Lưu giá trị sản phẩm
+                } elseif ($item->item == "Q'ty NG [ea]") {
+                    $ngValue = $item->value; // Lưu giá trị sản phẩm lỗi
+                }
+            }
+
+            // Tính toán tỷ lệ Rate [%]
+            if ($prodValue != 0) {
+                $rate = ($ngValue / $prodValue) * 100; // Tính tỷ lệ phần trăm
+            } else {
+                $rate = 0; // Nếu không có sản phẩm, tỷ lệ là 0
+            }
+
+            // Lưu tỷ lệ vào cơ sở dữ liệu
+            DB::table('line_losses_summary')
+                ->where('model', 'P615')
+                ->where('year', 2024)
+                ->where('month', 11)
+                ->where('week', 48)
+                ->where('item', 'Rate [%]')
+                ->update(['value' => $rate]);
+        }
+
+        $summaryData = DB::table('line_losses_summary')
+            ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+            ->orderBy('date') // Sắp xếp theo ngày
+            ->get();
+
         $groupedData = [];
+        $allModelsData = [
+            'Model' => 'All Models', // Tên model tổng hợp
+            'Item' => 'Total',
+            $today->copy()->format('Y') => 0,
+            'M' . $today->copy()->subMonths(3)->format('m') => 0,
+            'M' . $today->copy()->subMonths(2)->format('m') => 0,
+            'M' . $today->copy()->subMonths(1)->format('m') => 0,
+            'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
+            'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
+            'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
+            $today->clone()->subDays(3)->format('d-M') => 0,
+            $today->clone()->subDays(2)->format('d-M') => 0,
+            $today->clone()->subDays(1)->format('d-M') => 0,
+        ];
+
+
         foreach ($summaryData as $row) {
+            // Nhóm dữ liệu theo model và item
             if (!isset($groupedData[$row->model])) {
                 $groupedData[$row->model] = [];
             }
 
             if (!isset($groupedData[$row->model][$row->item])) {
+                // Khởi tạo dữ liệu cho từng item, model
                 $groupedData[$row->model][$row->item] = [
-                    'prod' => 0,
-                    'ng_qty' => 0,
-                    'rate' => [],
-                    'day' => [],
+                    $today->copy()->format('Y') => 0,
+                    'M' . $today->copy()->subMonths(3)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(2)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(1)->format('m') => 0,
+                    'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
+                    $today->clone()->subDays(3)->format('d-M') => 0,
+                    $today->clone()->subDays(2)->format('d-M') => 0,
+                    $today->clone()->subDays(1)->format('d-M') => 0,
+
                 ];
             }
 
-            // Lưu giá trị vào cấu trúc dữ liệu
-            $groupedData[$row->model][$row->item]['day'][$row->date] = $row->value;
+            // Lấy ngày hôm nay
+            $today = \Carbon\Carbon::today();
 
-            if ($row->item == 'Prod [ea]') {
-                $groupedData[$row->model][$row->item]['prod'] += $row->value;
-            } elseif ($row->item == "Q'ty NG [ea]") {
-                $groupedData[$row->model][$row->item]['ng_qty'] += $row->value;
+            // Kiểm tra và cộng dồn vào các khoảng thời gian tương ứng
+            if ($row->month == $today->copy()->subMonths(3)->month) {
+                $groupedData[$row->model][$row->item]['M' . $today->copy()->subMonths(3)->format('m')] += $row->value;
+                $allModelsData['M' . $today->copy()->subMonths(3)->format('m')] += $row->value; // Cộng vào All Models
+            }
+            if ($row->month == $today->copy()->subMonths(2)->month) {
+                $groupedData[$row->model][$row->item]['M' . $today->copy()->subMonths(2)->format('m')] += $row->value;
+            }
+            if ($row->month == $today->copy()->subMonths(1)->month) {
+                $groupedData[$row->model][$row->item]['M' . $today->copy()->subMonths(1)->format('m')] += $row->value;
             }
 
-            // Tính tỷ lệ NG cho mỗi ngày (Rate %)
-            if ($row->item == 'Rate [%]') {
-                $groupedData[$row->model][$row->item]['rate'][$row->date] = $row->value;
+            if ($row->week == $today->copy()->subWeeks(3)->isoWeek()) {
+                $groupedData[$row->model][$row->item]['W' . $today->copy()->subWeeks(3)->isoWeek()] += $row->value;
+            }
+            if ($row->week == $today->copy()->subWeeks(2)->isoWeek()) {
+                $groupedData[$row->model][$row->item]['W' . $today->copy()->subWeeks(2)->isoWeek()] += $row->value;
+            }
+            if ($row->week == $today->copy()->subWeeks(1)->isoWeek()) {
+                $groupedData[$row->model][$row->item]['W' . $today->copy()->subWeeks(1)->isoWeek()] += $row->value;
+            }
+
+            if ($row->date == $today->copy()->subDays(3)->format('Y-m-d')) {
+                $groupedData[$row->model][$row->item][$today->clone()->subDays(3)->format('d-M')] += $row->value;
+            }
+            if ($row->date == $today->copy()->subDays(2)->format('Y-m-d')) {
+                $groupedData[$row->model][$row->item][$today->clone()->subDays(2)->format('d-M')] += $row->value;
+            }
+            if ($row->date == $today->copy()->subDays(1)->format('Y-m-d')) {
+                $groupedData[$row->model][$row->item][$today->clone()->subDays(1)->format('d-M')] += $row->value;
+            }
+
+            // Cộng tổng cho năm
+            if ($row->year == $today->copy()->year) {
+                $groupedData[$row->model][$row->item][$today->copy()->format('Y')] += $row->value;
             }
         }
 
-        // Tính tỷ lệ NG cho Prod và Q'ty NG
-        foreach ($groupedData as $model => $items) {
-            foreach ($items as $item => $data) {
-                foreach ($data['day'] as $date => $value) {
-                    $prod = $data['prod'];
-                    $ng_qty = $data['ng_qty'];
+        foreach ($groupedData as $model => $values) {
+            // Lấy số liệu NG và Prod cho mỗi model
+            $ng = $values["Q'ty NG [ea]"];
+            $prod = $values["Prod [ea]"];
 
-                    if ($prod > 0) {
-                        $rate = ($ng_qty / $prod) * 100;
-                        $groupedData[$model][$item]['rate'][$date] = $rate;
-                    }
+            // Tạo mảng lưu tỷ lệ Rate
+            $rate = [];
+
+            // Lặp qua từng thời điểm và tính tỷ lệ Rate
+            foreach ($ng as $period => $ngValue) {
+                // Kiểm tra nếu có sản phẩm (prod[$period]) và prod[$period] không phải là 0
+                if (isset($prod[$period]) && $prod[$period] != 0) {
+                    $rate[$period] = round(($ngValue / $prod[$period]) * 100, 2);
+                } else {
+                    $rate[$period] = '-'; // Nếu không có sản phẩm hoặc sản phẩm = 0, gán tỷ lệ là 0
                 }
             }
+
+            // Cập nhật tỷ lệ Rate vào dữ liệu
+            $groupedData[$model]["Rate [%]"] = $rate;
         }
+
+        // foreach ($groupedData as $model => $items) {
+        //     foreach ($items as $item => $data) {
+
+        //         foreach ($khung_gio as $timePeriod) {
+        //             // Tính tỷ lệ theo từng thời kỳ (năm, tháng, tuần, ngày)
+        //             foreach ($data[$timePeriod] as $key => $value) {
+        //                 $prod = $data['prod'];
+        //                 $ng_qty = $data['ng_qty'];
+        //                 $rate = ($prod > 0) ? ($ng_qty / $prod) * 100 : 0;
+        //                 $groupedData[$model][$item][$timePeriod][$key] = [
+        //                     'value' => $value,
+        //                     'rate' => $rate,  // Lưu tỷ lệ tính được
+        //                 ];
+        //             }
+        //         }
+        //     }
+        // }
+
 
         // Trả về dữ liệu dưới dạng JSON
         return response()->json([
             'headers' => $headers,
             'data' => $groupedData,
+        ]);
+    }
+
+    public function getData()
+    {
+        // Lấy ngày hôm nay
+        $today = Carbon::today();
+
+        // Tạo tên cột động
+        $headers = [
+            'Model',
+            'Item',
+            $today->copy()->format('Y'),
+            'M' . $today->copy()->subMonths(3)->format('m'),
+            'M' . $today->copy()->subMonths(2)->format('m'),
+            'M' . $today->copy()->subMonths(1)->format('m'),
+            'W' . $today->copy()->subWeeks(3)->isoWeek(),
+            'W' . $today->copy()->subWeeks(2)->isoWeek(),
+            'W' . $today->copy()->subWeeks(1)->isoWeek(),
+            $today->clone()->subDays(3)->format('d-M'),
+            $today->clone()->subDays(2)->format('d-M'),
+            $today->clone()->subDays(1)->format('d-M'),
+        ];
+
+
+        $summaryData = DB::table('line_losses_summary')
+            ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
+            ->orderBy('date') // Sắp xếp theo ngày
+            ->get();
+
+        $groupedData = [];
+        $allModelsData = [];
+
+        // $allModelsData = [
+        //     'Model' => 'All Models', // Tên model tổng hợp
+        //     'Item' => 'Total',
+        //     $today->copy()->format('Y') => 0,
+        //     'M' . $today->copy()->subMonths(3)->format('m') => 0,
+        //     'M' . $today->copy()->subMonths(2)->format('m') => 0,
+        //     'M' . $today->copy()->subMonths(1)->format('m') => 0,
+        //     'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
+        //     'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
+        //     'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
+        //     $today->clone()->subDays(3)->format('d-M') => 0,
+        //     $today->clone()->subDays(2)->format('d-M') => 0,
+        //     $today->clone()->subDays(1)->format('d-M') => 0,
+        // ];
+
+
+        foreach ($summaryData as $row) {
+
+            // Nhóm dữ liệu theo model và item
+            if (!isset($groupedData[$row->model])) {
+                $groupedData[$row->model] = [];
+            }
+
+
+            if (!isset($groupedData[$row->model][$row->item])) {
+                // Khởi tạo dữ liệu cho từng item, model
+                $groupedData[$row->model][$row->item] = [
+                    $today->copy()->format('Y') => 0,
+                    'M' . $today->copy()->subMonths(3)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(2)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(1)->format('m') => 0,
+                    'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
+                    $today->clone()->subDays(3)->format('d-M') => 0,
+                    $today->clone()->subDays(2)->format('d-M') => 0,
+                    $today->clone()->subDays(1)->format('d-M') => 0,
+                ];
+
+                $allModelsData['All Models'][$row->item] = [
+                    $today->copy()->format('Y') => 0,
+                    'M' . $today->copy()->subMonths(3)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(2)->format('m') => 0,
+                    'M' . $today->copy()->subMonths(1)->format('m') => 0,
+                    'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
+                    'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
+                    $today->clone()->subDays(3)->format('d-M') => 0,
+                    $today->clone()->subDays(2)->format('d-M') => 0,
+                    $today->clone()->subDays(1)->format('d-M') => 0,
+                ];
+            }
+
+
+            // Các khoảng thời gian cần kiểm tra (tháng, tuần, ngày, năm)
+            $timePeriods = [
+                'months' => [3, 2, 1], // Tháng 3, 2, 1
+                'weeks' => [3, 2, 1],  // Tuần 3, 2, 1
+                'days' => [3, 2, 1],   // Ngày 3, 2, 1
+            ];
+
+            // Lặp qua các khoảng thời gian
+            foreach ($timePeriods as $period => $values) {
+                foreach ($values as $value) {
+                    switch ($period) {
+                        case 'months':
+                            $date = $today->copy()->subMonths($value);
+                            $periodKey = 'M' . $date->format('m');
+                            if ($row->month == $date->month) {
+                                $groupedData[$row->model][$row->item][$periodKey] += $row->value;
+                                $allModelsData['All Models'][$row->item][$periodKey] += $row->value;
+                            }
+                            break;
+
+                        case 'weeks':
+                            $date = $today->copy()->subWeeks($value);
+                            $periodKey = 'W' . $date->isoWeek();
+                            if ($row->week == $date->isoWeek()) {
+                                $groupedData[$row->model][$row->item][$periodKey] += $row->value;
+                                $allModelsData['All Models'][$row->item][$periodKey] += $row->value;
+                            }
+                            break;
+
+                        case 'days':
+                            $date = $today->copy()->subDays($value);
+                            $periodKey = $date->format('d-M');
+                            if ($row->date == $date->format('Y-m-d')) {
+                                $groupedData[$row->model][$row->item][$periodKey] += $row->value;
+                                $allModelsData['All Models'][$row->item][$periodKey] += $row->value;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            // Cộng tổng cho năm
+            if ($row->year == $today->copy()->year) {
+                $groupedData[$row->model][$row->item][$today->copy()->format('Y')] += $row->value;
+                $allModelsData['All Models'][$row->item][$today->copy()->format('Y')] += $row->value;
+            }
+        }
+
+        $data= array_merge([$allModelsData], $groupedData);
+        
+
+        foreach ($groupedData as $model => $values) {
+            // Lấy số liệu NG và Prod cho mỗi model
+            $ng = $values["Q'ty NG [ea]"];
+            $prod = $values["Prod [ea]"];
+
+            // Tạo mảng lưu tỷ lệ Rate
+            $rate = [];
+
+            // Lặp qua từng thời điểm và tính tỷ lệ Rate
+            foreach ($ng as $period => $ngValue) {
+                // Kiểm tra nếu có sản phẩm (prod[$period]) và prod[$period] không phải là 0
+                if (isset($prod[$period]) && $prod[$period] != 0) {
+                    $rate[$period] = round(($ngValue / $prod[$period]) * 100, 2);
+                } else {
+                    $rate[$period] = '-'; // Nếu không có sản phẩm hoặc sản phẩm = 0, gán tỷ lệ là 0
+                }
+            }
+            // Cập nhật tỷ lệ Rate vào dữ liệu
+            $groupedData[$model]["Rate [%]"] = $rate;
+        }
+        // Tính tỷ lệ Rate cho All Models
+        // $allModelsNG = $allModelsData["Q'ty NG [ea]"];
+        // $allModelsProd = $allModelsData["Prod [ea]"];
+        // $allModelsRate = [];
+
+        // foreach ($allModelsNG as $period => $ngValue) {
+        //     if (isset($allModelsProd[$period]) && $allModelsProd[$period] != 0) {
+        //         $allModelsRate[$period] = round(($ngValue / $allModelsProd[$period]) * 100, 2);
+        //     } else {
+        //         $allModelsRate[$period] = '-'; // Nếu không có sản phẩm hoặc sản phẩm = 0, gán tỷ lệ là 0
+        //     }
+        // }
+
+        // // Cập nhật tỷ lệ Rate cho All Models
+        // $allModelsData["Rate [%]"] = $allModelsRate;
+
+        // Trả về dữ liệu dưới dạng JSON
+        return response()->json([
+            'headers' => $headers,
+            'data' => $groupedData,
+            'data2' => $allModelsData,
         ]);
     }
 }

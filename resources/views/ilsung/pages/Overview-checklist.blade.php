@@ -2,7 +2,7 @@
 @section('content')
     <div class="card mb-4">
         <div class="card-header py-3" style="text-align: center">
-            <h5 class="text-primary mx-3"><b>
+            <h5 class="text-primary mx-3" style="color: white !important;"><b>
                     TỶ LỆ HOÀN THÀNH CHECK LIST EQM THEO LINE</b>
             </h5>
 
