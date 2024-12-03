@@ -274,40 +274,6 @@
 @section('admin-js')
     <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
 
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lấy các ô nhập liệu
-            const inputFields = ['a', 'b', 'c', 'd', 'e']; // Các ID của khung giờ
-            const prodInput = document.getElementById('prod'); // Ô tổng sản lượng
-
-            // Hàm tính tổng
-            function calculateTotal() {
-                let total = 0;
-                inputFields.forEach(id => {
-                    const value = parseInt(document.getElementById(id).value) ||
-                        0; // Lấy giá trị hoặc 0 nếu rỗng
-                    total += value;
-                });
-                prodInput.value = total; // Gán tổng vào ô sản lượng
-            }
-
-            // Gắn sự kiện 'input' cho từng ô khung giờ
-            inputFields.forEach(id => {
-                const field = document.getElementById(id);
-                field.addEventListener('input', calculateTotal);
-            });
-
-            var fileName = 'production_plan_form.xlsx'; // Bạn có thể thay đổi tên file ở đây nếu cần
-
-            // Tạo URL với tham số file_name
-            var url = "{{ route('OQC.download.template', ['file_name' => '__FILE_NAME__']) }}";
-            url = url.replace('__FILE_NAME__', fileName); // Thay __FILE_NAME__ bằng tên file thực tế
-
-            // Cập nhật href của thẻ a
-            document.getElementById('download-template').setAttribute('href', url);
-        });
-    </script> --}}
-
     <script>
         $(document).ready(function() {
             var table_name = 'LineLoss';

@@ -9,6 +9,7 @@ use App\Models\OQC\Plan;
 use Illuminate\Http\Request;
 use DataTables;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
@@ -168,6 +169,57 @@ class OQCLosssController extends Controller
             'recordsFiltered' => $filteredRecords,
             'data' => $products
         ]);
+    }
+
+    public function showData_loss_detail_2(Request $request)
+    {
+        $date = $request->input('date');
+        $shift = $request->input('shift');
+        $line = ($request->input('line') === 'All') ? null : $request->input('line');
+        $time = ($request->input('time') === 'All') ? null : $request->input('time');
+        // dd($date);
+        // Khởi tạo truy vấn
+        $query = LineLoss::query()
+            ->select([
+                'line_losses.time_slot',
+                'line_losses.prod_qty',
+                'line_losses.NG_qty',
+                'line_losses.remark',
+                'line_losses.Code_ID',
+                'line_losses.id',
+                'plans.date',
+                'plans.shift',
+                'plans.line',
+                'errors_list.category',
+                'errors_list.name',
+            ])
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->join('errors_list', 'line_losses.error_list_id', '=', 'errors_list.id');
+
+
+        // Áp dụng các điều kiện lọc
+        if (!empty($date)) {
+            $query->whereDate('plans.date', $date);
+        }
+        if (!empty($shift)) {
+            $query->where('plans.shift', $shift);
+        }
+        if (!empty($line)) {
+            $query->where('plans.line', $line);
+        }
+        if (!empty($time)) {
+            $query->where('line_losses.time_slot', $time);
+        }
+
+        $data_loss = $query->orderBy('plans.date', 'desc')->get();
+
+
+        // Trả dữ liệu JSON
+        return response()->json(
+            [
+                'data' => $data_loss,
+            ]
+        );
     }
 
     public function data_loss_search(Request $request)

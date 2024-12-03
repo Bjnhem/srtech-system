@@ -79,7 +79,7 @@
                 <div class="modal-body" style="background-color: white">
                     <div class="card">
                         <div class="card-header">
-                            <div class="row">
+                            <div class="row" style="display: contents;">
                                 <!-- Phần tải file Excel mẫu -->
                                 <div class="col-md-3">
                                     <a href="#" id="download-template" class="btn btn-primary">

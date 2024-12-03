@@ -29,6 +29,15 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link {{ activeRoute(route('OQC.loss.detail')) }}" aria-current="page"
+            href="{{ route('OQC.loss.detail') }}">
+            <img class=" icon" src="{{ asset('checklist-ilsung/icon/planner.png') }}" alt="Camera" width="20"
+                height="20">
+            <span class="item-name">Kết quả Loss</span>
+        </a>
+    </li>
+
     {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('OQC.feedback')) }}" aria-current="page"
             href="{{ route('OQC.feedback') }}">

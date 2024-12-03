@@ -142,9 +142,9 @@ Route::prefix('Checklist/Master')->group(function () {
 
     Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
     Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
-    Route::get('/show-data-table', [UpdatedataController::class, 'show_data_table'])->name('update.show.data');
-    Route::post('/delete-data-table', [UpdatedataController::class, 'delete_data_row_table'])->name('update.delete.data');
-    Route::post('/add-data-table', [UpdatedataController::class, 'add_data_row_table'])->name('update.add.data');
+    Route::get('/show-data-table', [\App\Http\Controllers\checklist\UpdateDataController::class, 'show_data_table'])->name('update.show.data');
+    Route::post('/delete-data-table', [\App\Http\Controllers\checklist\UpdateDataController::class, 'delete_data_row_table'])->name('update.delete.data');
+    Route::post('/add-data-table', [\App\Http\Controllers\checklist\UpdateDataController::class, 'add_data_row_table'])->name('update.add.data');
 });
 
 
@@ -200,7 +200,7 @@ Route::prefix('WareHouse/Master')->group(function () {
     Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
 
 
-    Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data,machine');
+    // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
 
     Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
     Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
@@ -230,6 +230,7 @@ Route::middleware('auth')->prefix('OQC')->group(function () {
     // Route nhập data
     Route::get('/Nhap-plan', [HomeOQCController::class, 'index_plan'])->name('OQC.plan');
     Route::get('/Nhap-loss', [HomeOQCController::class, 'index_loss'])->name('OQC.loss');
+    Route::get('/Data-loss-detail', [HomeOQCController::class, 'index_loss_detail'])->name('OQC.loss.detail');
     Route::get('/feedback', [HomeOQCController::class, 'index_feedback'])->name('OQC.feedback');
     Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('OQC.update.master');
     Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
@@ -247,6 +248,7 @@ Route::prefix('OQC/Master')->group(function () {
     Route::get('/plan/dropdown', [OQCLosssController::class, 'getDropdownData'])->name('OQC.loss.data.plan.search');
     Route::get('/plan/prod-qty', [OQCLosssController::class, 'getProdQty'])->name('OQC.loss.data.plan.search.prod.qty');
     Route::get('/show-data-table-loss-detail', [OQCLosssController::class, 'showData_loss_detail'])->name('OQC.update.show.data.loss.detail');
+    Route::get('/show-data-table-loss-detail-2', [OQCLosssController::class, 'showData_loss_detail_2'])->name('OQC.update.show.data.loss.detail2');
     Route::post('/add-data-table-loss', [OQCLosssController::class, 'add_data_row_table'])->name('OQC.update.add.data.loss.detail');
     Route::post('/delete-data-table-loss', [OQCLosssController::class, 'delete_data_row_table'])->name('OQC.update.delete.data.loss.detail');
     Route::get('/get-data_loss_search', [OQCLosssController::class, 'data_loss_search'])->name('OQC.loss.search');

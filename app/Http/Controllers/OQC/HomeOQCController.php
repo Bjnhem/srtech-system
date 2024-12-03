@@ -28,6 +28,11 @@ class HomeOQCController extends Controller
         return view('ilsung.OQC.pages.OQC-loss');
     }
 
+    public function index_loss_detail()
+    {
+        return view('ilsung.OQC.pages.OQC-loss-detail');
+    }
+
     public function index_feedback()
     {
         // $products = Product::all();
