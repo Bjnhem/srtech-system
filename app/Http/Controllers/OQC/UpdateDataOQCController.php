@@ -59,13 +59,13 @@ class UpdateDataOQCController extends Controller
         $filteredRecords = $query->count();
         $totalRecords = ErrorList::count();
 
-        $start = (int)$request->input('start', 0);
-        $length = (int)$request->input('length', 10);
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
 
         $products = $query->skip($start)->take($length)->get();
 
         return response()->json([
-            'draw' => (int)$request->input('draw'),
+            'draw' => (int) $request->input('draw'),
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $filteredRecords,
             'data' => $products
@@ -184,13 +184,13 @@ class UpdateDataOQCController extends Controller
         $filteredRecords = $query->count();
         $totalRecords = Plan::count();
 
-        $start = (int)$request->input('start', 0);
-        $length = (int)$request->input('length', 10);
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
 
         $products = $query->skip($start)->take($length)->get();
 
         return response()->json([
-            'draw' => (int)$request->input('draw'),
+            'draw' => (int) $request->input('draw'),
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $filteredRecords,
             'data' => $products
@@ -239,6 +239,8 @@ class UpdateDataOQCController extends Controller
                     }
                 }
 
+                $this->calculateSummary($plan->date); // Chỉ tính toán lại cho ngày cụ thể
+
 
                 return redirect()->back()->with('success', 'Kế hoạch được cập nhật thành công!');
             } else {
@@ -248,6 +250,71 @@ class UpdateDataOQCController extends Controller
             // Nếu không có ID, tạo mới kế hoạch
             Plan::create($request->all());
             return redirect()->back()->with('success', 'Kế hoạch được lưu thành công!');
+        }
+    }
+
+
+    public function calculateSummary($specificDate = null)
+    {
+        if (!$specificDate) {
+            return; // Không làm gì nếu không có ngày cụ thể
+        }
+
+        // Xóa dữ liệu cũ trong bảng `line_losses_summary` chỉ cho ngày cụ thể
+        DB::table('line_losses_summary')->whereDate('date', $specificDate)->delete();
+
+        // Tổng hợp dữ liệu cho ngày cụ thể
+        $prodData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Prod [ea]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('SUM(DISTINCT plans.prod) as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        $ngData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Q\'ty NG [ea]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('SUM(line_losses.NG_qty) as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        $rateData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Rate [%]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('CASE WHEN SUM(DISTINCT plans.prod) > 0 THEN ROUND((SUM(line_losses.NG_qty) / SUM(DISTINCT plans.prod)) * 100, 2) ELSE 0 END as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        // Kết hợp dữ liệu và thêm vào bảng `line_losses_summary`
+        $combinedData = collect([$prodData, $ngData, $rateData])->collapse();
+
+        foreach ($combinedData as $data) {
+            DB::table('line_losses_summary')->insert([
+                'model' => $data->model,
+                'item' => $data->item,
+                'year' => date('Y', strtotime($data->date)),
+                'month' => date('m', strtotime($data->date)),
+                'week' => date('W', strtotime($data->date)),
+                'date' => $data->date,
+                'value' => $data->value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 

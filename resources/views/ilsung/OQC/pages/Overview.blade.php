@@ -6,7 +6,7 @@
 <h2 class="text-center mb-4">BÁO CÁO TÌNH TRẠNG LỖI OQC THEO MODEL</h2>
 
 <!-- Biểu đồ -->
-<div class="chart-container mb-5">
+<div class="chart-container mb-2">
     <canvas id="oqcChart"></canvas>
 </div>
 <div class="mt-4 ">

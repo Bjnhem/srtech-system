@@ -1,7 +1,7 @@
 @extends('ilsung.layouts.Home_layout')
 
 @section('content')
-{{-- <div class="container-fluid d-flex justify-content-center align-items-center vh-100"> --}}
+    <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
         <div class="row justify-content-center align-items-center home_index">
             <!-- Checklist Card -->
             <div class="col-lg-4 col-md-4 mb-4">
@@ -10,8 +10,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="icon-container">
-                                    <img src="{{ asset('checklist-ilsung/icon/checklist-2.png') }}" alt="Checklist" width="50"
-                                        height="50">
+                                    <img src="{{ asset('checklist-ilsung/icon/checklist-2.png') }}" alt="Checklist"
+                                        width="50" height="50">
                                 </div>
                                 <div class="card-content">
                                     <h3>Checklist</h3>
@@ -25,7 +25,7 @@
 
             <!-- WareHouse Card -->
             <div class="col-lg-4 col-md-4 mb-4">
-                <a href="{{ route('Home.WareHouse') }}">
+                <a href="{{ route('WareHouse.chuyen.kho') }}">
                     <div class="card tech-card warehouse-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center">
@@ -50,8 +50,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="icon-container">
-                                    <img src="{{ asset('checklist-ilsung/icon/risk.png') }}" alt="OQC"
-                                        width="50" height="50">
+                                    <img src="{{ asset('checklist-ilsung/icon/risk.png') }}" alt="OQC" width="50"
+                                        height="50">
                                 </div>
                                 <div class="card-content">
                                     <h3>OQC</h3>
@@ -63,7 +63,7 @@
                 </a>
             </div>
         </div>
-    {{-- </div> --}}
+    </div>
 @endsection
 
 @section('admin-js')

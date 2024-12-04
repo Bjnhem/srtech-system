@@ -934,11 +934,7 @@ button:hover {
     .col-md-4 {
         margin-bottom: 20px;
     }
-    
 }
-
-
-
 
 Áp dụng border cho tất cả các ô trong bảng .table-bordered th,
 .table-bordered td {
@@ -1031,10 +1027,91 @@ label {
     width: 100%; /* Input chiếm toàn bộ chiều rộng của khung */
 }
 
-
-
 canvas {
     cursor: pointer; /* Con trỏ chuột thay đổi khi hover */
+}
+
+/* Căn chỉnh chung */
+.container-fluid {
+    background-color: #f9f9f9; /* Màu nền nhạt cho giao diện */
+}
+
+.home_index .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    /* height: 200px; Đảm bảo các card có chiều cao đồng nhất */
+    width: 400px; /* Đảm bảo chiều rộng cân đối */
+}
+
+.home_index .card:hover {
+    transform: translateY(-5px); /* Hiệu ứng hover */
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.tech-card {
+    background-color: #ffffff; /* Màu nền trắng */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+}
+
+.icon-container img {
+    margin-right: 15px;
+    max-width: 50px; /* Giữ kích thước biểu tượng đồng nhất */
+    max-height: 50px;
+}
+
+.card-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 1rem;
+    color: #777777;
+}
+
+/* Tùy chỉnh cho từng card */
+.checklist-card {
+    background-color: #0b3558; /* Màu xanh navy */
+    color: #ffffff;
+}
+
+.warehouse-card {
+    background-color: #f7b71d; /* Màu vàng */
+    color: #ffffff;
+}
+
+.oqc-card {
+    background-color: #d9534f; /* Màu đỏ */
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    /* .home_index .card {
+        height: 100px;
+    } */
+
+    .icon-container img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+
+    .card-content h3 {
+        font-size: 1rem;
+    }
+
+    .card-content p {
+        font-size: 0.9rem;
+    }
 }
 
 

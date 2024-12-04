@@ -1,11 +1,10 @@
 @extends('ilsung.OQC.layouts.OQC_layout')
 
 @section('content')
+ 
     <div class="card table-responsive" style="border: none">
         <div class="card-header">
             <h3 class="header-title">Quản lý Plan</h3>
-
-
 
         </div>
         <div class="card-body ">
@@ -72,9 +71,9 @@
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between align-items-center">
                     <h5 class="text-primary mx-3" id="title_modal_data">Thêm Kế Hoạch Sản Xuất</h5>
-                    <div> <button type="button" id="save" class="btn btn-success">Save</button> <button type="button"
-                            id="update" class="btn btn-success">Update</button> <button type="button" id="close-model"
-                            class="btn btn-warning close-model-checklist">Close</button> </div>
+                    <div> <button type="button" id="save" class="btn btn-success">Save</button> <button
+                            type="button" id="update" class="btn btn-success">Update</button> <button type="button"
+                            id="close-model" class="btn btn-warning close-model-checklist">Close</button> </div>
                 </div>
                 <div class="modal-body" style="background-color: white">
                     <div class="card">
@@ -138,8 +137,11 @@
                                         <!-- Model sản phẩm -->
                                         <div class="col-sm-6 col-xl-3 mb-3">
                                             <span>Model:</span>
-                                            <input name="model" type="text" id="model" class="form-control"
-                                                placeholder="Model sản phẩm...">
+                                            <select name="model" id="model" class="form-select">
+
+                                            </select>
+                                            {{-- <input name="model" type="text" id="model" class="form-control"
+                                                placeholder="Model sản phẩm..."> --}}
                                         </div>
                                         <!-- Số lượng sản phẩm -->
                                         <div class="col-sm-6 col-xl-2 mb-3">
@@ -315,6 +317,7 @@
             });
 
 
+
             $('#date_search, #shift_search, #Line_search').on('change', function() {
                 tables.ajax.reload();
             });
@@ -407,6 +410,8 @@
 
                         $('#model,#line').empty();
                         $.each(response.model, function(index, value) {
+                            console.log(value.model);
+
                             $('#model').append($('<option>', {
                                 value: value.model,
                                 text: value.model,

@@ -519,80 +519,6 @@
                 });
             }
 
-            function show_data_check_detail() {
-                // Lấy giá trị của các trường nhập liệu
-                dateInput = $("#date_search_detail").val();
-
-                // Kiểm tra nếu ngày không được chọn
-                if (!dateInput) {
-                    toastr.error('Vui lòng chọn ngày!');
-                    return;
-                }
-
-                // Gửi yêu cầu AJAX đến controller để lấy dữ liệu
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('OQC.loss.data.plan.search') }}", // Route đã định nghĩa trong Laravel
-                    dataType: "json",
-                    data: {
-                        date: dateInput,
-                    },
-                    success: function(response) {
-                        // Kiểm tra phản hồi từ server
-                        if (response.status == '400') {
-                            toastr.error(response.messcess); // Hiển thị lỗi nếu có
-                        } else {
-                            // Thêm các option mới vào dropdown shift
-                            if (case_action_detail == 'date') {
-                                $('#shift_search_detail').empty();
-                                if (response.shifts && response.shifts.length > 0) {
-                                    $.each(response.shifts, function(index, value) {
-                                        $('#shift_search_detail').append($('<option>', {
-                                            value: value,
-                                            text: value,
-                                        }));
-                                    });
-                                    show_khung_gio('khung_gio_detail');
-                                }
-
-                                $('#Line_search_detail').empty();
-                                // Thêm các option mới vào dropdown line
-                                if (response.lines && response.lines.length > 0) {
-                                    var shift_show = $('#shift_search_detail').val();
-                                    $.each(response.lines, function(index, value) {
-                                        if (value.shift == shift_show) {
-                                            $('#Line_search_detail').append($('<option>', {
-                                                value: value.line,
-                                                text: value.line,
-                                            }));
-                                        }
-
-                                    });
-                                }
-                            }
-
-                            if (case_action_detail == 'shift') {
-                                $('#Line_search_detail').empty();
-                                // Thêm các option mới vào dropdown line
-                                if (response.lines && response.lines.length > 0) {
-                                    var shift_show = $('#shift_search_detail').val();
-                                    $.each(response.lines, function(index, value) {
-                                        if (value.shift == shift_show)
-                                            $('#Line_search_detail').append($('<option>', {
-                                                value: value.line,
-                                                text: value.line,
-                                            }));
-                                    });
-                                }
-                            }
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // Xử lý lỗi nếu có lỗi trong quá trình AJAX
-                        toastr.error('Có lỗi xảy ra, vui lòng thử lại!');
-                    }
-                });
-            }
 
             function show_data_qty_plan_check() {
                 // Lấy giá trị của các trường nhập liệu
@@ -601,12 +527,6 @@
                 lineSelect = $("#Line_search").val();
                 timeSelect = $("#khung_gio").val();
                 modelSelect = $("#model_search option:selected").text();
-
-                // console.log(dateInput);
-                // console.log(shiftSelect);
-                // console.log(lineSelect);
-                // console.log(timeSelect);
-                // console.log(modelSelect);
 
                 // Kiểm tra nếu ngày không được chọn
                 if (!dateInput) {
@@ -650,29 +570,24 @@
             $('#date_search').on('change', function() {
                 case_action = 'date';
                 show_data_check();
-                // show_khung_gio();
-                // tables.ajax.reload();
+
             });
 
             $('#shift_search').on('change', function() {
                 case_action = 'shift';
                 show_data_check();
                 show_khung_gio('khung_gio');
-                // tables.ajax.reload();
+
             });
 
             $('#Line_search').on('change', function() {
                 case_action = 'line';
                 show_data_check();
-                // show_khung_gio();
-                // tables.ajax.reload();
             });
 
             $('#khung_gio').on('change', function() {
                 case_action = 'khung_gio';
                 show_data_check();
-                // show_khung_gio();
-                // tables.ajax.reload();
             });
 
             // Hành động cho input loss
@@ -684,23 +599,7 @@
             $('#category').on('change', function() {
                 data_import_action = 'item_loss_name';
                 show_data_check();
-
-                // tables.ajax.reload();
             });
-
-
-            // $('#date_search_detail').on('change', function() {
-            //     case_action_detail = 'date';
-            //     show_data_check_detail();
-            //     tables.ajax.reload();
-            // });
-
-            // $('#shift_search_detail').on('change', function() {
-            //     case_action_detail = 'shift';
-            //     show_data_check_detail();
-            //     show_khung_gio('khung_gio_detail');
-            //     tables.ajax.reload();
-            // });
 
 
             function save_update_data() {
@@ -739,7 +638,6 @@
                             }
                             toastr.success('Thành công');
                             show_data_qty_plan_check();
-                            // tables.ajax.reload();
                             show_data_table();
                             document.getElementById('form_data').reset();
                         },
@@ -793,9 +691,7 @@
                                 tim_slot,
                                 value.prod_qty,
                                 value.Code_ID,
-                                // value.category,
                                 value.name,
-                                // value.remark,
                                 deleteButton
                             ]);
                         });
@@ -826,96 +722,8 @@
             }
 
             show_data_check();
-            // show_data_check_detail();
-
-            // tables = $('#table-result').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-
-            //     ajax: {
-            //         url: "{{ route('OQC.update.show.data.loss.detail') }}",
-            //         type: "GET",
-            //         data: function(d) {
-            //             d.date = $('#date_search_detail').val();
-            //             d.shift = $('#shift_search_detail').val();
-            //             d.line = $('#Line_search_detail').val();
-            //             d.time = $('#khung_gio_detail').val();
-            //         },
-            //     },
-            //     columns: [{
-            //             data: 'date', // Ngày
-            //             name: 'date'
-            //         },
-            //         {
-            //             data: 'time_slot', // Khung giờ
-            //             name: 'time_slot',
-            //             render: function(data, type, row) {
-            //                 // Kiểm tra nếu dữ liệu là từ khung A hay khung C và render tương ứng
-            //                 let timeSlotLabel = '';
-            //                 if (khung_A[data]) {
-            //                     timeSlotLabel = khung_A[data];
-            //                 } else if (khung_C[data]) {
-            //                     timeSlotLabel = khung_C[data];
-            //                 }
-
-            //                 // Trả về giá trị hiển thị và giữ lại `key` dưới dạng data-attribute
-            //                 return '<span class="time-slot" data-time-slot="' + data + '">' +
-            //                     timeSlotLabel + '</span>';
-            //             }
-            //         },
-            //         {
-            //             data: 'prod_qty', // Prod. qty (lấy từ bảng `plans` hoặc xử lý)
-            //             name: 'prod_qty'
-            //         },
-            //         {
-            //             data: 'Code_ID', // Code ID (error_list_id từ bảng lỗi)
-            //             name: 'Code_ID'
-            //         },
-            //         {
-            //             data: 'category', // Trường lỗi (cần join bảng `errors_list` để lấy tên trường lỗi)
-            //             name: 'category'
-            //         },
-            //         {
-            //             data: 'name', // Tên lỗi (cần join bảng `errors_list` để lấy tên lỗi)
-            //             name: 'name'
-            //         },
-            //         {
-            //             data: 'remark', // Remark
-            //             name: 'remark'
-            //         },
-            //         {
-            //             data: 'id', // Hành động
-            //             render: function(data) {
-            //                 var editButton = '<button type="button" value="' + data +
-            //                     '" class="btn btn-success btn-sm editbtn" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
-            //                 var deleteButton = '<button type="button" value="' + data +
-            //                     '" class="btn btn-danger btn-sm deletebtn" id="delete"><span class="icon-trash1"></span></button>';
-            //                 return deleteButton;
-            //             }
-            //         }
-            //     ],
-            //     pageLength: 10,
-            //     ordering: false,
-            //     searching: true,
-            //     lengthChange: true,
-            //     info: false,
-            //     autoWidth: false,
-            //     select: {
-            //         style: 'single'
-            //     }
-            // });
 
 
-            // show_model_check();
-
-            $(document).on('click', '#creat', function(e) {
-                e.preventDefault();
-                $('#title_modal_data').text(title_add);
-                $('#save').show(); // Ẩn nút Save
-                $('#update').hide();
-                $('#modal-created').modal('show');
-                id = "";
-            });
 
             $(document).on('click', '#save_loss', function(e) {
                 e.preventDefault();
@@ -923,10 +731,6 @@
                 save_update_data();
             });
 
-            $(document).on('click', '#update', function(e) {
-                e.preventDefault();
-                document.getElementById('form_data').submit();
-            });
 
 
             $(document).on('click', '#delete', function() {

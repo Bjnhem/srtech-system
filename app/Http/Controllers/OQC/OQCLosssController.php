@@ -290,11 +290,19 @@ class OQCLosssController extends Controller
                     // Nếu có ID, thực hiện cập nhật bản ghi có ID
                     $table::where('id', $id)->update($data);  // Cập nhật dữ liệu cho bản ghi có ID
                 }
+                if ($request->input('table') == "LineLoss") {
+                    // Lấy ngày liên quan từ bảng `plans`
+                    $plan = Plan::find($data['plan_id']);
+                    if ($plan) {
+                        $this->calculateSummary($plan->date); // Chỉ tính toán lại cho ngày cụ thể
+                    }
+                }
                 return response()->json([
                     'data' => $data,
                     'status' => 200,
                     'success' => 'Cập nhật dữ liệu thành công.'
                 ]);
+
             }
             return response()->json([
                 'status' => 404,
@@ -304,8 +312,73 @@ class OQCLosssController extends Controller
         return abort(404);
     }
 
+    public function calculateSummary($specificDate = null)
+    {
+        if (!$specificDate) {
+            return; // Không làm gì nếu không có ngày cụ thể
+        }
 
-    public function calculateSummary()
+        // Xóa dữ liệu cũ trong bảng `line_losses_summary` chỉ cho ngày cụ thể
+        DB::table('line_losses_summary')->whereDate('date', $specificDate)->delete();
+
+        // Tổng hợp dữ liệu cho ngày cụ thể
+        $prodData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Prod [ea]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('SUM(DISTINCT plans.prod) as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        $ngData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Q\'ty NG [ea]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('SUM(line_losses.NG_qty) as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        $rateData = DB::table('line_losses')
+            ->join('plans', 'line_losses.plan_id', '=', 'plans.id')
+            ->select(
+                'plans.model',
+                DB::raw("'Rate [%]' as item"),
+                DB::raw('DATE(plans.date) as date'),
+                DB::raw('CASE WHEN SUM(DISTINCT plans.prod) > 0 THEN ROUND((SUM(line_losses.NG_qty) / SUM(DISTINCT plans.prod)) * 100, 2) ELSE 0 END as value')
+            )
+            ->whereDate('plans.date', $specificDate)
+            ->groupBy('plans.model', DB::raw('DATE(plans.date)'))
+            ->get();
+
+        // Kết hợp dữ liệu và thêm vào bảng `line_losses_summary`
+        $combinedData = collect([$prodData, $ngData, $rateData])->collapse();
+
+        foreach ($combinedData as $data) {
+            DB::table('line_losses_summary')->insert([
+                'model' => $data->model,
+                'item' => $data->item,
+                'year' => date('Y', strtotime($data->date)),
+                'month' => date('m', strtotime($data->date)),
+                'week' => date('W', strtotime($data->date)),
+                'date' => $data->date,
+                'value' => $data->value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
+
+
+    public function calculateSummary2()
     {
         // Xóa dữ liệu cũ trong bảng summary
         DB::table('line_losses_summary')->truncate();
@@ -817,22 +890,22 @@ class OQCLosssController extends Controller
             'W' . $today->copy()->subWeeks(3)->isoWeek(),
             'W' . $today->copy()->subWeeks(2)->isoWeek(),
             'W' . $today->copy()->subWeeks(1)->isoWeek(),
-            $today->clone()->subDays(3)->format('d-M'),
             $today->clone()->subDays(2)->format('d-M'),
             $today->clone()->subDays(1)->format('d-M'),
+            $today->clone()->format('d-M'),
         ];
 
 
         $summaryData = DB::table('line_losses_summary')
             ->select('model', 'item', 'year', 'month', 'week', 'date', 'value')
-            ->orderBy('date') // Sắp xếp theo ngày
+            ->orderBy('id') // Sắp xếp theo ngày
             ->get();
 
         $groupedData = [];
         $allModelsData = [];
 
         foreach ($summaryData as $row) {
-
+            // Log::info('Row model value: ', ['model' => $row->model]);
             // Nhóm dữ liệu theo model và item
             if (!isset($groupedData[$row->model])) {
                 $groupedData[$row->model] = [];
@@ -849,9 +922,9 @@ class OQCLosssController extends Controller
                     'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
                     'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
                     'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
-                    $today->clone()->subDays(3)->format('d-M') => 0,
                     $today->clone()->subDays(2)->format('d-M') => 0,
                     $today->clone()->subDays(1)->format('d-M') => 0,
+                    $today->clone()->format('d-M') => 0,
                 ];
             }
 
@@ -864,16 +937,16 @@ class OQCLosssController extends Controller
                     'W' . $today->copy()->subWeeks(3)->isoWeek() => 0,
                     'W' . $today->copy()->subWeeks(2)->isoWeek() => 0,
                     'W' . $today->copy()->subWeeks(1)->isoWeek() => 0,
-                    $today->clone()->subDays(3)->format('d-M') => 0,
                     $today->clone()->subDays(2)->format('d-M') => 0,
                     $today->clone()->subDays(1)->format('d-M') => 0,
+                    $today->clone()->format('d-M') => 0,
                 ];
             }
             // Các khoảng thời gian cần kiểm tra (tháng, tuần, ngày, năm)
             $timePeriods = [
                 'months' => [3, 2, 1], // Tháng 3, 2, 1
                 'weeks' => [3, 2, 1],  // Tuần 3, 2, 1
-                'days' => [3, 2, 1],   // Ngày 3, 2, 1
+                'days' => [2, 1,0],   // Ngày 3, 2, 1
             ];
 
             // Lặp qua các khoảng thời gian

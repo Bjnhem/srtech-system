@@ -5,14 +5,14 @@
             <span class="mini-icon">-</span>
         </a>
     </li>
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('Home.WareHouse')) }}" aria-current="page"
             href="{{ route('Home.WareHouse') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/business.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Overview</span>
         </a>
-    </li>
+    </li> --}}
     {{-- <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('WareHouse.nhap.kho')) }}" aria-current="page" href="{{ route('WareHouse.nhap.kho') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/business.png') }}" alt="Camera" width="20"
@@ -51,16 +51,16 @@
     </li>
 
     {{-- Master data --}}
-    <li class="nav-item static-item">
+    {{-- <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
             <span class="default-icon">Master data</span>
             <span class="mini-icon">-</span>
         </a>
-    </li>
+    </li> --}}
 
     {{-- database --}}
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link  {{ Request::is('WareHouse/Master*') ? 'active' : '' }}" aria-current="page"
             href="{{ route('WareHouse.update.master') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera"
@@ -69,7 +69,7 @@
         </a>
 
 
-    </li>
+    </li> --}}
 
 
     {{-- user --}}
