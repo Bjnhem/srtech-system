@@ -131,12 +131,12 @@
                             <thead class="table-success">
                                 <tr>
                                     <th>Ngày</th>
-                                    <th>Line</th>
                                     <th>Khung giờ</th>
                                     <th>Prod. qty</th>
                                     <th>Code ID</th>
+                                    <th>Trường lỗi</th>
                                     <th>Tên lỗi</th>
-                                    <!-- <th>Remark</th> -->
+                                    <th>Remark</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -321,9 +321,12 @@
             function show_khung_gio(action) {
 
                 var shift_show = $('#shift_search').val();
+                var shift_show_detail = $('#shift_search_detail').val();
 
                 // Lựa chọn khung giờ dựa trên giá trị của shift_show
                 const khung_gio_data = shift_show === "A" ? khung_A : shift_show === "C" ? khung_C : {};
+                const khung_gio_data_detail = shift_show_detail === "A" ? khung_A : shift_show_detail === "C" ?
+                    khung_C : {};
 
                 if (action == 'khung_gio') {
                     // Duyệt qua các mục trong khung giờ được chọn và thêm vào dropdown
@@ -335,6 +338,20 @@
                         }));
                     });
                 }
+                if (action == 'khung_gio_detail') {
+                    // Duyệt qua các mục trong khung giờ được chọn và thêm vào dropdown
+                    $('#khung_gio_detail').empty().append($('<option>', {
+                        value: 'All',
+                        text: 'All',
+                    }));
+                    Object.entries(khung_gio_data_detail).forEach(([key, value]) => {
+                        $('#khung_gio_detail').append($('<option>', {
+                            value: key, // Giá trị của option
+                            text: value, // Nội dung hiển thị
+                        }));
+                    });
+                }
+
             }
 
             function show_data_check() {
@@ -357,13 +374,11 @@
                     },
                     success: function(response) {
                         // Kiểm tra phản hồi từ server
-                        console.log(case_action);
                         if (response.status == '400') {
                             toastr.error(response.messcess); // Hiển thị lỗi nếu có
                         } else {
                             // Thêm các option mới vào dropdown shift
                             if (case_action == 'date') {
-
                                 $('#shift_search').empty();
                                 if (response.shifts && response.shifts.length > 0) {
                                     $.each(response.shifts, function(index, value) {
@@ -371,7 +386,6 @@
                                             value: value,
                                             text: value,
                                         }));
-                                        console.log(value);
 
                                     });
                                     show_khung_gio('khung_gio');
@@ -392,7 +406,7 @@
 
                                     });
                                 }
-                                $('#model_search').empty();
+
                                 if (response.models && response.models.length > 0) {
                                     var shift_show = $('#shift_search').val();
                                     var line_show = $('#Line_search').val();
@@ -509,7 +523,6 @@
 
 
                             show_data_qty_plan_check();
-                            show_data_table();
                         }
                     },
                     error: function(xhr, status, error) {
@@ -602,12 +615,6 @@
                 timeSelect = $("#khung_gio").val();
                 modelSelect = $("#model_search option:selected").text();
 
-                // console.log(dateInput);
-                // console.log(shiftSelect);
-                // console.log(lineSelect);
-                // console.log(timeSelect);
-                // console.log(modelSelect);
-
                 // Kiểm tra nếu ngày không được chọn
                 if (!dateInput) {
                     toastr.error('Vui lòng chọn ngày!');
@@ -631,8 +638,8 @@
                         if (response.status == '400') {
                             toastr.error(response.messcess); // Hiển thị lỗi nếu có
                         } else {
-                            // console.log(response.prod_qty);
-                            // console.log(response.NG_qty);
+                            console.log(response.prod_qty);
+                            console.log(response.NG_qty);
                             $('#prod_qty').val(response.prod_qty);
                             $('#NG_qty').val(response.NG_qty);
                         }
@@ -739,8 +746,7 @@
                             }
                             toastr.success('Thành công');
                             show_data_qty_plan_check();
-                            // tables.ajax.reload();
-                            show_data_table();
+                            tables.ajax.reload();
                             document.getElementById('form_data').reset();
                         },
                         error: function() {

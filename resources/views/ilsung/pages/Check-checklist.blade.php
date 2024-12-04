@@ -10,13 +10,12 @@
     @endif
     <div class="card mb-4">
         <div class="card-body">
-            <div class="row" id="progress-container-1">
+            {{-- <div class="row" id="progress-container-1">
             </div>
-            <br>
+            <br> --}}
             <div class="row">
-                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
-
-                    <label for="">Machine-ID</label>
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="Code_machine">Machine-ID</label>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Nhập code machine"
                             aria-label="Nhập code machine" aria-describedby="Code_machine" id="Code_machine">
@@ -24,41 +23,43 @@
                     </div>
                 </div>
 
-
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Line:</span>
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="Line_search">Line:</label>
                     <select name="line" id="Line_search" class="form-select">
+                        <!-- Options will be populated here -->
                     </select>
                 </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Machine:</span>
-                    <select name="Machine" id="Machine_search" class="form-select">
-                    </select>
 
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="Machine_search">Machine:</label>
+                    <select name="Machine" id="Machine_search" class="form-select">
+                        <!-- Options will be populated here -->
+                    </select>
                 </div>
-                <div class=" col-sm-6 col-xl-4 mb-3 bottommargin-sm">
-                    <label for="">Date Search</label>
+
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="date_form">Date Search</label>
                     <div class="input-daterange component-datepicker input-group">
-                        <input type="text" value="" class="form-control text-start" id="date_form"
-                            placeholder="YYYY-MM-DD">
+                        <input type="text" class="form-control text-start" id="date_form" placeholder="YYYY-MM-DD"
+                            autocomplete="off">
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Shift:</span>
+
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="shift_search">Shift:</label>
                     <select name="shift" id="shift_search" class="form-select">
                         <option value="">All</option>
                         <option value="Ca ngày">Ca ngày</option>
                         <option value="Ca đêm">Ca đêm</option>
-
                     </select>
                 </div>
-                <div class="col-sm-6 col-xl-4 mb-3">
-                    <span>Tình trạng:</span>
+
+                <div class="col-12 col-sm-4 col-md-4 mb-3">
+                    <label for="Status_search">Tình trạng:</label>
                     <select name="shift" id="Status_search" class="form-select">
                         <option value="">All</option>
                         <option value="Completed">Completed</option>
                         <option value="Pending" selected>Pending</option>
-
                     </select>
                 </div>
             </div>
@@ -67,9 +68,20 @@
             <div class="table-responsive">
                 <table id="table_check_list_search" class="table table-bordered table-hover"
                     style="width:100%;border-collapse:collapse;">
+                    <thead class="table-success" style="text-align: center; vertical-align:middle">
+                        <tr style="text-align: center">
+                            <th style="text-align: center">STT</th>
+                            <th style="text-align: center">Line</th>
+                            <th style="text-align: center">Model</th>
+                            <th style="text-align: center">Machine</th>
+                            <th style="text-align: center">Code QL</th>
+                            <th style="text-align: center">Check List</th>
+                            <th style="text-align: center">Khung check</th>
+                            <th style="text-align: center">Edit</th>
+                        </tr>
+                    </thead>
                 </table>
             </div>
-
 
         </div>
     </div>
@@ -109,19 +121,19 @@
                         </div>
                         <div class="col-sm-4 col-xl-2 mb-3">
                             <span>Machine-ID:</span>
-
                             <input name="ID_machine" type="text" id="ID_machine" class="form-control"
                                 placeholder="Chọn ID máy...">
-                            <div id="suggestions" style="border: 1px solid #ccc; display: none;"></div>
-                            <div id="error-message" style="color: red; display: none;"></div>
+                            {{-- <div id="suggestions" style="border: 1px solid #ccc; display: none;"></div>
+                            <div id="error-message" style="color: red; display: none;"></div> --}}
 
 
                         </div>
 
                         <div class="col-sm-4 col-xl-2 mb-3">
                             <span>Item check list:</span>
-                            <select name="item" id="Checklist_item" class="form-select">
-                            </select>
+                            <input name="Checklist_item" type="text" id="Checklist_item" class="form-control">
+                            {{-- <select name="item" id="Checklist_item" class="form-select">
+                            </select> --}}
                         </div>
                         <div class="col-sm-4 col-xl-2 mb-3">
                             <span>Khung check:</span>
@@ -198,6 +210,7 @@
             var currentDate = new Date();
             var date = currentDate.toISOString().split('T')[0];
             const hours = currentDate.getHours();
+            var rowSelected;
             // console.log(hours);
             // const hours = 22;
 
@@ -262,7 +275,7 @@
                 console.log(machineID);
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('check.machine') }}',
+                    url: "{{ route('check.machine') }}",
                     contentType: 'application/json', // Đảm bảo là gửi dữ liệu dưới dạng JSON
                     data: JSON.stringify({
                         machine_id: machineID,
@@ -312,7 +325,10 @@
 
                         $('#Line_search').val(line_check);
                         search();
-                        show_overview();
+                        // show_overview();
+                        // show_data_table();
+                        // initializeDataTable();
+
 
 
                     }
@@ -379,7 +395,7 @@
                         });
                         $.each(response.model, function(index, value) {
                             $('#Model').append($('<option>', {
-                                value: value.id,
+                                value: value.model,
                                 text: value.model,
                             }));
                         });
@@ -422,7 +438,7 @@
                         }));
                         $.each(response.model, function(index, value) {
                             $('#Model').append($('<option>', {
-                                value: value.id,
+                                value: value.model,
                                 text: value.model,
                             }));
                         });
@@ -464,45 +480,13 @@
 
             }
 
-            $('#Line_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
+            $('#Line_search,#Code_machine,#shift_search,#Machine_search,#date_form,#Status_search').on('change',
+                function(e) {
+                    e.preventDefault();
+                    search();
+                });
 
-            });
 
-            $('#Code_machine').on('change', function(e) {
-                e.preventDefault();
-                var code_ID = $('#Code_machine').val();
-                // checkMachineID(code_ID);
-                search();
-                show_overview()
-
-            });
-            $('#shift_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-            $('#Machine_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-            });
-
-            $('#date_form').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
-            $('#Status_search').on('change', function(e) {
-                e.preventDefault();
-                search();
-                show_overview()
-
-            });
 
             function createProgressBar(line, completion) {
                 const progressContainer = $('#progress-container-1');
@@ -526,7 +510,7 @@
             }
 
             function show_check_list(ID_checklist) {
-                console.log(ID_checklist);
+                // console.log(ID_checklist);
                 $.ajax({
                     type: "GET",
                     url: '{{ route('check.list.search') }}',
@@ -583,11 +567,16 @@
                             data: data,
                             "info": false,
                             'ordering': false,
+                            'order': false,
                             'searching': false,
                             "lengthMenu": [
                                 [-1],
                                 ["Show all"]
-                            ]
+                            ],
+                            initComplete: function() {
+                                // Căn giữa các tiêu đề cột
+                                $('#table-check-list thead th').css('text-align', 'center');
+                            },
                         });
 
                         // document.querySelectorAll(".status_OK").forEach(function(okCheckbox) {
@@ -631,7 +620,7 @@
             }
 
             function show_check_list_edit(ID_checklist) {
-                console.log(ID_checklist);
+                // console.log(ID_checklist);
                 $.ajax({
                     type: "GET",
                     url: '{{ route('check.list.edit.search') }}',
@@ -639,7 +628,7 @@
                         id_checklist: ID_checklist,
                     },
                     success: function(response) {
-                        console.log(response.data_checklist);
+                        // console.log(response.data_checklist);
                         // $('#table-check-list').DataTable().destroy();
                         var count = 0;
                         var data = [];
@@ -717,13 +706,239 @@
                             "lengthMenu": [
                                 [-1],
                                 ["Show all"]
-                            ]
+                            ],
+                            initComplete: function() {
+                                // Căn giữa các tiêu đề cột
+                                $('#table-check-list thead th').css('text-align', 'center');
+                            },
                         });
 
 
                     }
                 });
             }
+
+            function show_data_table() {
+                if (tables) {
+                    $('#table_check_list_search').DataTable().destroy();
+                }
+                return $('#table_check_list_search').DataTable({
+                    processing: true, // Cho phép xử lý dữ liệu trong lúc tải
+                    serverSide: true, // Bật chế độ server-side pagination
+                    ajax: {
+                        url: "{{ route('check.list.overview') }}", // Đường dẫn đến route mà ta đã định nghĩa
+                        type: "post",
+                        data: function(d) {
+                            d.line_search = $('#Line_search option:selected').text();
+                            d.Machine_search = $('#Machine_search option:selected').text();
+                            d.shift_search = $('#shift_search option:selected').text();
+                            d.Status_search = $('#Status_search option:selected').text();
+                            d.Code_machine = $('#Code_machine').val();
+                            d.date_form = ($('#date_form').val());
+                        },
+                    },
+
+                    columns: [{
+                            data: null, // Không cần dữ liệu vì chúng ta sẽ tính số thứ tự
+                            name: null,
+                            render: function(data, type, row, meta) {
+                                return meta.row +
+                                    1; // meta.row trả về chỉ số dòng, cộng thêm 1 để bắt đầu từ 1
+                            },
+                            title: 'STT' // Tên cột sẽ hiển thị là "STT"
+                        },
+                        {
+                            data: 'Locations',
+                            name: 'Locations'
+                        },
+                        {
+                            data: 'Model',
+                            name: 'Model'
+                        },
+                        {
+                            data: 'Machine',
+                            name: 'Machine'
+                        },
+                        {
+                            data: 'Code_machine',
+                            name: 'Code_machine'
+                        },
+                        {
+                            data: 'item_checklist',
+                            name: 'item_checklist'
+                        },
+                        {
+                            data: 'Khung_check',
+                            name: 'Khung_check'
+                        },
+                        {
+                            data: 'id',
+                            render: function(data, type, row) {
+                                var editButton = '';
+                                var deleteButton = '';
+                                var viewButton = '';
+                                var checkButton = '';
+
+                                // Dựa trên trạng thái Check_status để quyết định nút hiển thị
+                                if (row.Check_status === "Completed") {
+                                    // Thêm nút View, Edit và Delete khi trạng thái là "Completed"
+                                    viewButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-success btn-sm view-show check editbtn" id="view_' +
+                                        data + '"><span class="icon-eye"></span></button>';
+                                    editButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-warning btn-sm editbtn" id="edit_' +
+                                        data + '"><span class="icon-pencil2"></span></button>';
+                                    deleteButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger btn-sm deletebtn" id="delete_' +
+                                        data + '"><span class="icon-trash1"></span></button>';
+                                } else if (row.Check_status === "Pending") {
+                                    // Thêm nút Check khi trạng thái là "Pending"
+                                    checkButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-primary btn-sm checkbtn" id="check_' +
+                                        data + '"><span class="icon-check"></span></button>';
+                                } else {
+                                    // Thêm nút Delete All khi trạng thái là khác
+                                    deleteButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger btn-sm deletebtn" id="delete_all_' +
+                                        data +
+                                        '"><span class="icon-trash1"></span></button>';
+                                }
+
+                                // Trả về tất cả các nút sẽ được hiển thị trong cột hành động
+                                return viewButton + editButton + checkButton + deleteButton;
+                            },
+                            title: 'Actions' // Tiêu đề cho cột hành động
+                        }
+                    ],
+                    pageLength: 10, // Mỗi trang có 20 bản ghi
+                    ordering: false, // Tắt chức năng sắp xếp (có thể bật lại nếu cần)
+                    searching: true, // Cho phép tìm kiếm
+                    lengthChange: true, // Cho phép thay đổi số bản ghi mỗi trang
+                    info: false, // Tắt thông tin số lượng bản ghi (total, filtered)
+                    autoWidth: false,
+                    select: {
+                        style: 'single',
+                    }, // Tự động điều chỉnh chiều rộng của cột
+                });
+            }
+            // var tables; // Định nghĩa biến để chứa DataTable
+
+            function initializeDataTable() {
+                // Khởi tạo DataTable nếu chưa được khởi tạo
+                if (tables) {
+                    $('#table_check_list_search').DataTable().destroy();
+                }
+                tables = $('#table_check_list_search').DataTable({
+                    processing: true, // Cho phép xử lý dữ liệu trong lúc tải
+                    serverSide: true, // Bật chế độ server-side pagination
+                    ajax: {
+                        url: "{{ route('check.list.overview') }}", // Đường dẫn đến route mà ta đã định nghĩa
+                        type: "post",
+                        data: function(d) {
+                            d.line_search = $('#Line_search option:selected').text();
+                            d.Machine_search = $('#Machine_search option:selected').text();
+                            d.shift_search = $('#shift_search option:selected').text();
+                            d.Status_search = $('#Status_search option:selected').text();
+                            d.Code_machine = $('#Code_machine').val();
+                            d.date_form = ($('#date_form').val());
+                        },
+                    },
+                    columns: [{
+                            data: null, // Không cần dữ liệu vì chúng ta sẽ tính số thứ tự
+                            name: null,
+                            render: function(data, type, row, meta) {
+                                return meta.row +
+                                    1; // meta.row trả về chỉ số dòng, cộng thêm 1 để bắt đầu từ 1
+                            },
+                            title: 'STT' // Tên cột sẽ hiển thị là "STT"
+                        },
+                        {
+                            data: 'Locations',
+                            name: 'Locations'
+                        },
+                        {
+                            data: 'Model',
+                            name: 'Model'
+                        },
+                        {
+                            data: 'Machine',
+                            name: 'Machine'
+                        },
+                        {
+                            data: 'Code_machine',
+                            name: 'Code_machine'
+                        },
+                        {
+                            data: 'item_checklist',
+                            name: 'item_checklist'
+                        },
+                        {
+                            data: 'Khung_check',
+                            name: 'Khung_check'
+                        },
+                        {
+                            data: 'id',
+                            render: function(data, type, row) {
+                                var editButton = '';
+                                var deleteButton = '';
+                                var viewButton = '';
+                                var checkButton = '';
+
+                                // Dựa trên trạng thái Check_status để quyết định nút hiển thị
+                                if (row.Check_status === "Completed") {
+                                    // Thêm nút View, Edit và Delete khi trạng thái là "Completed"
+                                    viewButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-success btn-sm view-show check editbtn" id="view_' +
+                                        data + '"><span class="icon-eye"></span></button>';
+                                    editButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-warning btn-sm editbtn" id="edit_' +
+                                        data + '"><span class="icon-pencil2"></span></button>';
+                                    deleteButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger btn-sm deletebtn" id="delete_' +
+                                        data + '"><span class="icon-trash1"></span></button>';
+                                } else if (row.Check_status === "Pending") {
+                                    // Thêm nút Check khi trạng thái là "Pending"
+                                    checkButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-check" class="btn btn-primary btn-sm checkbtn" id="check_' +
+                                        data + '"><span class="icon-check"></span></button>';
+                                } else {
+                                    // Thêm nút Delete All khi trạng thái là khác
+                                    deleteButton = '<button type="button" value="' + data +
+                                        '" data-bs-toggle="modal" data-bs-target="#modal-delete" class="btn btn-danger btn-sm deletebtn" id="delete_all_' +
+                                        data +
+                                        '"><span class="icon-trash1"></span></button>';
+                                }
+
+                                // Trả về tất cả các nút sẽ được hiển thị trong cột hành động
+                                return viewButton + editButton + checkButton + deleteButton;
+                            },
+                            title: 'Actions' // Tiêu đề cho cột hành động
+                        }
+                    ],
+                    pageLength: 10, // Mỗi trang có 10 bản ghi
+                    ordering: false,
+                    searching: true,
+                    lengthChange: true,
+                    info: false,
+                    autoWidth: false,
+                    select: {
+                        style: 'single'
+                    }, // Tự động điều chỉnh chiều rộng của cột
+                });
+            }
+
+            function updateDataTable() {
+                // Kiểm tra xem DataTable đã được khởi tạo hay chưa
+                if ($.fn.dataTable.isDataTable('#table_check_list_search')) {
+                    // Nếu DataTable đã được khởi tạo rồi, chỉ cần reload dữ liệu
+                    tables.ajax.reload();
+                } else {
+                    // Nếu chưa khởi tạo, khởi tạo mới DataTable
+                    initializeDataTable();
+                }
+            }
+
+
 
             function search() {
                 if (tables) {
@@ -823,21 +1038,22 @@
                                 ]);
                             });
 
-                            var header =
-                                '<thead class="table-success" style="text-align: center; vertical-align:middle">' +
-                                '<tr style="text-align: center">' +
-                                '<th style="text-align: center">STT</th>' +
-                                '<th style="text-align: center">Line</th>' +
-                                '<th style="text-align: center">Model</th>' +
-                                '<th style="text-align: center">Machine</th>' +
-                                '<th style="text-align: center">Code QL</th>' +
-                                '<th style="text-align: center">Check List</th>' +
-                                '<th style="text-align: center">Khung check</th>' +
-                                '<th style="text-align: center">Edit</th>' +
-                                '</tr>'
-                            '</thead>'
+                            // var header =
+                            //     '<thead class="table-success" style="text-align: center; vertical-align:middle">' +
+                            //     '<tr style="text-align: center">' +
+                            //     '<th style="text-align: center">STT</th>' +
+                            //     '<th style="text-align: center">Line</th>' +
+                            //     '<th style="text-align: center">Model</th>' +
+                            //     '<th style="text-align: center">Machine</th>' +
+                            //     '<th style="text-align: center">Code QL</th>' +
+                            //     '<th style="text-align: center">Check List</th>' +
+                            //     '<th style="text-align: center">Khung check</th>' +
+                            //     '<th style="text-align: center">Edit</th>' +
+                            //     '</tr>'
+                            // '</thead>'
 
-                            $('#table_check_list_search').html(header);
+
+                            // $('#table_check_list_search').html(header);
                             tables = $('#table_check_list_search').DataTable({
                                 data: data,
                                 "info": true,
@@ -847,7 +1063,6 @@
                                 select: {
                                     style: 'single',
                                 },
-
                             });
                         }
                     });
@@ -856,173 +1071,90 @@
 
 
             var id_checklist_detail = 0;
+
             $(document).on('click', '.view-check', function(e) {
                 e.preventDefault();
-                // show_model_check();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save-check-list').show(); // Ẩn nút Save
+                $('#update-check-list').hide(); // Hiển thị nút Update
                 id_checklist_detail = $(this).val();
                 id_checklist = this.id;
-
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    console.log(rowData);
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Machine option').text(rowData[3]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#Line option').text(rowData[1]);
-                    $('#Checklist_item option').text(rowData[5]);
-                    $('#Khung_gio option').text(rowData[6]);
-                    // $('#ID_machine').val(rowData[4]);
-                    // $('#Line option').each(function() {
-                    //     if ($(this).text() === rowData[1]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Machine option').each(function() {
-                    //     if ($(this).text() === rowData[3]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Checklist_item option').each(function() {
-                    //     if ($(this).text() === rowData[5]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    // $('#Khung_gio option').each(function() {
-                    //     if ($(this).text() === rowData[6]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-
-                    // $('#Model option').each(function() {
-                    //     if ($(this).text() === rowData[2]) {
-                    //         $(this).prop('selected', true); // Chọn option có text khớp
-                    //     }
-                    // });
-                    date = rowData[9];
-                    shift = rowData[7];
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', false);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
                 }
+                var rowData = tables.row(rowSelected).data();
+                // Lấy dữ liệu của dòng đầu tiên được chọn
+                $('#Machine option').text(rowData[3]);
+                $('#ID_machine').val(rowData[4]);
+                $('#Line option').text(rowData[1]);
+                $('#Checklist_item').val(rowData[5]);
+                $('#Khung_gio option').text(rowData[6]);
 
+                date = rowData[9];
+                shift = rowData[7];
+
+                $('#Model').prop('disabled', false);
+                $('#Machine,#ID_machine,#Line,#Checklist_item,#Khung_gio').prop('disabled', true);
 
                 show_check_list(id_checklist)
 
             });
 
+
             $(document).on('click', '.view-edit', function(e) {
                 e.preventDefault();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'unset'; // Ẩn button
+                $('#save-check-list').hide(); // Ẩn nút Save
+                $('#update-check-list').show(); // Hiển thị nút Update
                 id_checklist_detail = $(this).val();
                 id_checklist = this.id;
 
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    // $('#Machine option').text(rowData[3]);
-
-                    // $('#line option').text(rowData[1]);
-
-                    // $('#Checklist_item option').text(rowData[5]);
-                    // $('#Khung_gio option').text(rowData[6]);
-                    // $('#Model option:selected').text(rowData[2]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#line option').each(function() {
-                        if ($(this).text() === rowData[1]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Machine option').each(function() {
-                        if ($(this).text() === rowData[3]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Checklist_item option').each(function() {
-                        if ($(this).text() === rowData[5]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    $('#Khung_gio option').each(function() {
-                        if ($(this).text() === rowData[6]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-
-                    $('#Model option').each(function() {
-                        if ($(this).text() === rowData[2]) {
-                            $(this).prop('selected', true); // Chọn option có text khớp
-                        }
-                    });
-                    date = rowData[9];
-                    shift = rowData[7];
-
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', false);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];    
                 }
+               
+                var rowData = tables.row(rowSelected).data();
+                console.log(rowData);
+                // Lấy dữ liệu của dòng đầu tiên được chọn
+                $('#Machine option').text(rowData[3]);
+                $('#ID_machine').val(rowData[4]);
+                $('#Line option').text(rowData[1]);
+                $('#Checklist_item').val(rowData[5]);
+                $('#Khung_gio option').text(rowData[6]);
+                $('#Model').val(rowData[2]);
+                date = rowData[9];
+                shift = rowData[7];              
 
-
+                $('#Model').prop('disabled', false);
+                $('#Machine,#ID_machine,#Line,#Checklist_item,#Khung_gio').prop('disabled', true);
                 show_check_list_edit(id_checklist_detail)
 
             });
 
             $(document).on('click', '.view-show', function(e) {
                 e.preventDefault();
-                const button1 = document.getElementById('save-check-list');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update-check-list');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save-check-list').hide(); // Ẩn nút Save
+                $('#update-check-list').hide(); // Hiển thị nút Update
                 id_checklist_detail = $(this).val();
                 id_checklist = this.id;
-
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#Machine option').text(rowData[3]);
-                    $('#ID_machine').val(rowData[4]);
-                    $('#line option').text(rowData[1]);
-                    $('#Checklist_item option').text(rowData[5]);
-                    $('#Khung_gio option').text(rowData[6]);
-                    $('#Model option:selected').text(rowData[2]);
-                    date = rowData[9];
-                    shift = rowData[7];
-
-                    $('#Model option:selected').filter(function() {
-                        return $(this).text() === rowData[2];
-                    }).prop('selected', true);
-
-                    $('#Model').prop('disabled', true);
-                    $('#Machine').prop('disabled', true);
-                    $('#ID_machine').prop('disabled', true);
-                    $('#Line').prop('disabled', true);
-                    $('#Checklist_item').prop('disabled', true);
-                    $('#Khung_gio').prop('disabled', true);
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];    
                 }
+                var rowData = tables.row(rowSelected).data();
+           
+                // Lấy dữ liệu của dòng đầu tiên được chọn
+                $('#Machine option').text(rowData[3]);
+                $('#ID_machine').val(rowData[4]);
+                $('#Line option').text(rowData[1]);
+                $('#Checklist_item').val(rowData[5]);
+                $('#Khung_gio option').text(rowData[6]);
+                $('#Model').val(rowData[2]);
+                date = rowData[9];
+                shift = rowData[7];              
 
+                $('#Model').prop('disabled', true);
+                $('#Machine,#ID_machine,#Line,#Checklist_item,#Khung_gio').prop('disabled', true);
 
                 show_check_list_edit(id_checklist_detail)
 

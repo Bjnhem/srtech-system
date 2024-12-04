@@ -211,7 +211,7 @@ class OQCLosssController extends Controller
             $query->where('line_losses.time_slot', $time);
         }
 
-        $data_loss = $query->orderBy('plans.date', 'desc')->get();
+        $data_loss = $query->orderBy('line_losses.id', 'desc')->get();
 
 
         // Trả dữ liệu JSON

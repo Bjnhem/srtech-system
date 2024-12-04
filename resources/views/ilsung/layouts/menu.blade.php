@@ -112,14 +112,14 @@
     {{-- user --}}
 
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link  {{ Request::is('users*') ? 'active' : '' }}" aria-current="page"
             href="{{ route('users.index') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/group.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Users</span>
         </a>
-    </li>
+    </li> --}}
 
     {{-- <li class="nav-item">
         <a class="nav-link " data-bs-toggle="collapse" href="#sidebar-user" role="button" aria-expanded="false"

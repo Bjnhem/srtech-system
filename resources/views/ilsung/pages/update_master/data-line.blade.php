@@ -78,158 +78,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-3 col-md-6">
-            <div class="card bg-soft-info">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="bg-soft-info rounded p-3">
-
-                            <img class=" icon" src="{{ asset('checklist-ilsung/icon/smartphone.png') }}" alt="Camera"
-                                width="30" height="30">
-                        </div>
-                        <div class="text-end">
-                            <h2 class="counter counter_model" style="visibility: visible;">5600</h2>
-                            Model
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card bg-soft-warning">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="bg-soft-warning rounded p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div class="text-end">
-                            <h2 class="counter" style="visibility: visible;">5600</h2>
-                            Nurses
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card bg-soft-danger">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="bg-soft-danger rounded p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path
-                                    d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="text-end">
-                            <h2 class="counter" style="visibility: visible;">3500</h2>
-                            Patients
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card bg-soft-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div class="text-end">
-                            <h2 class="counter" style="visibility: visible;">4500</h2>
-                            Pharmacists
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="{{ route('update.data.model') }}">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="bg-info text-white rounded p-3">
-                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/smartphone.png') }}"
-                                    alt="Camera" width="30" height="30">
-                            </div>
-                            <div class="text-end">
-                                Danh sách model
-                                <h2 class="counter" style="visibility: visible;">75</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="{{ route('update.data.line') }}">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="bg-warning text-white rounded p-3">
-                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/production.png') }}"
-                                    alt="Camera" width="30" height="30">
-                            </div>
-                            <div class="text-end">
-                                Products line
-                                <h2 class="counter counter_line" style="visibility: visible;">60</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="{{ route('update.data.machine') }}">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="bg-success text-white rounded p-3">
-                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/machine.png') }}" alt="Camera"
-                                    width="30" height="30">
-                            </div>
-                            <div class="text-end">
-                                Machine master
-                                <h2 class="counter counter_machine" style="visibility: visible;">80</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <a href="{{ route('update.data.machine.list') }}">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="bg-danger text-white rounded p-3">
-                                <img class=" icon" src="{{ asset('checklist-ilsung/icon/evaluating.png') }}"
-                                    alt="Camera" width="30" height="30">
-
-                            </div>
-                            <div class="text-end">
-                                List machine
-                                <h2 class="counter counter-list_machine" style="visibility: visible;">45</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-    </div>
+   
 @endsection
 
 @section('admin-js')
@@ -326,18 +175,13 @@
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_add);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save').show(); // Ẩn nút Save
+                $('#update').hide(); // Hiển thị nút Update
                 $('#modal-created').modal('show');
             });
             $(document).on('click', '#save', function(e) {
                 e.preventDefault();
-                // const Model = $('#Model').text();
-                // const Model_name = $('#Model_name').text();
-                // const Status = $('#Status option:selected').text();
-                const data = new FormData(document.getElementById('form_data'));
+                                const data = new FormData(document.getElementById('form_data'));
                 data.append('table', table_name);
                 data.append('id', "");
                 if (data.get('line_name') == "" || data.get('Location') == "") {
@@ -374,23 +218,22 @@
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_edit);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'unset'; // Ẩn button
+                $('#save').hide(); // Ẩn nút Save
+                $('#update').show(); // Hiển thị nút Update
                 id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                // console.log(rowSelected[1]);
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
+                }
+                var rowData = tables.row(rowSelected).data();
                     // Lấy dữ liệu của dòng đầu tiên được chọn
                     // console.log(rowData[1]);
                     $('#line_name').val(rowData[1]);
                     $('#Location').val(rowData[2]);
                     $('#Status').val(rowData[3]);
                     
-                }
+                
                 $('#modal-created').modal('show');
             });
 

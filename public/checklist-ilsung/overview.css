@@ -65,7 +65,6 @@
     opacity: 1;
 }
 
-
 /* .sidebar {
     position: -webkit-sticky;
     position: sticky;
@@ -246,7 +245,7 @@
 }
 
 .form-control {
-    border: 1px solid #ced4da ! IMPORTANT;
+    border: 1px solid #ced4da !important;
     border-radius: 0.5rem;
 }
 
@@ -256,7 +255,7 @@
 }
 
 .content-inner {
-    padding: calc(var(--bs-gutter-x, 0.4rem)* 3);
+    padding: calc(var(--bs-gutter-x, 0.4rem) * 3);
 }
 
 .nav .search-input {
@@ -334,7 +333,7 @@
     max-width: unset;
 }
 
-@media (max-width:900px) {
+@media (max-width: 900px) {
     .modal-dialog.large {
         width: 100% !important;
         max-width: unset;
@@ -390,11 +389,11 @@ table.dataTable td {
     flex-direction: row !important;
 }
 
-.card.d-flex>img {
+.card.d-flex > img {
     width: 20% !important;
 }
 
-.card.d-flex>.card-body {
+.card.d-flex > .card-body {
     width: 80% !important;
 }
 
@@ -416,15 +415,15 @@ span.btn:hover {
 
 div.stars {
     width: auto;
-    display: inline-block
+    display: inline-block;
 }
 
 .mt-200 {
-    margin-top: 200px
+    margin-top: 200px;
 }
 
 input.star {
-    display: none
+    display: none;
 }
 
 label.star {
@@ -432,31 +431,31 @@ label.star {
     /* padding: 10px; */
     font-size: 30px;
     color: #333333;
-    transition: all .2s
+    transition: all 0.2s;
 }
 
-input.star:checked~label.star:before {
-    content: '\2605';
+input.star:checked ~ label.star:before {
+    content: "\2605";
     color: #ffc800;
-    transition: all .25s
+    transition: all 0.25s;
 }
 
-input.star-5:checked~label.star:before {
+input.star-5:checked ~ label.star:before {
     color: #ffc800;
     /* text-shadow: 0 0 20px #952 */
 }
 
-input.star-1:checked~label.star:before {
-    color: #F62
+input.star-1:checked ~ label.star:before {
+    color: #f62;
 }
 
 label.star:hover {
-    transform: rotate(-15deg) scale(1.3)
+    transform: rotate(-15deg) scale(1.3);
 }
 
 label.star:before {
-    content: '\2605';
-    font-family: FontAwesome
+    content: "\2605";
+    font-family: FontAwesome;
 }
 
 #top-header {
@@ -473,7 +472,7 @@ label.star:before {
 }
 
 #top-header:before {
-    content: '';
+    content: "";
     position: absolute;
     height: 80vh;
     width: calc(100%);
@@ -484,7 +483,7 @@ label.star:before {
     background-repeat: no-repeat;
     background-position: center center;
     z-index: 0;
-    filter: brightness(.95)
+    filter: brightness(0.95);
 }
 
 .company-name {
@@ -496,7 +495,7 @@ label.star:before {
 }
 
 img.company-logo {
-    transition: transform .02s ease-in;
+    transition: transform 0.02s ease-in;
 }
 
 img.company-logo:hover {
@@ -515,17 +514,23 @@ img.company-logo:hover {
     border-radius: 0.5rem !important;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__placeholder {
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__placeholder {
     color: #999;
     line-height: 40px;
     font-size: 16px;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__arrow {
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
     display: none;
 }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
     color: #444;
     line-height: 40px !important;
 }
@@ -540,7 +545,6 @@ img.company-logo:hover {
     transition: background-color 0.3s, color 0.3s;
 }
 
-
 /* Giới hạn chiều cao của modal-body và thêm thanh cuộn */
 
 .modal-body {
@@ -549,7 +553,6 @@ img.company-logo:hover {
     overflow-y: auto;
     /* Thêm thanh cuộn dọc */
 }
-
 
 /* Đảm bảo bảng không bị bóp méo trên màn hình nhỏ */
 
@@ -602,14 +605,14 @@ img.company-logo:hover {
     transition: color 0.3s ease;
 }
 
-.radio-button input:checked+.radio-icon {
+.radio-button input:checked + .radio-icon {
     background: linear-gradient(145deg, #007bff, #0056b3);
     color: #fff;
     box-shadow: inset 4px 4px 8px #0056b3, inset -4px -4px 8px #0094ff;
     border-color: #0056b3;
 }
 
-.radio-button input:checked~.radio-text {
+.radio-button input:checked ~ .radio-text {
     color: #007bff;
 }
 
@@ -645,7 +648,6 @@ img.company-logo:hover {
     align-items: center;
 }
 
-
 /* Card Header Styling */
 
 .card-header {
@@ -662,7 +664,6 @@ img.company-logo:hover {
     /* Khoảng cách ngang giữa nội dung */
 }
 
-
 /* Header Title Styling */
 
 .header-title {
@@ -672,7 +673,6 @@ img.company-logo:hover {
     margin: 0;
     /* Loại bỏ khoảng cách mặc định */
 }
-
 
 /* Button Group Styling */
 
@@ -691,7 +691,6 @@ img.company-logo:hover {
     background-color: rgb(0 135 99);
 }
 
-
 /* General Table Styling */
 
 .table {
@@ -705,7 +704,6 @@ img.company-logo:hover {
     padding: 0.75rem 1rem;
 }
 
-
 /* Padding và căn chỉnh bảng */
 
 .table th,
@@ -717,7 +715,6 @@ img.company-logo:hover {
     vertical-align: middle;
     /* Đặt nội dung giữa ô */
 }
-
 
 /* Giảm kích thước cho bảng trên màn hình nhỏ */
 
@@ -737,14 +734,12 @@ img.company-logo:hover {
     }
 }
 
-
 /* Responsive Table Overflow */
 
 .table-responsive {
     overflow-x: auto;
     /* Cuộn ngang nếu bảng quá rộng */
 }
-
 
 /* Responsive Styling for Buttons */
 
@@ -754,7 +749,6 @@ img.company-logo:hover {
     padding: 4px 8px;
     /* Giảm padding nút */
 }
-
 
 /* Style cho radio buttons */
 
@@ -805,14 +799,12 @@ img.company-logo:hover {
     text-align: center;
 }
 
-
 /* Style cho form select */
 
 .form-select {
     border-radius: 0.375rem;
     padding: 0.5rem 1rem;
 }
-
 
 /* Button actions */
 
@@ -825,14 +817,12 @@ button:hover {
     opacity: 0.85;
 }
 
-
 /* Reset search button */
 
 #reset-search {
     background-color: #f8f9fa;
     border-color: #6c757d;
 }
-
 
 /* Thêm các hiệu ứng hover */
 
@@ -845,32 +835,28 @@ button:hover {
     /* Mượt mà */
 }
 
-
 /* Căn giữa màn hình và container */
-
 
 /* To center content and align the cards properly */
 
-.container {
+/* .container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     padding: 0;
-}
-
+} */
 
 /* Card container settings */
 
-.card.tech-card {
+/* .card.tech-card {
     border-radius: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* background-color: #fff; */
+   
     color: #fff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 20vw;
-}
-
+} */
 
 /* Icon container style */
 
@@ -881,7 +867,6 @@ button:hover {
     margin-right: 20px;
     transition: transform 0.3s ease;
 }
-
 
 /* Content of the card */
 
@@ -895,7 +880,6 @@ button:hover {
     font-size: 1rem;
     color: #f4f4f4;
 }
-
 
 /* Card colors for each section */
 
@@ -914,7 +898,6 @@ button:hover {
     /* Red */
 }
 
-
 /* Hover effect for cards */
 
 .card.tech-card:hover {
@@ -926,7 +909,6 @@ button:hover {
     transform: scale(1.2);
     /* Increase size of icon */
 }
-
 
 /* Hover color change for icons */
 
@@ -942,7 +924,6 @@ button:hover {
     background-color: #c5313b;
 }
 
-
 /* Styling for smaller devices */
 
 @media (max-width: 768px) {
@@ -953,14 +934,17 @@ button:hover {
     .col-md-4 {
         margin-bottom: 20px;
     }
+    
 }
+
+
+
 
 Áp dụng border cho tất cả các ô trong bảng .table-bordered th,
 .table-bordered td {
     border: 1px solid #dee2e6;
     /* Màu của border có thể tùy chỉnh */
 }
-
 
 /* Cải thiện kiểu dáng của hàng tiêu đề */
 
@@ -973,10 +957,84 @@ button:hover {
     /* Border dưới hàng tiêu đề */
 }
 
-
 /* Đảm bảo rằng các ô có colspan cũng có border */
 
 .table-bordered th[colspan],
 .table-bordered td[colspan] {
     border: 1px solid #dee2e6;
 }
+
+.chart-container {
+    width: 100%; /* Điều chỉnh độ rộng tổng thể của biểu đồ */
+    margin: 20px auto; /* Căn giữa biểu đồ với khoảng cách trên/dưới */
+    padding: 20px; /* Khoảng cách bên trong khung chứa */
+    background-color: #ffffff; /* Nền trắng cho khung biểu đồ */
+    border-radius: 10px; /* Bo góc khung chứa */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng mềm mại */
+    /* height: 400px; */
+}
+
+.chart-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333333; /* Màu chữ đậm */
+    margin-bottom: 30px;
+    text-transform: uppercase; /* Viết hoa toàn bộ tiêu đề */
+    letter-spacing: 1px; /* Khoảng cách giữa các chữ */
+}
+
+.row {
+    display: flex;
+    justify-content: space-between; /* Giãn đều khoảng cách giữa các cột */
+    align-items: center; /* Căn giữa theo trục dọc */
+    margin-bottom: 20px;
+}
+
+.col-sm-6 {
+    flex: 0 0 calc(50% - 20px); /* Chia đều mỗi cột, trừ khoảng cách giữa */
+    max-width: calc(50% - 20px);
+}
+
+label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #555555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #cccccc; /* Đường viền nhạt */
+    border-radius: 5px; /* Bo tròn góc input */
+    padding: 10px 15px; /* Khoảng cách bên trong input */
+    font-size: 14px;
+    color: #333333;
+    transition: all 0.3s ease; /* Hiệu ứng khi focus */
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #007bff; /* Đổi viền sang màu xanh */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng bóng khi focus */
+    outline: none;
+}
+
+#progressChart {
+    max-width: 100%; /* Biểu đồ không vượt quá kích thước khung chứa */
+    height: auto; /* Tự động điều chỉnh chiều cao */
+    margin-top: 20px; /* Khoảng cách trên biểu đồ */
+}
+
+.input-daterange .form-control {
+    width: 100%; /* Input chiếm toàn bộ chiều rộng của khung */
+}
+
+
+
+canvas {
+    cursor: pointer; /* Con trỏ chuột thay đổi khi hover */
+}
+
+

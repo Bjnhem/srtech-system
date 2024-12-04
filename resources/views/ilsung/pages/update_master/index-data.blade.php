@@ -75,7 +75,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <!-- <div class="col-lg-3 col-md-6">
             <a href="{{ route('update.data.checklist.master') }}">
                 <div class="card">
                     <div class="card-body">
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> -->
 
     </div>
 @endsection

@@ -161,6 +161,7 @@
             let title_edit = "Edit machine";
             var tables;
             let id;
+            var rowSelected;
             const Scan = document.getElementById('Scan_QR');
 
             function show_data_table(tab) {
@@ -172,7 +173,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('update.show.data,machine') }}",
+                    url: "{{ route('update.show.data.machine') }}",
                     dataType: "json",
                     data: {
                         table: tab,
@@ -462,10 +463,8 @@
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_add);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save').show(); // Ẩn nút Save
+                $('#update').hide(); // Hiển thị nút Update
                 $('#modal-created').modal('show');
                 id = "";
             });
@@ -479,15 +478,15 @@
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_edit);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'unset'; // Ẩn button
+                $('#save').hide(); // Ẩn nút Save
+                $('#update').show(); // Hiển thị nút Update
                 id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
+                }
+                var rowData = tables.row(rowSelected).data();
                     $('#Machine').val(rowData[1]);
                     $('#Status').val(rowData[5]);
                     $('#Code_machine').val(rowData[2]);
@@ -499,7 +498,7 @@
                         }
                     });
 
-                }
+                
                 $('#modal-created').modal('show');
             });
 

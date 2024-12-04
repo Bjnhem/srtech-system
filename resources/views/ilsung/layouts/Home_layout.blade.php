@@ -72,7 +72,6 @@
 
     <main class="main-content">
 
-
         <div class="conatiner-fluid content-inner mt-4 py-0">
             @yield('content')
 

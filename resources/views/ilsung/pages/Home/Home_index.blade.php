@@ -3,15 +3,14 @@
 @section('content')
     <div class="container">
         <div class="row">
-
             <div class="col-lg-4 col-md-4">
                 <a href="{{ route('Home.checklist') }}">
                     <div class="card bg-soft-info">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="bg-soft-info rounded p-3">
-                                    <img class=" icon" src="{{ asset('checklist-ilsung/icon/machine.png') }}" alt="Camera"
-                                        width="30" height="30">
+                                    <img class=" icon" src="{{ asset('checklist-ilsung/icon/checklist.png') }}"
+                                        alt="Camera" width="30" height="30">
                                 </div>
                                 <div class="text-end">
                                     <h2 class="counter counter_model" style="visibility: visible;">Checklist</h2>

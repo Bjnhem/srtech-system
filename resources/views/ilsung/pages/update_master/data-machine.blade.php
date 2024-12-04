@@ -56,11 +56,6 @@
                                 <input name="Machine" type="text" id="Machine" class="form-control"
                                     placeholder="Nhập tên machine...">
                             </div>
-                            {{-- <div class="col-sm-12 col-xl-4 mb-3">
-                                <span>Location:</span>
-                                <input name="Location" type="text" id="Location" class="form-control"
-                                    placeholder="Nhập vị trí...">
-                            </div> --}}
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <span>Status:</span>
                                 <select name="Status" id="Status" class="form-select">
@@ -90,7 +85,7 @@
             let title_edit = "Edit machine";
             var tables;
             let id;
-
+            var rowSelected;
             function show_data_table(tab) {
 
                 $.ajax({
@@ -186,10 +181,8 @@
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_add);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'none'; // Ẩn button
+                $('#save').show(); // Ẩn nút Save
+                $('#update').hide(); // Hiển thị nút Update
                 $('#modal-created').modal('show');
                 id = "";
             });
@@ -203,22 +196,21 @@
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_edit);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'unset'; // Ẩn button
+                $('#save').hide(); // Ẩn nút Save
+                $('#update').show(); // Hiển thị nút Update
                 id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                // console.log(rowSelected[1]);
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    // console.log(rowData[1]);
+               
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
+                }
+                var rowData = tables.row(rowSelected).data();
+                   
                     $('#Machine').val(rowData[1]);
                     $('#Status').val(rowData[2]);
 
-                }
+                
                 $('#modal-created').modal('show');
             });
 

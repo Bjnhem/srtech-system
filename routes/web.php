@@ -127,7 +127,7 @@ Route::prefix('Checklist/Master')->group(function () {
     Route::get('/data-machine', [\App\Http\Controllers\checklist\UpdateDataController::class, 'data_machine'])->name('update.data.machine');
     Route::get('/data-machine-list', [\App\Http\Controllers\checklist\UpdateDataController::class, 'data_machine_list'])->name('update.data.machine.list');
     Route::get('/data-machine-master', [\App\Http\Controllers\checklist\UpdateDataController::class, 'data_machine_master'])->name('update.data.machine.master');
-    Route::get('/show-data-table_machine', [\App\Http\Controllers\checklist\UpdateDataController::class, 'show_data_table_machine'])->name('update.show.data,machine');
+    Route::get('/show-data-table_machine', [\App\Http\Controllers\checklist\UpdateDataController::class, 'show_data_table_machine'])->name('update.show.data.machine');
 
 
     Route::get('/data-checklist-master', [\App\Http\Controllers\checklist\UpdateDataController::class, 'data_checklist_master'])->name('update.data.checklist.master');
@@ -290,7 +290,7 @@ Route::prefix('OQC/Master')->group(function () {
 
 
 
-    Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data,machine');
+    // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
     Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
     Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
 
