@@ -1,7 +1,6 @@
 @extends('ilsung.OQC.layouts.OQC_layout')
 
 @section('content')
- 
     <div class="card table-responsive" style="border: none">
         <div class="card-header">
             <h3 class="header-title">Quản lý Plan</h3>
@@ -41,27 +40,32 @@
                         <option value="Line 16">Line 16</option>
                     </select> </div>
             </div>
-            <table class="table table-bordered table-hover table-sm" id="table-result" style="width:100%">
-                <thead class="table-success">
+            <div class="table-response">
+                <table class="table table-bordered table-hover table-sm" id="table-result" style="width:100%">
+                    <thead class="table-success">
 
-                    <tr>
-                        <th rowspan="2">Ngày</th>
-                        <th rowspan="2">Shift</th>
-                        <th rowspan="2">Line</th>
-                        <th rowspan="2">Model</th>
-                        <th colspan="6">Khung giờ</th>
-                        <th rowspan="2">Hành động</th>
-                    </tr>
-                    <tr>
-                        <th>Total</th>
-                        <th>Khung A</th>
-                        <th>Khung B</th>
-                        <th>Khung C</th>
-                        <th>Khung D</th>
-                        <th>Khung E</th>
-                    </tr>
-                </thead>
-            </table>
+                        <tr>
+                            <th rowspan="2">Ngày</th>
+                            <th rowspan="2">Shift</th>
+                            <th rowspan="2">Line</th>
+                            <th rowspan="2">Model</th>
+                            <th colspan="6">Khung giờ</th>
+                            <th rowspan="2">Hành động</th>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <th>Khung A</th>
+                            <th>Khung B</th>
+                            <th>Khung C</th>
+                            <th>Khung D</th>
+                            <th>Khung E</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+
+
         </div>
     </div>
 
@@ -71,9 +75,9 @@
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between align-items-center">
                     <h5 class="text-primary mx-3" id="title_modal_data">Thêm Kế Hoạch Sản Xuất</h5>
-                    <div> <button type="button" id="save" class="btn btn-success">Save</button> <button
-                            type="button" id="update" class="btn btn-success">Update</button> <button type="button"
-                            id="close-model" class="btn btn-warning close-model-checklist">Close</button> </div>
+                    <div> <button type="button" id="save" class="btn btn-success">Save</button> <button type="button"
+                            id="update" class="btn btn-success">Update</button> <button type="button" id="close-model"
+                            class="btn btn-warning close-model-checklist">Close</button> </div>
                 </div>
                 <div class="modal-body" style="background-color: white">
                     <div class="card">

@@ -97,36 +97,8 @@
 
                 <h4 class="section-title">Data loss detail</h4>
                 <div class="card ">
-                    <div class="card-body">
-                        {{-- <div class="row" style="padding: 0 5px;">
-                            <div class="col-3 mb-3 bottommargin-sm">
-                                <label for="">Date Search</label>
-                                <div class="input-daterange component-datepicker input-group">
-                                    <input type="text" value="" class="form-control text-start"
-                                        id="date_search_detail" placeholder="YYYY-MM-DD" autocomplete="off">
-                                </div>
-                            </div>
-                            <div class="col-3 mb-3">
-                                <label for="shift_search_detail">Shift</label>
-                                <select id="shift_search_detail" class="form-select">
-
-
-                                </select>
-                            </div>
-                            <div class="col-3 mb-3">
-                                <label for="Line_search_detail">Line</label>
-                                <select id="Line_search_detail" class="form-select">
-
-                                </select>
-                            </div>
-                            <div class="col-3 mb-3">
-                                <label for="khung_gio_detail">Khung giờ</label>
-                                <select id="khung_gio_detail" class="form-select">
-                                </select>
-                            </div>
-
-                        </div> --}}
-
+                    <div class="card-body table-response">
+                        
                         <table class="table table-bordered table-hover table-sm" id="table-result">
                             <thead class="table-success">
                                 <tr>
