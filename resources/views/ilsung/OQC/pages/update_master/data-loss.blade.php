@@ -49,7 +49,7 @@
                 <div class="modal-body" style="background-color: white">
                     <div class="card">
                         <div class="card-header">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center" style="display: contents">
                                 <!-- Phần tải file mẫu -->
                                 <div class="col-md-3 text-start">
                                     <a href="#" id="download-template" class="btn btn-primary">
