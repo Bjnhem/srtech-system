@@ -23,7 +23,7 @@
             </div>
 
         </div>
-        <div class="char-checklist" style="height: 600px;">
+        <div class="char-checklist">
             <canvas id="progressChart"></canvas>
         </div>
     </div>
@@ -540,6 +540,16 @@
             function determineIndexAxis() {
                 const screenWidth = $(window).width();
                 indexAxis = screenWidth < 768 ? "y" : "x"; // Màn hình nhỏ: trục ngang, lớn: trục dọc
+
+                if (screenWidth < 768) {
+                    $('.char-checklist').css('height', '600px');
+                    $('.chart-title').css('font-size', '20px');
+                    
+                } else {
+                    $('.char-checklist').css('height', '400px');
+                    $('.chart-title').css('font-size', '24px');
+
+                }
             }
 
             // Hàm gọi API và cập nhật dữ liệu

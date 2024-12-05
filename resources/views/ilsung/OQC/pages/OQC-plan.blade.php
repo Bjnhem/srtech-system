@@ -33,11 +33,11 @@
                 </div>
                 <div class="col-sm-6 col-xl-4 mb-3"> <span>Line:</span> <select name="Line" id="Line_search"
                         class="form-select">
-                        <option value="All">All</option> <!-- Tạo 16 line -->
-                        <option value="Line 1">Line 1</option>
+                        {{-- <option value="All">All</option> <!-- Tạo 16 line --> --}}
+                        {{-- <option value="Line 1">Line 1</option>
                         <option value="Line 2">Line 2</option>
                         <option value="Line 3">Line 3</option> <!-- ... Thêm các line khác ... -->
-                        <option value="Line 16">Line 16</option>
+                        <option value="Line 16">Line 16</option> --}}
                     </select> </div>
             </div>
             <div class="table-response">
@@ -234,6 +234,7 @@
             let title_edit = "Edit plan";
             var tables;
             let id;
+            let case_action = 'date';
 
             $('#table_name').val(table_name);
             var currentDate = new Date();
@@ -320,49 +321,209 @@
                 }
             });
 
+            function show_data_table() {
+                var date = $('#date_search').val();
+                var shift = $('#shift_search').val();
+                var line = $('#Line_search').val();
+                console.log(date);
+                console.log(shift);
+                console.log(line);
+                $.ajax({
+                    url: "{{ route('OQC.update.show.data.loss.detail2') }}",
+                    type: "GET",
+                    dataType: 'json',
+                    data: {
+                        date: date,
+                        shift: shift,
+                        line: line,
+                    },
+
+                    success: function(response) {
+                        var data = [];
+                        console.log(response.data)
+                        $.each(response.data, function(index, value) {
+                            // console.log(value);
+                            let timeSlotLabel = '';
+                            if (value.shift == "A") {
+                                timeSlotLabel = khung_A[value.time_slot];
+                            } else if (value.shift == "C") {
+                                timeSlotLabel = khung_C[value.time_slot];
+                            }
+                            var tim_slot = '<span class="time-slot" data-time-slot="' + value
+                                .time_slot + '">' +
+                                timeSlotLabel + '</span>';
+
+                            var deleteButton = '<button type="button" value="' + value.id +
+                                '" class="btn btn-danger btn-sm deletebtn" id="delete"><span class="icon-trash1"></span></button>';
+                            data.push([
+                                value.date,
+                                value.line,
+                                tim_slot,
+                                value.prod_qty,
+                                value.Code_ID,
+                                value.name,
+                                deleteButton
+                            ]);
+                        });
+
+                        if (tables) {
+                            tables.clear();
+                            tables.rows.add(data).draw();
+                        } else {
+                            tables = $('#table-result').DataTable({
+                                data: data,
+                                "searching": true,
+                                "autoWidth": false,
+                                "paging": true,
+                                "ordering": false,
+                                "info": false,
+                                select: {
+                                    style: 'single',
+                                },
+                            });
+                        }
 
 
-            $('#date_search, #shift_search, #Line_search').on('change', function() {
+                    },
+                    error: function() {
+                        toastr.success('Có lỗi - vui lòng thực hiện lại');
+                    }
+                });
+            }
+
+
+
+            $('#date_search').on('change', function() {
+                case_action = 'date';
+                show_data_check();
+                // tables.ajax.reload();
+            });
+
+            $('#shift_search').on('change', function() {
+                case_action = 'shift';
+                show_data_check();
+                // tables.ajax.reload();
+            });
+
+            $('#Line_search').on('change', function() {
                 tables.ajax.reload();
             });
 
+
             function show_data_check() {
+                dateInput = $("#date_search").val();
+                // Kiểm tra nếu ngày không được chọn
+                if (!dateInput) {
+                    toastr.error('Vui lòng chọn ngày!');
+                    return;
+                }
                 // Gửi yêu cầu AJAX đến controller để lấy dữ liệu
                 $.ajax({
                     type: "GET",
                     url: "{{ route('OQC.loss.data.plan.search') }}", // Route đã định nghĩa trong Laravel
                     dataType: "json",
                     data: {
-                        date: dateInput,
+                        date: dateInput
                     },
                     success: function(response) {
                         // Kiểm tra phản hồi từ server
                         if (response.status == '400') {
                             toastr.error(response.messcess); // Hiển thị lỗi nếu có
                         } else {
+
                             // Thêm các option mới vào dropdown shift
+                            if (case_action == 'date') {
 
-                            $('#Line_search').empty();
-                            // Thêm các option mới vào dropdown line
-                            if (response.lines && response.lines.length > 0) {
-                                $.each(response.lines, function(index, value) {
-                                    if (value.shift == shift_show) {
-                                        $('#Line_search').append($('<option>', {
-                                            value: value.line,
-                                            text: value.line,
+                                $('#shift_search').empty().append($('<option>', {
+                                    value: 'All',
+                                    text: 'All',
+                                }));
+                                if (response.shifts && response.shifts.length > 0) {
+                                    $.each(response.shifts, function(index, value) {
+                                        $('#shift_search').append($('<option>', {
+                                            value: value,
+                                            text: value,
                                         }));
-                                    }
 
-                                });
+                                    });
+                                }
+                                $('#Line_search').empty().append($('<option>', {
+                                    value: 'All',
+                                    text: 'All',
+                                }));
+
+                                $('#line,#model').empty();
+
+                                // Thêm các option mới vào dropdown line
+                                if (response.lines && response.lines.length > 0) {
+                                    var shift_show = $('#shift_search').val();
+                                    $.each(response.lines, function(index, value) {
+                                        if (shift_show != 'All') {
+                                            if (value.shift == shift_show) {
+                                                $('#Line_search').append($('<option>', {
+                                                    value: value.line,
+                                                    text: value.line,
+                                                }));
+                                            }
+
+                                        } else {
+                                            $('#Line_search,#line').append($('<option>', {
+                                                value: value.line,
+                                                text: value.line,
+                                            }));
+
+
+                                        }
+
+
+                                    });
+                                }
+
+                                if (response.models && response.models.length > 0) {
+                                    $.each(response.models, function(index, value) {
+                                        $('#model').append($('<option>', {
+                                            value: value.model,
+                                            text: value.model,
+                                        }));
+
+                                    });
+                                }
 
 
 
                             }
+                            if (case_action == 'shift') {
+
+                                $('#Line_search').empty().append($('<option>', {
+                                    value: 'All',
+                                    text: 'All',
+                                }));
+                                // Thêm các option mới vào dropdown line
+                                if (response.lines && response.lines.length > 0) {
+                                    var shift_show = $('#shift_search').val();
+                                    $.each(response.lines, function(index, value) {
+                                        if (shift_show != 'All') {
+                                            if (value.shift == shift_show) {
+                                                $('#Line_search').append($('<option>', {
+                                                    value: value.line,
+                                                    text: value.line,
+                                                }));
+                                            }
+                                        } else {
+                                            $('#Line_search').append($('<option>', {
+                                                value: value.line,
+                                                text: value.line,
+                                            }));
+
+                                        }
 
 
+                                    });
+                                }
+                            }
+                            tables.ajax.reload();
 
-
-                            show_data_qty_plan_check();
+                            // show_data_qty_plan_check();
                         }
                     },
                     error: function(xhr, status, error) {
@@ -412,10 +573,8 @@
                     dataType: "json",
                     success: function(response) {
 
-                        $('#model,#line').empty();
+                        $('#model').empty();
                         $.each(response.model, function(index, value) {
-                            console.log(value.model);
-
                             $('#model').append($('<option>', {
                                 value: value.model,
                                 text: value.model,
@@ -423,13 +582,13 @@
 
                         });
 
-                        $.each(response.line, function(index, value) {
-                            $('#line').append($('<option>', {
-                                value: value.line_name,
-                                text: value.line_name,
-                            }));
+                        // $.each(response.line, function(index, value) {
+                        //     $('#line').append($('<option>', {
+                        //         value: value.line_name,
+                        //         text: value.line_name,
+                        //     }));
 
-                        });
+                        // });
 
 
                     }
@@ -438,7 +597,8 @@
 
             }
 
-            show_model_check();
+            // show_model_check();
+            show_data_check();
 
             $(document).on('click', '#creat', function(e) {
                 e.preventDefault();
@@ -464,7 +624,7 @@
 
                 id = $(this).val();
                 let rowData = tables.rows().data().toArray().find(row => row.id == id);
-
+                console.log(rowData);
                 if (rowData) {
                     $('#id').val(rowData.id); // ID ẩn
                     $('#date').val(rowData.date); // Ngày

@@ -121,63 +121,7 @@
         </div>
     </div>
 
-    <!-- Modal for Edit -->
-    {{-- <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Chỉnh sửa dữ liệu</h5>
-                    <div> <button type="button" id="save" class="btn btn-success">Save</button> <button
-                            type="button" id="update" class="btn btn-success">Update</button> <button type="button"
-                            id="close-model" class="btn btn-warning close-model-checklist">Close</button> </div>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="edit_id" name="id">
-                        <div class="form-group">
-                            <label for="edit_time_slot">Khung giờ</label>
-                            <select class="form-control" id="edit_time_slot" name="time_slot">
-                                <option value="a">08h-10h</option>
-                                <option value="b">10h-12h</option>
-                                <option value="c">13h-15h</option>
-                                <option value="d">15h-17h</option>
-                                <option value="e">18h-20h</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_prod_qty">Sản phẩm (Prod. qty)</label>
-                            <input type="number" class="form-control" id="edit_prod_qty" name="prod_qty">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_NG_qty">Lỗi (NG qty)</label>
-                            <input type="number" class="form-control" id="edit_NG_qty" name="NG_qty">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_remark">Ghi chú</label>
-                            <textarea class="form-control" id="edit_remark" name="remark"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_Code_ID">Code ID</label>
-                            <input type="text" class="form-control" id="edit_Code_ID" name="Code_ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_error_list_id">ID lỗi</label>
-                            <input type="text" class="form-control" id="edit_error_list_id" name="error_list_id">
-                        </div>
-                        <div class="form-group">
-                            <label for="edit_plan_id">ID kế hoạch</label>
-                            <input type="text" class="form-control" id="edit_plan_id" name="plan_id">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="saveEditBtn">Lưu thay đổi</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+  
     <div class="modal" id="modal-created">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -312,7 +256,7 @@
             function show_data_check() {
                 // Lấy giá trị của các trường nhập liệu
                 dateInput = $("#date_search").val();
-                console.log(dateInput);
+             
                 // Kiểm tra nếu ngày không được chọn
                 if (!dateInput) {
                     toastr.error('Vui lòng chọn ngày!');
@@ -325,7 +269,7 @@
                     url: "{{ route('OQC.loss.data.plan.search') }}",
                     dataType: "json",
                     data: {
-                        date: dateInput,
+                        date: dateInput
                     },
                     success: function(response) {
                         // Kiểm tra phản hồi từ server
