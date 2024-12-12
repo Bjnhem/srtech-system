@@ -302,4 +302,5 @@ Have a bug or a feature request? Raise a new issue at our [github](https://githu
 - [Instagram](https://www.instagram.com/iqonicdesign/)
 - [Product Hunt](https://www.producthunt.com/posts/iqonic-design)
 ## Licensing
-- Code and Documentation Copyright 2021 All Rights Reserved by [IQONIC](https://iqonic.design/?utm_source=github&utm_medium=github-description&utm_campaign=open_source_github) Design. Code released under the [MIT](https://iqonic.design/licenses/) License.
+- Code and Documentation Copyright 2021 All Rights Reserved by [IQONIC](https://iqonic.design/?utm_source=github&utm_medium=github-description&utm_campaign=open_source_github) Design. Code released under the [MIT](https://iqonic.design/licenses/) License.#   s r t e c h - s y s t e m  
+ 
