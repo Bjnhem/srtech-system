@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>ILSUNG SYSTEM</title>
+    <title>SRTECH SYSTEM</title>
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" />
     <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}">
@@ -81,8 +81,8 @@
     <aside class="sidebar sidebar-default navs-rounded-all">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
             <a href="{{ route('Home.index') }}" class="navbar-brand">
-                <img src="{{ asset('checklist-ilsung/icon/logo_ilsung.png') }}" style="height: 30px">
-                <h4 class="logo-title">ILSUNG</h4>
+                <img src="{{ asset('SR-TECH/icon/srtech.png') }}" style="height: 30px">
+                <h4 class="logo-title">SR-TECH</h4>
             </a>
             <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
                 <i class="icon">
@@ -97,7 +97,7 @@
         </div>
         <div class="sidebar-body pt-0 data-scrollbar">
             <div class="sidebar-list" id="sidebar">
-                @include('ilsung.WareHouse.layouts.menu')
+                @include('srtech.WareHouse.layouts.menu')
 
                 {{-- @include('partials.dashboard.sub-header') --}}
             </div>
@@ -106,7 +106,7 @@
     </aside>
     <main class="main-content">
         <div class="position-relative">
-            @include('ilsung.WareHouse.layouts._body_header')
+            @include('srtech.WareHouse.layouts._body_header')
             {{-- @include('partials.dashboard.sub-header') --}}
         </div>
 
@@ -151,9 +151,9 @@
         </svg>
     </a>
 
-    @include('ilsung.partials.components.setting-offcanvas')
-    @include('ilsung.layouts._scripts')
-    @include('ilsung.partials.dashboard._app_toast')
+    @include('srtech.partials.components.setting-offcanvas')
+    @include('srtech.layouts._scripts')
+    @include('srtech.partials.dashboard._app_toast')
     <!-- Backend Bundle JavaScript -->
 
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -203,5 +203,5 @@
 
     @yield('admin-js')
 </body>
-
+vanb        
 </html>

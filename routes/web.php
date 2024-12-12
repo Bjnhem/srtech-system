@@ -166,13 +166,10 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::post('/export', [WarehouseController::class, 'exportStock'])->name('warehouse.export');
 
     // Route xuất kho
-    // Route::get('/chuyen-kho', [HomeWareHouseController::class, 'index_xuat_kho'])->name('WareHouse.chuyen.kho');
-    // Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
-    // Route::get('/search-master-export', [WarehouseController::class, 'search_master'])->name('WareHouse.show.product.infor.export');
     Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
 
     // Route nhập xuất
-    Route::get('/nhap-xuat', [HomeWareHouseController::class, 'index_chuyen_kho'])->name('WareHouse.chuyen.kho');
+    Route::get('/nhap-xuat', [HomeWareHouseController::class, 'index_nhap_xuat'])->name('WareHouse.chuyen.kho');
     Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
     Route::post('/transfer', [WarehouseController::class, 'transferStock'])->name('warehouse.transfer');
 
@@ -187,7 +184,7 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::get('/stock-data-history', [WarehouseController::class, 'getHistorydata'])->name('warehouse.data.history');
 
     Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
-    Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.checklist');
+    Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.warehouse');
 });
 
 

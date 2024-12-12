@@ -1,4 +1,4 @@
-@extends('ilsung.WareHouse.layouts.WareHouse_layout')
+@extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
     <div class="row">

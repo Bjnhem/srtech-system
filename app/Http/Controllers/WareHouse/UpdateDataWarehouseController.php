@@ -19,17 +19,17 @@ class UpdateDataWarehouseController extends Controller
     //
     public function data_model()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-model');
+        return view('srtech.WareHouse.pages.update_master.data-model');
     }
 
     public function data_sanpham()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-sanpham');
+        return view('srtech.WareHouse.pages.update_master.data-sanpham');
     }
 
     public function data_kho()
     {
-        return view('ilsung.WareHouse.pages.update_master.data-kho');
+        return view('srtech.WareHouse.pages.update_master.data-kho');
     }
 
     public function show_data_table(Request $request)

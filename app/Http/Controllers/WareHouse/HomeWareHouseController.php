@@ -14,7 +14,7 @@ class HomeWareHouseController extends Controller
     {
         $products = Product::all();
         $warehouses = Warehouse::all();
-        return view('ilsung.WareHouse.pages.NhapKho', compact('products', 'warehouses'));
+        return view('srtech.WareHouse.pages.NhapKho', compact('products', 'warehouses'));
     }
 
 
@@ -22,7 +22,7 @@ class HomeWareHouseController extends Controller
     {
         $products = Product::all();
         $warehouses = Warehouse::all();
-        return view('ilsung.WareHouse.pages.XuatKho', compact('products', 'warehouses'));
+        return view('srtech.WareHouse.pages.XuatKho', compact('products', 'warehouses'));
        
     }
 
@@ -30,24 +30,33 @@ class HomeWareHouseController extends Controller
     {
         $products = Product::all();
         $warehouses = Warehouse::all();
-        return view('ilsung.WareHouse.pages.ChuyenKho', compact('products', 'warehouses'));
+        return view('srtech.WareHouse.pages.ChuyenKho', compact('products', 'warehouses'));
    }
+
+   public function index_nhap_xuat()
+   {
+       $products = Product::all();
+       $warehouses = Warehouse::all();
+       return view('srtech.WareHouse.pages.nhap-xuat', compact('products', 'warehouses'));
+  }
 
    public function index_ton_kho()
    {
   
-    return view('ilsung.WareHouse.pages.Stock');
+    return view('srtech.WareHouse.pages.Stock');
 
   }
 
     public function index_master()
     {
-        return view('ilsung.WareHouse.pages.update_master.index-data');
+        return view('srtech.WareHouse.pages.update_master.index-data');
     }
+
+
 
     public function index_user()
     {
-        return view('ilsung.pages.User-checklist');
+        return view('srtech.warehouse.pages.user.user');
     }
 
 }

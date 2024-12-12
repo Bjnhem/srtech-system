@@ -51,38 +51,35 @@
     </li>
 
     {{-- Master data --}}
-    {{-- <li class="nav-item static-item">
+    <li class="nav-item static-item">
         <a class="nav-link static-item disabled" href="#" tabindex="-1">
             <span class="default-icon">Master data</span>
             <span class="mini-icon">-</span>
         </a>
-    </li> --}}
+    </li>
 
     {{-- database --}}
 
-    {{-- <li class="nav-item">
+    <li class="nav-item">
         <a class="nav-link  {{ Request::is('WareHouse/Master*') ? 'active' : '' }}" aria-current="page"
             href="{{ route('WareHouse.update.master') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/database-storage.png') }}" alt="Camera"
                 width="20" height="20">
             <span class="item-name">Database</span>
         </a>
-
-
-    </li> --}}
+    </li>
 
 
     {{-- user --}}
 
-
-    {{-- <li class="nav-item">
-        <a class="nav-link  {{ Request::is('users*') ? 'active' : '' }}" aria-current="page"
-            href="{{ route('users.index') }}">
+    <li class="nav-item">
+        <a class="nav-link  {{ Request::is('WareHouse/User*') ? 'active' : '' }}" aria-current="page"
+            href="{{ route('user.warehouse') }}">
             <img class=" icon" src="{{ asset('checklist-ilsung/icon/group.png') }}" alt="Camera" width="20"
                 height="20">
             <span class="item-name">Users</span>
         </a>
-    </li> --}}
+    </li>
 
 
 
