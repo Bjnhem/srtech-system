@@ -33,12 +33,7 @@
                 </div>
                 <div class="col-sm-6 col-xl-4 mb-3"> <span>Line:</span> <select name="Line" id="Line_search"
                         class="form-select">
-                        {{-- <option value="All">All</option> <!-- Tạo 16 line --> --}}
-                        {{-- <option value="Line 1">Line 1</option>
-                        <option value="Line 2">Line 2</option>
-                        <option value="Line 3">Line 3</option> <!-- ... Thêm các line khác ... -->
-                        <option value="Line 16">Line 16</option> --}}
-                    </select> </div>
+                                          </select> </div>
             </div>
             <div class="table-response">
                 <table class="table table-bordered table-hover table-sm" id="table-result" style="width:100%">

@@ -19,20 +19,21 @@
                             </div>
                         </div>
                         <div class="col-4 mb-3">
+                                     
                             <label for="shift_search">Shift</label>
                             <select id="shift_search" class="form-select">
                             </select>
                         </div>
                         <div class="col-4 mb-3">
                             <label for="Line_search">Line</label>
-                            <select id="Line_search" class="form-select">
+                            <select id="Line_search" class="form-select">  
                             </select>
                         </div>
                         <div class="col-6 mb-3">
                             <label for="khung_gio">Khung giờ</label>
                             <select id="khung_gio" class="form-select">
-                                {{-- <option value="a"></option> --}}
-                            </select>
+                               
+                            </select>      
                         </div>
                         <div class="col-6 mb-3">
                             <label for="model_search">Model</label>
@@ -98,7 +99,7 @@
                 <h4 class="section-title">Data loss detail</h4>
                 <div class="card ">
                     <div class="card-body table-response">
-                        
+
                         <table class="table table-bordered table-hover table-sm" id="table-result">
                             <thead class="table-success">
                                 <tr>
@@ -121,7 +122,7 @@
         </div>
     </div>
 
-  
+
     <div class="modal" id="modal-created">
         <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
@@ -144,11 +145,6 @@
                                     <div class="form-group">
                                         <label for="edit_time_slot">Khung giờ</label>
                                         <select class="form-control" id="edit_time_slot" name="time_slot">
-                                            <option value="a">08h-10h</option>
-                                            <option value="b">10h-12h</option>
-                                            <option value="c">13h-15h</option>
-                                            <option value="d">15h-17h</option>
-                                            <option value="e">18h-20h</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -226,6 +222,8 @@
 
             var currentDate = new Date();
             var date = currentDate.toISOString().split('T')[0];
+            const hours = currentDate.getHours();
+            // const hours = 7;
             $('#date_search,#date_search_detail').val(date);
             $('.component-datepicker.input-daterange').datepicker({
                 autoclose: true,
@@ -235,9 +233,8 @@
             $('#table_name').val(table_name);
 
             function show_khung_gio(action) {
-
+                // const hours = currentDate.getHours();
                 var shift_show = $('#shift_search').val();
-
                 // Lựa chọn khung giờ dựa trên giá trị của shift_show
                 const khung_gio_data = shift_show === "A" ? khung_A : shift_show === "C" ? khung_C : {};
 
@@ -250,13 +247,37 @@
                             text: value, // Nội dung hiển thị
                         }));
                     });
+
+                    let selectedKey = null;
+
+                    // Lấy giờ hiện tại
+                    // const currentDate = new Date();
+                    // const hours = currentDate.getHours();
+
+                    Object.entries(khung_gio_data).forEach(([key, value]) => {
+                        const [start, end] = value.split('-').map(time => parseInt(time.replace('h', '')));
+
+                        // Xử lý trường hợp khoảng giờ qua đêm (VD: 22h-00h)
+                        if ((start <= hours && hours < end) || (start > end && (hours >= start || hours <
+                                end))) {
+                            selectedKey = key;
+                        }
+                    });
+
+                    // Set option được chọn nếu tìm thấy
+                    if (selectedKey) {
+                        $('#khung_gio').val(selectedKey);
+                    }
                 }
+
+
+
             }
 
             function show_data_check() {
                 // Lấy giá trị của các trường nhập liệu
                 dateInput = $("#date_search").val();
-             
+
                 // Kiểm tra nếu ngày không được chọn
                 if (!dateInput) {
                     toastr.error('Vui lòng chọn ngày!');
@@ -273,23 +294,45 @@
                     },
                     success: function(response) {
                         // Kiểm tra phản hồi từ server
-                        console.log(case_action);
+                        // console.log(case_action);
                         if (response.status == '400') {
                             toastr.error(response.messcess); // Hiển thị lỗi nếu có
                         } else {
                             // Thêm các option mới vào dropdown shift
                             if (case_action == 'date') {
+                                var shiftSelect;
 
                                 $('#shift_search').empty();
                                 if (response.shifts && response.shifts.length > 0) {
                                     $.each(response.shifts, function(index, value) {
+                                        console.log(value);
+                                        console.log(hours);
+                                        if (hours >= 8 && hours < 20 && value == "A") {
+                                            shiftSelect = 'A'
+                                        }
+                                        if (value == "C") {
+                                            if (hours >= 20 || hours < 8) {
+                                                shiftSelect = 'C'
+
+                                            }
+                                        }
+
                                         $('#shift_search').append($('<option>', {
                                             value: value,
                                             text: value,
                                         }));
-                                        console.log(value);
+                                        // console.log(value);
 
                                     });
+                                    console.log(shiftSelect);
+                                    if (!shiftSelect) {
+                                        shiftSelect = response.shifts[0];
+                                        alert(
+                                            `Shift hiện tại không có plan. Chọn mặc định shift: ${shiftSelect}`
+                                        );
+                                    }
+
+                                    $('#shift_search').val(shiftSelect);
                                     show_khung_gio('khung_gio');
 
                                 }
@@ -569,10 +612,10 @@
                 var shift = $('#shift_search').val();
                 var line = $('#Line_search').val();
                 var time = $('#khung_gio').val();
-                console.log(date);
-                console.log(shift);
-                console.log(line);
-                console.log(time);
+                // console.log(date);
+                // console.log(shift);
+                // console.log(line);
+                // console.log(time);
                 $.ajax({
                     url: "{{ route('OQC.update.show.data.loss.detail2') }}",
                     type: "GET",
@@ -586,7 +629,7 @@
 
                     success: function(response) {
                         var data = [];
-                        console.log(response.data)
+                        // console.log(response.data)
                         $.each(response.data, function(index, value) {
                             // console.log(value);
                             let timeSlotLabel = '';
@@ -638,8 +681,6 @@
             }
 
             show_data_check();
-
-
 
             $(document).on('click', '#save_loss', function(e) {
                 e.preventDefault();
