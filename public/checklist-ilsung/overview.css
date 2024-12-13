@@ -502,10 +502,10 @@ img.company-logo:hover {
     transform: scale(1.02);
 }
 
-#add-product,
+/* #add-product,
 .save-transfer {
     margin-top: 1.4rem;
-}
+} */
 
 .select2-container .select2-selection--single,
 #ID_SP {

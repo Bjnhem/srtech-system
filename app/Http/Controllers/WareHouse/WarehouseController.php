@@ -431,12 +431,44 @@ class WarehouseController extends Controller
         ]);
     }
 
+    public function history_transfer(Request $request)
+    {
 
+        $request->validate([
+            'products' => 'required|array|min:1', // Mảng sản phẩm phải có ít nhất một phần tử
+            'products.*.To' => 'required', // Kiểm tra tồn tại kho chuyển (From)
+            'products.*.warehouse_id' => 'required|exists:warehouses,id', // Kiểm tra tồn tại kho nhận (To)
+            'products.*.quantity' => 'required|integer|min:1', // Kiểm tra số lượng nhập kho phải là số nguyên và >= 1
+            'products.*.action' => 'required'
+        ]);
+
+        DB::transaction(function () use ($request) {
+            foreach ($request->products as $product) {
+                // Lưu lại sự kiện nhập kho cho mỗi sản phẩm
+                $target_warehouse = Warehouse::find($product['To'])->name;
+                $action = $product['action'];
+
+                StockMovement::create([
+                    'product_id' => $product['product_id'],  // ID sản phẩm
+                    'warehouse_id' => $product['warehouse_id'], // Kho chuyển (From)
+                    'type' =>  $action, // Loại sự kiện nhập kho
+                    'quantity' => $product['quantity'], // Số lượng nhập
+                    'Remark' => $action . ' ' . $target_warehouse, // Số lượng nhập
+                    'target_warehouse_id' => $product['To'], // Kho nhận (To)
+                ]);
+            }
+        });
+
+        return response()->json([
+            'success' => 'thành công!',
+            'status' => 200
+        ]);
+    }
 
 
     public function showStock()
     {
-        $stockData = DB::table('stock_movements')
+        $stockData = DB::table('stock_view')
             ->join('products', 'product_warehouse.product_id', '=', 'products.id')
             ->join('warehouses', 'product_warehouse.warehouse_id', '=', 'warehouses.id')
             ->select('products.name as product', 'warehouses.name as warehouse', 'product_warehouse.quantity')
@@ -445,100 +477,7 @@ class WarehouseController extends Controller
         return view('warehouse.stock', compact('stockData'));
     }
 
-    // public function getStock(Request $request)
-    // {
-    //     // Khởi tạo query
-    //     $query = DB::table('stock_movements')
-    //         ->join('products', 'stock_movements.product_id', '=', 'products.id') // Kết nối với bảng products để lấy tên sản phẩm
-    //         ->join('warehouses', 'stock_movements.warehouse_id', '=', 'warehouses.id')
-    //         ->select(
-    //             'stock_movements.product_id',
-    //             'products.name as product_name',
-    //             'products.ID_SP',
-    //             'products.Image',
-    //             'products.Type', // Lấy type từ bảng stock_movements
-    //             'stock_movements.warehouse_id',
-    //             'warehouses.name as warehouse_name',
-    //             DB::raw('SUM(stock_movements.quantity) as stock')
-    //         )
-    //         ->groupBy('stock_movements.product_id', 'products.name', 'products.Type', 'stock_movements.warehouse_id',  'products.Image', 'warehouse_name', 'products.ID_SP')
-    //         ->havingRaw('SUM(stock_movements.quantity) > 0'); // Lọc chỉ lấy sản phẩm có tồn kho > 0
 
-    //     $warehouses = DB::table('stock_movements')
-    //         ->join('warehouses', 'stock_movements.warehouse_id', '=', 'warehouses.id')
-    //         ->join('products', 'stock_movements.product_id', '=', 'products.id') // Kết nối với bảng products để lấy type
-    //         ->select(
-    //             'stock_movements.warehouse_id',
-    //             'warehouses.name',
-    //             DB::raw('SUM(stock_movements.quantity) as total_stock')
-    //         )
-    //         ->groupBy('stock_movements.warehouse_id', 'warehouses.name')
-    //         ->havingRaw('SUM(stock_movements.quantity) > 0'); // Chỉ lấy những kho có tồn kho > 0
-
-    //     // Lấy danh sách các sản phẩm và loại sản phẩm (tự động lọc theo stock > 0)
-    //     $products = DB::table('stock_movements')
-    //         ->join('products', 'stock_movements.product_id', '=', 'products.id')
-    //         ->join('warehouses', 'stock_movements.warehouse_id', '=', 'warehouses.id')
-    //         ->select(
-    //             'stock_movements.product_id',
-    //             'stock_movements.warehouse_id',
-    //             'products.name',
-    //             'products.Type',
-    //             'products.ID_SP',
-    //             'warehouses.name as warehouse_name',
-    //             DB::raw('SUM(stock_movements.quantity) as total_stock')
-    //         )
-    //         ->groupBy('stock_movements.product_id', 'stock_movements.warehouse_id', 'products.name', 'products.Type', 'warehouse_name', 'products.ID_SP')
-    //         ->havingRaw('SUM(stock_movements.quantity) > 0');
-
-
-    //     // Lọc theo type (loại sản phẩm)
-    //     if ($request->has('type') && $request->type != 'All') {
-    //         $query->where('products.Type', $request->type); // Lọc theo type trong bảng stock_movements
-    //         $products->where('products.Type', $request->type);
-    //         $warehouses->where('products.type', $request->type);
-    //     }
-
-    //     // Lọc theo kho (warehouse)
-    //     if ($request->has('warehouse') && $request->warehouse) {
-    //         $query->where('stock_movements.warehouse_id', $request->warehouse);
-    //         $products->where('stock_movements.warehouse_id', $request->warehouse);
-    //     }
-    //     // Lọc theo product_id (ID sản phẩm)
-    //     if ($request->has('product_id') && $request->product_id) {
-    //         $query->where('stock_movements.product_id', $request->product_id);
-    //         $products->where('stock_movements.product_id', $request->product_id);
-    //     }
-
-    //     // Lọc theo tên sản phẩm
-    //     if ($request->has('name') && $request->name) {
-    //         $query->where('stock_movements.product_id', $request->product_id);
-    //         $products->where('stock_movements.product_id', $request->product_id);
-    //     }
-
-    //     // Lấy kết quả stock
-    //     $stock = $query->get();
-    //     $warehouses = $warehouses->get();
-    //     $products = $products->get();
-    //     // Lấy danh sách các kho (tự động lọc theo stock > 0)
-
-
-    //     // Truy vấn danh sách type
-    //     $types = DB::table('stock_movements')
-    //         ->join('products', 'stock_movements.product_id', '=', 'products.id')
-    //         ->select('products.type')
-    //         ->havingRaw('SUM(stock_movements.quantity) > 0') // Chỉ lấy những sản phẩm có tồn kho > 0
-    //         ->groupBy('products.type') // Nhóm theo loại sản phẩm
-    //         ->get();
-
-    //     // Trả về kết quả và các trường lọc
-    //     return response()->json([
-    //         'stock' => $stock,
-    //         'warehouses' => $warehouses,
-    //         'products' => $products,
-    //         'Type' => $types
-    //     ]);
-    // }
 
     public function getStock(Request $request)
     {
@@ -572,7 +511,7 @@ class WarehouseController extends Controller
                 DB::raw('GROUP_CONCAT(CONCAT(warehouses.name, " (", stock_movements.quantity, ")") SEPARATOR "\n") as warehouses'), // Gộp danh sách kho
                 DB::raw('SUM(stock_movements.quantity) as stock') // Tính tổng tồn kho
             )
-            ->groupBy('stock_movements.product_id', 'products.name', 'products.Type', 'products.Image',  'products.stock_limit','products.ID_SP') // Gộp theo sản phẩm
+            ->groupBy('stock_movements.product_id', 'products.name', 'products.Type', 'products.Image',  'products.stock_limit', 'products.ID_SP') // Gộp theo sản phẩm
             ->havingRaw('SUM(stock_movements.quantity) >= 0'); // Bao gồm cả sản phẩm có số lượng bằng 0
 
 
@@ -652,10 +591,9 @@ class WarehouseController extends Controller
     public function getHistory(Request $request)
     {
         $productId = $request->input('product_id');
-    
 
         // Lấy lịch sử nhập/xuất của sản phẩm
-        $history = DB::table('product_warehouse')
+        $history = DB::table('stock_movements')
             ->join('products', 'product_warehouse.product_id', '=', 'products.id')
             ->leftJoin('warehouses as from_warehouse', 'product_warehouse.warehouse_id', '=', 'from_warehouse.id')
             ->leftJoin('warehouses as to_warehouse', 'product_warehouse.target_warehouse_id', '=', 'to_warehouse.id')
@@ -671,14 +609,7 @@ class WarehouseController extends Controller
             ->when($productId, function ($query) use ($productId) {
                 return $query->where('product_warehouse.product_id', $productId);
             })
-            // ->when($warehouseId, function ($query) use ($warehouseId) {
-            //     return $query->where(function ($query) use ($warehouseId) {
-            //         $query->where('product_warehouse.warehouse_id', $warehouseId)
-            //             ->orWhere('product_warehouse.target_warehouse_id', $warehouseId);
-            //     });
-            // })
             ->orderBy('product_warehouse.created_at', 'desc')
-            // ->groupBy('products.name','products.id', 'products.ID_SP', 'products.Image')
             ->get();
 
         // Lấy chi tiết tồn kho của sản phẩm tại các kho
@@ -707,44 +638,119 @@ class WarehouseController extends Controller
     }
     public function getHistorydata(Request $request)
     {
-        $action = $request->input('action');
-        $type = $request->input('type');
 
         // Lấy lịch sử nhập/xuất của sản phẩm
-        $history = DB::table('product_warehouse')
-            ->join('products', 'product_warehouse.product_id', '=', 'products.id')
-            ->leftJoin('warehouses as from_warehouse', 'product_warehouse.warehouse_id', '=', 'from_warehouse.id')
-            ->leftJoin('warehouses as to_warehouse', 'product_warehouse.target_warehouse_id', '=', 'to_warehouse.id')
+        $history = DB::table('stock_movements')
+            ->join('products', 'stock_movements.product_id', '=', 'products.id')
+            ->leftJoin('warehouses as from_warehouse', 'stock_movements.warehouse_id', '=', 'from_warehouse.id')
+            ->leftJoin('warehouses as to_warehouse', 'stock_movements.target_warehouse_id', '=', 'to_warehouse.id')
             ->select(
-                'product_warehouse.*',
+                'stock_movements.*',
                 'products.ID_SP',
-                'products.id',
-                'products.Image',
                 'products.name as product_name',
                 'from_warehouse.name as from_warehouse_name',
                 'to_warehouse.name as to_warehouse_name'
             )
-            // ->when($action, function ($query) use ($productId) {
-            //     return $query->where('product_warehouse.product_id', $productId);
-            // })
-            // ->when($warehouseId, function ($query) use ($warehouseId) {
-            //     return $query->where(function ($query) use ($warehouseId) {
-            //         $query->where('product_warehouse.warehouse_id', $warehouseId)
-            //             ->orWhere('product_warehouse.target_warehouse_id', $warehouseId);
-            //     });
-            // })
-            ->orderBy('product_warehouse.created_at', 'desc')
-
+            ->orderBy('stock_movements.created_at', 'desc')
             ->get();
-
-        // Lấy chi tiết tồn kho của sản phẩm tại các kho
-
-
-        // Kết hợp dữ liệu lịch sử và thông tin tồn kho
         $response = [
             'history' => $history,
         ];
 
         return response()->json($response);
+    }
+
+    function get_search(Request $request)
+    {
+        $search = $request->input('search');
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('pageSize', 10);
+        $offset = ($page - 1) * $pageSize;
+
+        // Truy vấn với offset và giới hạn
+        $products = DB::table('products')
+            ->where('ID_SP', 'like', "%{$search}%")
+            ->orWhere('name', 'like', "%{$search}%")
+            ->offset($offset)
+            ->limit($pageSize)
+            ->get();
+
+        // Tổng số sản phẩm
+        $totalCount = DB::table('products')
+            ->where('ID_SP', 'like', "%{$search}%")
+            ->orWhere('name', 'like', "%{$search}%")
+            ->count();
+
+        return response()->json([
+            'products' => $products,
+            'hasMore' => ($page * $pageSize) < $totalCount
+        ]);
+    }
+
+    function get_warehouse(Request $request)
+    {
+        $search = $request->input('search');
+        $action = $request->input('action');
+        $product_id = $request->input('product_id', null);
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('pageSize', 10);
+        $offset = ($page - 1) * $pageSize;
+
+        $query_warehouse_1 = Warehouse::query();
+        $query_warehouse_2 = Warehouse::query();
+        $query_warehouse_1_count = Warehouse::query();
+        $query_warehouse_2_count = Warehouse::query();
+        $join_stock_view = DB::table('stock_view')
+            ->join('warehouses', 'stock_view.warehouse_id', '=', 'warehouses.id')
+            ->select('stock_view.*', 'warehouses.name', 'warehouses.id');
+
+        // Tìm kiếm với tên kho (search) nếu có
+        if ($search) {
+            $query_warehouse_1->where('name', 'like', "%{$search}%");
+            $query_warehouse_2->where('name', 'like', "%{$search}%");
+            $query_warehouse_1_count->where('name', 'like', "%{$search}%");
+            $query_warehouse_2_count->where('name', 'like', "%{$search}%");
+            $join_stock_view->where('warehouses.name', 'like', "%{$search}%");
+        }
+
+        // Xử lý theo action
+        switch ($action) {
+            case 'Import':
+                $warehouse_1 = $query_warehouse_1->where('status', 'OUT')->offset($offset)->limit($pageSize)->get();
+                $warehouse_2 = $query_warehouse_2->where('status', 'IN')->offset($offset)->limit($pageSize)->get();
+
+                $totalCount1 = $query_warehouse_1_count->where('status', 'OUT')->count();
+                $totalCount2 =  $query_warehouse_2_count->where('status', 'IN')->count();
+                break;
+
+            case 'Export':
+                $warehouse_1 = $join_stock_view->where('product_id', 'like', "%{$product_id}%")
+                    ->offset($offset)->limit($pageSize)->get();
+                $warehouse_2 = $query_warehouse_2->where('status', 'OUT')->offset($offset)->limit($pageSize)->get();
+
+                $totalCount1 = $join_stock_view->where('product_id', 'like', "%{$product_id}%")->count();
+                $totalCount2 =  $query_warehouse_2_count->where('status', 'OUT')->count();
+                break;
+
+            case 'Transfer':
+                $warehouse_1 = $join_stock_view->where('product_id', 'like', "%{$product_id}%")
+                    ->offset($offset)->limit($pageSize)->get();
+                $warehouse_2 =  $query_warehouse_2_count->where('status', 'IN')->offset($offset)->limit($pageSize)->get();
+
+                $totalCount1 = $join_stock_view->where('product_id', 'like', "%{$product_id}%")->count();
+                $totalCount2 = $query_warehouse_2_count->where('status', 'IN')->count();
+                break;
+
+            default:
+                return response()->json(['error' => 'Invalid action'], 400);
+        }
+
+        return response()->json([
+            'warehouse_1' => $warehouse_1,
+            'warehouse_2' => $warehouse_2,
+            'hasMore_1' => ($page * $pageSize) < $totalCount1,
+            'hasMore_2' => ($page * $pageSize) < $totalCount2,
+            'count' => $totalCount2,
+        ]);
     }
 }
