@@ -10,28 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class HomeWareHouseController extends Controller
 {
-    public function index_nhap_kho()
+    public function index_history()
     {
         $products = Product::all();
         $warehouses = Warehouse::all();
-        return view('srtech.WareHouse.pages.NhapKho', compact('products', 'warehouses'));
+        return view('srtech.WareHouse.pages.history', compact('products', 'warehouses'));
     }
-
-
-    public function index_xuat_kho()
-    {
-        $products = Product::all();
-        $warehouses = Warehouse::all();
-        return view('srtech.WareHouse.pages.XuatKho', compact('products', 'warehouses'));
-       
-    }
-
-    public function index_chuyen_kho()
-    {
-        $products = Product::all();
-        $warehouses = Warehouse::all();
-        return view('srtech.WareHouse.pages.ChuyenKho', compact('products', 'warehouses'));
-   }
 
    public function index_nhap_xuat()
    {

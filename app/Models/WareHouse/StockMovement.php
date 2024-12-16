@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class StockMovement extends Model
 {
     use HasFactory;
-    protected $table = 'stock_movements';
-    protected $fillable = ['product_id', 'warehouse_id', 'type', 'quantity', 'target_warehouse_id', 'Remark'];
+    protected $table = 'transfer_history';
+    protected $fillable = ['product_id', 'warehouse_id', 'type', 'quantity','quantity_sumary', 'target_warehouse_id', 'Remark'];
 
     public function product()
     {

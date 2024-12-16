@@ -34,10 +34,9 @@
     {{-- <link rel="stylesheet" href="{{asset('vendor/aos/dist/aos.css')}}" /> --}}
     {{-- <link rel="stylesheet" href="{{ asset('laravel-filemanager/css/lfm.css') }}" /> --}}
     {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/custom-admin.css') }}" /> --}}
-    <link rel="stylesheet" href="{{ asset('checklist-ilsung/overview.css') }}" />
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/icon.css') }}" />
 
-    {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/css/bootstrap.css') }}" type="text/css" /> --}}
+    <link rel="stylesheet" href="{{ asset('smart-ver2/css/bootstrap.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/swiper.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/font-icons.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/animate.css') }}" type="text/css" />
@@ -55,9 +54,11 @@
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Select-1.7.0/css/select.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/datatables.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('smart-ver2/css/components/datepicker.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/toastr.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/select-boxes.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('smart-ver2/css/components/datepicker.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/overview.css') }}" />
+
 
 
     <style>

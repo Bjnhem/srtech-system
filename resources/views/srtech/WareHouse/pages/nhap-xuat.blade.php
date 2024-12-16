@@ -4,7 +4,7 @@
     <div class="card" style="border: none">
         <!-- Header -->
         <div class="card-header">
-            <h3 class="header-title">Quản Lý Kho</h3>
+            <h3 class="header-title">QUẢN LÝ NHẬP XUẤT</h3>
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-light action-btn active" data-action="Import">Nhập
                     Kho</button>
@@ -115,7 +115,7 @@
                 </table>
             </div>
 
-            <!-- History Section -->
+            {{-- <!-- History Section -->
             <div class="mt-5">
                 <h5 class="text-primary">Lịch Sử Nhập/Xuất Kho</h5>
                 <div class="table-responsive">
@@ -126,8 +126,8 @@
                                 <th>Nhập/Xuất</th>
                                 <th>Mã ID_SP</th>
                                 <th>Sản Phẩm</th>
-                                <th>Kho Xuất</th>
-                                <th>Kho Nhập</th>
+                                <th>Kho</th>
+                                <th>Remark</th>
                                 <th>Số Lượng</th>
                             </tr>
                         </thead>
@@ -136,7 +136,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
     {{-- </div> --}}
@@ -183,9 +183,7 @@
                             results: data.products.map(product => ({
                                 id: product.id,
                                 text: product.ID_SP,
-                                name: product
-                                    .name, // Lưu trữ ID_SP trong kết quả trả về
-                                Type: product.Type,
+                                name: product.name, // Lưu trữ ID_SP trong kết quả trả về
                                 Image: product.Image
                             })),
                             pagination: {
@@ -209,7 +207,8 @@
                         return {
                             search: params.term || '',
                             page: page,
-                            pageSize: 10
+                            pageSize: 10,
+                            action: action
                         };
                     },
                     processResults: function(data, params) {
@@ -218,9 +217,7 @@
                             results: data.products.map(product => ({
                                 id: product.id,
                                 text: product.name,
-                                ID_SP: product
-                                    .ID_SP, // Lưu trữ ID_SP trong kết quả trả về
-                                Type: product.Type,
+                                ID_SP: product.ID_SP, // Lưu trữ ID_SP trong kết quả trả về
                                 Image: product.Image
                             })),
                             pagination: {
@@ -408,7 +405,7 @@
                 } else {
                     $('#stock_title').text('Số lượng:');
 
-                }     
+                }
             }
 
 
@@ -457,15 +454,15 @@
                                     break;
                                 default:
                                     typeCell = stock
-                                    .type; // Nếu không có loại nào phù hợp, giữ nguyên
+                                        .type; // Nếu không có loại nào phù hợp, giữ nguyên
                             }
                             data_table.push([
                                 stock.created_at,
                                 typeCell,
                                 stock.ID_SP,
                                 stock.product_name,
-                                stock.from_warehouse_name,
-                                stock.to_warehouse_name,
+                                stock.warehouse_name,
+                                stock.Remark,
                                 stock.quantity,
                             ])
                         });
@@ -492,21 +489,8 @@
                 });
             }
 
+            function add_product() {
 
-            // Thêm sản phẩm vào bảng
-            $(document).on('click', '.action-btn', function() {
-                $('.action-btn').removeClass('active');
-                $(this).addClass('active');
-                action = $(this).data('action');
-                reset_form();
-                updateWarehouseDropdown();
-                type = $('#Type').val();
-
-                // loadInitialData(action, type);
-            });
-
-
-            $(document).on('click', '#add-product', function() {
                 let product_id = $('#ID_SP').val();
                 var ID_SP = $('#ID_SP option:selected').text();
                 var name = $('#name option:selected').text();
@@ -537,8 +521,10 @@
 
                 // Nếu đang chỉnh sửa, cập nhật dòng
                 if (editingRow) {
-                    $(editingRow).find('td').eq(1).text(ID_SP).data('product_id', product_id); // Lưu ID kho
-                    $(editingRow).find('td').eq(2).text(name).data('product_id', product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(1).text(ID_SP).data('product_id',
+                        product_id); // Lưu ID kho
+                    $(editingRow).find('td').eq(2).text(name).data('product_id',
+                        product_id); // Lưu ID kho
                     $(editingRow).find('td').eq(3).text(warehouse_1).data('warehouse-id',
                         warehouse_1_id); // Lưu ID kho
                     $(editingRow).find('td').eq(4).text(warehouse_2).data('warehouse-id',
@@ -565,8 +551,76 @@
                         '</tr>';
                     $('#table-result tbody').append(newRow);
                 }
-
                 reset_form();
+
+            }
+
+            function save() {
+                var products = [];
+                var warehouse_id;
+                var To;
+                $('#table-result tbody tr').each(function() {
+                    var row = $(this);
+                    if (action == 'Import') {
+                        warehouse_id = row.find('td:nth-child(5)').data('warehouse-id');
+                        target_warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
+                    }
+                    if (action == 'Export') {
+                        warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
+                        target_warehouse_id = row.find('td:nth-child(5)').data('warehouse-id');
+                    }
+                    if (action == 'Transfer') {
+                        warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
+                        target_warehouse_id = row.find('td:nth-child(5)').data('warehouse-id');
+                    }
+                    products.push({
+                        product_id: row.find('td:nth-child(2)').data('product-id'),
+                        warehouse_id: warehouse_id,
+                        target_warehouse_id: target_warehouse_id,
+                        quantity: row.find('td:nth-child(6)').text(),
+                        action: action
+                    });
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('warehouse.transfer') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        products: products
+                    },
+                    success: function(response) {
+                        // location.reload();
+                        if (response.status == 200) {
+                            var success = action + ' ' + response.success;
+                            toastr.success(success);
+                            reset_form();
+                            $('#table-result tbody').html('');
+                            // show_historty();
+                        }
+                    },
+                    error: function() {
+                        alert("Có lỗi - vui lòng kiểm tra lại.");
+                    }
+                });
+            }
+
+
+            // Thêm sản phẩm vào bảng
+            $(document).on('click', '.action-btn', function() {
+                $('.action-btn').removeClass('active');
+                $(this).addClass('active');
+                action = $(this).data('action');
+                reset_form();
+                updateWarehouseDropdown();
+                type = $('#Type').val();
+
+                // loadInitialData(action, type);
+            });
+
+
+            $(document).on('click', '#add-product', function() {
+                add_product();
             });
 
             // Sửa dòng trong bảng
@@ -609,58 +663,15 @@
 
             // Lưu dữ liệu
             $(document).on('click', '#save', function(e) {
-
                 e.preventDefault(); // Ngăn chặn form submit mặc định
                 if ($('#table-result tbody tr').length === 0) {
-                    alert("Không có dữ liệu trong bảng. Vui lòng thêm sản phẩm trước khi lưu.");
-                    return; // Dừng thực hiện nếu bảng trống
+                    add_product();
                 }
-                var products = [];
-                var warehouse_id;
-                var To;
-                $('#table-result tbody tr').each(function() {
-                    var row = $(this);
-                    if (action == 'Import') {
-                        warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
-                        To = row.find('td:nth-child(5)').data('warehouse-id');
-                    } else {
-                        warehouse_id = row.find('td:nth-child(4)').data('warehouse-id');
-                        To = row.find('td:nth-child(5)').data('warehouse-id');
-                    }
-                    products.push({
-                        product_id: row.find('td:nth-child(2)').data('product-id'),
-                        warehouse_id: warehouse_id,
-                        To: To,
-                        quantity: row.find('td:nth-child(6)').text(),
-                        action: action
-                    });
-                });
-
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('warehouse.transfer') }}",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        products: products
-                    },
-                    success: function(response) {
-                        // location.reload();
-                        if (response.status == 200) {
-                            var success = action + ' ' + response.success;
-                            toastr.success(success);
-                            reset_form();
-                            $('#table-result tbody').html('');
-                            show_historty();
-                        }
-                    },
-                    error: function() {
-                        alert("Có lỗi xảy ra khi nhập kho.");
-                    }
-                });
+                save();
             });
 
 
-            show_historty();
+            // show_historty();
             // loadInitialData(action, type);
         });
     </script>

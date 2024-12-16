@@ -1,0 +1,11 @@
+tạo bảng stock view
+
+CREATE OR REPLACE VIEW stock_view AS
+SELECT 
+    th.product_id,
+    th.warehouse_id,
+     p.type, -- Lấy type từ bảng products
+   SUM(th.quantity_sumary) AS stock_quantity
+FROM transfer_history th
+JOIN products p ON th.product_id = p.id -- JOIN với bảng products để lấy type
+GROUP BY th.product_id, th.warehouse_id, p.type;

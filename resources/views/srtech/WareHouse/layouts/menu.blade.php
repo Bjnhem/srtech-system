@@ -29,14 +29,14 @@
         </a>
     </li>
 
-    {{-- <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('WareHouse.xuat.kho')) }}" aria-current="page"
-            href="{{ route('WareHouse.xuat.kho') }}">
+    <li class="nav-item">
+        <a class="nav-link {{ activeRoute(route('WareHouse.history')) }}" aria-current="page"
+            href="{{ route('WareHouse.history') }}">
                     <img class=" icon" src="{{ asset('checklist-ilsung/icon/checklist.png') }}" alt="Camera" width="20"
                 height="20">
-            <span class="item-name">Xuất Kho</span>
+            <span class="item-name">Lịch sử NX</span>
         </a>
-    </li> --}}
+    </li>
     <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('warehouse.stock')) }}" aria-current="page"
             href="{{ route('warehouse.stock') }}">
