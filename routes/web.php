@@ -194,7 +194,7 @@ Route::prefix('WareHouse/Master')->group(function () {
     Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('Warehouse.update.data.kho');
     Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
     Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
-
+    Route::post('/upload-kho-item', [UpdateDataWarehouseController::class, 'updateFromExcel_kho'])->name('warehouse.update.kho');
 
     // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
 

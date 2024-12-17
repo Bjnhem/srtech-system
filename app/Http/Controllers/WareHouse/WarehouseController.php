@@ -9,6 +9,8 @@ use App\Models\WareHouse\StockMovement;
 use App\Models\WareHouse\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 
 
@@ -562,8 +564,6 @@ class WarehouseController extends Controller
             'Type' => $types
         ]);
     }
-
-
 
 
     public function show_master_import(Request $request)

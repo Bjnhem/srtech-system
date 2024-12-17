@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\WareHouse;
 
+use App\Exports\ErrorExport;
 use App\Http\Controllers\Controller;
+use App\Imports\WarehouseImport;
 use App\Models\Model_master;
 use App\Models\WareHouse\Product;
 use Illuminate\Http\Request;
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UpdateDataWarehouseController extends Controller
 {
@@ -266,52 +270,6 @@ class UpdateDataWarehouseController extends Controller
     }
 
 
-    // {
-    //     $modelName = $request->input('id');
-    //     $allowedModels = ['Product', 'Warehouse', 'Model_master']; // Danh sách các model hợp lệ
-
-    //     if (!in_array($modelName, $allowedModels)) {
-    //         return response()->json([
-    //             'status' => 400,
-    //             'error' => 'Model không hợp lệ.',
-    //         ]);
-    //     }
-
-    //     $table = 'App\Models\\' . $modelName;
-
-    //     // dd($table);
-    //     $validator = Validator::make($request->all(), [
-    //         'csv_file' => [
-    //             'required',
-    //         ],
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'status' => 400,
-    //         ]);
-    //     } else {
-
-    //         if (Storage::exists("csv/data.csv")) {
-    //             Storage::delete("csv/data.csv");
-    //         };
-    //         $path = $request->file('csv_file')->storeAs('csv', 'data.csv');
-    //         $path_2 = str_replace('\\', '/', storage_path("app/" . $path));
-    //         $csv = Reader::createFromPath($path_2, 'r');
-    //         $csv->setHeaderOffset(0);
-
-    //         foreach ($csv as $record) {
-    //             // dd($record);
-    //             $table::updateOrCreate(
-    //                 ['id' => $record['id']],
-    //                 $record
-    //             );
-    //         }
-    //         Storage::delete($path);
-    //         return redirect()->back()->with('success', 'update dữ liệu thành công');
-    //     }
-    // }
-
     public function delete_data_row_table(Request $request)
     {
         if ($request->input('table') == "Model_master") {
@@ -371,5 +329,84 @@ class UpdateDataWarehouseController extends Controller
             ]);
         }
         return abort(404);
+    }
+
+    public function updateFromExcel_kho(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+        $errors = []; // Mảng chứa các dòng lỗi
+
+        try {
+            // Chuyển đổi dữ liệu từ file Excel thành mảng
+            $data = Excel::toArray(new WarehouseImport, $request->file('excel_file'));
+
+            // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
+            if (is_array($data) && count($data) > 0) {
+                foreach ($data[0] as $index => $row) {
+                    if ($index == 0) {
+                        continue;  // Bỏ qua dòng tiêu đề
+                    }
+
+                    // Kiểm tra các trường cần thiết (category, name)
+                    $name = isset($row[0]) ? trim($row[0]) : '';
+                    $location = isset($row[1]) ? trim($row[1]) : '';
+                    $status = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
+
+                    // dd($row);
+                    // dd($category, $name, $remark);
+
+
+                    // Kiểm tra giá trị trống
+                    if (empty($category) || empty($name)) {
+                        $errors[] = [
+                            'row' => $index + 1,  // Dòng bị lỗi
+                            'error' => 'Dữ liệu thiếu thông tin quan trọng',
+                            'data' => $row,
+                        ];
+                        continue; // Bỏ qua dòng này nếu thiếu dữ liệu quan trọng
+                    }
+
+                    // Kiểm tra xem bản ghi đã tồn tại chưa
+                    $existingRecord = DB::table('errors_list')
+                        ->where('location', $location)
+                        ->where('status', $status)
+                        ->where('name', $name)
+                        ->first();
+
+                    if ($existingRecord) {
+                        // Nếu đã tồn tại thì cập nhật bản ghi
+                        DB::table('errors_list')
+                            ->where('id', $existingRecord->id)
+                            ->update([
+                                'location' => $location,
+                                'name' => $name,
+                                'status' => $status,
+                            ]);
+                    } else {
+                        // Nếu chưa tồn tại thì thêm mới bản ghi
+                        DB::table('errors_list')
+                            ->insert([
+                                'location' => $location,
+                                'name' => $name,
+                                'status' => $status,
+                            ]);
+                    }
+                }
+
+                // Nếu có lỗi, xuất file Excel chứa lỗi
+                if (!empty($errors)) {
+                    return Excel::download(new ErrorExport($errors), 'errors.xlsx');
+                }
+
+                return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công từ file Excel.');
+            } else {
+                return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Excel import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
+        }
     }
 }
