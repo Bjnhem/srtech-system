@@ -353,13 +353,8 @@ class UpdateDataWarehouseController extends Controller
                     $name = isset($row[0]) ? trim($row[0]) : '';
                     $location = isset($row[1]) ? trim($row[1]) : '';
                     $status = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
-
-                    // dd($row);
-                    // dd($category, $name, $remark);
-
-
                     // Kiểm tra giá trị trống
-                    if (empty($category) || empty($name)) {
+                    if (empty($location) || empty($name)|| empty($status)) {
                         $errors[] = [
                             'row' => $index + 1,  // Dòng bị lỗi
                             'error' => 'Dữ liệu thiếu thông tin quan trọng',
@@ -369,7 +364,7 @@ class UpdateDataWarehouseController extends Controller
                     }
 
                     // Kiểm tra xem bản ghi đã tồn tại chưa
-                    $existingRecord = DB::table('errors_list')
+                    $existingRecord = DB::table('warehouses')
                         ->where('location', $location)
                         ->where('status', $status)
                         ->where('name', $name)
@@ -377,7 +372,7 @@ class UpdateDataWarehouseController extends Controller
 
                     if ($existingRecord) {
                         // Nếu đã tồn tại thì cập nhật bản ghi
-                        DB::table('errors_list')
+                        DB::table('warehouses')
                             ->where('id', $existingRecord->id)
                             ->update([
                                 'location' => $location,
@@ -386,7 +381,81 @@ class UpdateDataWarehouseController extends Controller
                             ]);
                     } else {
                         // Nếu chưa tồn tại thì thêm mới bản ghi
-                        DB::table('errors_list')
+                        DB::table('warehouses')
+                            ->insert([
+                                'location' => $location,
+                                'name' => $name,
+                                'status' => $status,
+                            ]);
+                    }
+                }
+
+                // Nếu có lỗi, xuất file Excel chứa lỗi
+                if (!empty($errors)) {
+                    return Excel::download(new ErrorExport($errors), 'errors.xlsx');
+                }
+
+                return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công từ file Excel.');
+            } else {
+                return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
+            }
+        } catch (\Exception $e) {
+            \Log::error('Excel import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
+        }
+    }
+
+    public function updateFromExcel_product(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+        $errors = []; // Mảng chứa các dòng lỗi
+
+        try {
+            // Chuyển đổi dữ liệu từ file Excel thành mảng
+            $data = Excel::toArray(new WarehouseImport, $request->file('excel_file'));
+
+            // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
+            if (is_array($data) && count($data) > 0) {
+                foreach ($data[0] as $index => $row) {
+                    if ($index == 0) {
+                        continue;  // Bỏ qua dòng tiêu đề
+                    }
+
+                    // Kiểm tra các trường cần thiết (category, name)
+                    $name = isset($row[0]) ? trim($row[0]) : '';
+                    $location = isset($row[1]) ? trim($row[1]) : '';
+                    $status = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
+                    // Kiểm tra giá trị trống
+                    if (empty($location) || empty($name)|| empty($status)) {
+                        $errors[] = [
+                            'row' => $index + 1,  // Dòng bị lỗi
+                            'error' => 'Dữ liệu thiếu thông tin quan trọng',
+                            'data' => $row,
+                        ];
+                        continue; // Bỏ qua dòng này nếu thiếu dữ liệu quan trọng
+                    }
+
+                    // Kiểm tra xem bản ghi đã tồn tại chưa
+                    $existingRecord = DB::table('warehouses')
+                        ->where('location', $location)
+                        ->where('status', $status)
+                        ->where('name', $name)
+                        ->first();
+
+                    if ($existingRecord) {
+                        // Nếu đã tồn tại thì cập nhật bản ghi
+                        DB::table('warehouses')
+                            ->where('id', $existingRecord->id)
+                            ->update([
+                                'location' => $location,
+                                'name' => $name,
+                                'status' => $status,
+                            ]);
+                    } else {
+                        // Nếu chưa tồn tại thì thêm mới bản ghi
+                        DB::table('warehouses')
                             ->insert([
                                 'location' => $location,
                                 'name' => $name,
