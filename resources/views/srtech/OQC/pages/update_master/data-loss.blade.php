@@ -284,11 +284,10 @@
 
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
-                // Hiển thị modal với tiêu đề chỉnh sửa
-                $('#title_modal_data').text('Chỉnh sửa sản phẩm');
+                            $('#title_modal_data').text('Chỉnh sửa sản phẩm');
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show(); // Hiển thị nút Update
-                // Lấy ID từ nút Edit (giá trị ID hoặc dòng nào đó)
+             
 
                 id = $(this).val();
                 let rowData = tables.rows().data().toArray().find(row => row.id == id);

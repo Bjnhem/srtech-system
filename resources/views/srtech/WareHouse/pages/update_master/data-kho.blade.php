@@ -89,7 +89,7 @@
             let title_edit = "Edit Kho";
             var tables;
             let id;
-
+            var rowSelected;
             $('#table_name').val(table_name);
             $('#save').show(); // Ẩn nút Save
             $('#update').hide();
@@ -211,17 +211,16 @@
                 $('#update').show();
                 id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                // console.log(rowSelected[1]);
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    $('#name').val(rowData[1]);
-                    $('#location').val(rowData[2]);
-                    $('#status').val(rowData[3]);
 
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
                 }
-                // $('#modal-created').modal('show');
+                var rowData = tables.row(rowSelected).data();
+                $('#name').val(rowData[1]);
+                $('#location').val(rowData[2]);
+                $('#status').val(rowData[3]);
+
             });
 
             $(document).on('click', '#update', function(e) {

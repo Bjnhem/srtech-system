@@ -320,9 +320,7 @@
                 var date = $('#date_search').val();
                 var shift = $('#shift_search').val();
                 var line = $('#Line_search').val();
-                console.log(date);
-                console.log(shift);
-                console.log(line);
+                
                 $.ajax({
                     url: "{{ route('OQC.update.show.data.loss.detail2') }}",
                     type: "GET",
