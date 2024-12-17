@@ -112,7 +112,7 @@
 
 @section('admin-js')
     <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
-    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>></script>
+    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
     <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
 
 

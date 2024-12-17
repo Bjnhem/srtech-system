@@ -154,7 +154,7 @@
 
 @section('admin-js')
     <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.2.0/exceljs.min.js"></script>
+    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
 
     <script>
         $(document).ready(function() {

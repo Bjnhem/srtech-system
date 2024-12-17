@@ -1,4 +1,4 @@
-@extends('ilsung.WareHouse.layouts.WareHouse_layout')
+@extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
     <div class="tab-content mt-4" id="nav-tabContent">
@@ -70,7 +70,7 @@
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <span>Tên kho:</span>
                                 <input name="name" type="text" id="name" class="form-control"
-                                    placeholder="Nhập line...">
+                                    placeholder="Nhập tên kho...">
                             </div>
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <span>Location:</span>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-sm-12 col-xl-4 mb-3">
                                 <span>Phân loại:</span>
-                                <select name="Status" id="status" class="form-select">
+                                <select name="status" id="status" class="form-select">
                                     <option value="IN">Nội bộ</option>
                                     <option value="OUT">Bên ngoài</option>
                                 </select>
@@ -97,6 +97,7 @@
 @endsection
 
 @section('admin-js')
+<script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
     <script>
         $(document).ready(function() {
             var table_name = 'Warehouse';

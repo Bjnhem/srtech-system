@@ -1,4 +1,4 @@
-@extends('ilsung.WareHouse.layouts.WareHouse_layout')
+@extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
     <div class="tab-content mt-4" id="nav-tabContent">
@@ -81,6 +81,7 @@
 @endsection
 
 @section('admin-js')
+<script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
     <script>
         $(document).ready(function() {
             var table_name = 'Model_master';

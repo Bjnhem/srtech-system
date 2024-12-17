@@ -1,4 +1,4 @@
-@extends('ilsung.WareHouse.layouts.WareHouse_layout')
+@extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
     <div class="tab-content mt-4" id="nav-tabContent">
@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-body ">
                     <div class="row">
-                        <div class="col-sm-6 col-xl-4 mb-3 bottommargin-sm">
+                        <div class="col-sm-4 col-xl-4 mb-3 bottommargin-sm">
                             <label for="">Code sản phẩm</label>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Code sản phẩm"
@@ -24,7 +24,7 @@
                                     id="Scan_QR">Search</button>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-xl-4 mb-3">
+                        <div class="col-sm-4 col-xl-4 mb-3">
                             <span>Sản phẩm:</span>
                             <select name="Type" id="Type_search" class="form-select">
                                 <option value="All">All</option>
@@ -36,7 +36,7 @@
                             </select>
                         </div>
 
-                        <div class="col-sm-6 col-xl-4 mb-3">
+                        <div class="col-sm-4 col-xl-4 mb-3">
                             <span>Model:</span>
                             <select name="Model" id="Model_search" class="form-select">
                             </select>
@@ -64,7 +64,7 @@
     </div>
 
     <div class="modal" id="modal-created">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header d-flex justify-content-between align-items-center">
                     <!-- Tiêu đề bên trái -->
@@ -159,8 +159,8 @@
 
                     <div class="card">
                         <div class="card-header">
-                            <div class="col-12">
-                                <!-- Phần Thêm sản phẩm bằng File -->
+                            <!-- <div class="col-12">
+                           
                                 <form action="{{ route('Warehouse.table.update.data') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
@@ -174,7 +174,33 @@
                                         </button>
                                     </div>
                                 </form>
+                            </div> -->
+
+                            <!-- <div class="card-header"> -->
+                            <div class="row align-items-center" style="display: contents">
+                                <!-- Phần tải file mẫu -->
+                                <div class="col-md-3 text-start">
+                                    <a href="#" id="download-template" class="btn btn-primary">
+                                        <i class="icon-download"></i> Tải file mẫu
+                                    </a>
+                                </div>
+
+                                <!-- Phần upload file -->
+                                <div class="col-md-9">
+                                    <form action="{{ route('OQC.update.loss.item') }}" method="post" id="form-upload"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="input-group">
+                                            <input class="form-control" type="file" name="excel_file"
+                                                accept=".xlsx, .xls" id="file-upload">
+                                            <button class="btn btn-success" type="submit">
+                                                <i class="icon-line-upload"></i> Upload
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
+                        <!-- </div> -->
                         </div>
 
                         <div class="card-body">
@@ -189,7 +215,7 @@
                                         <input name="ID_SP" type="hidden" id="ID_SP" class="form-control">
 
                                         <!-- Loại sản phẩm -->
-                                        <div class="col-sm-6 col-xl-4 mb-3">
+                                        <div class="col-sm-4 col-xl-4 mb-3">
                                             <span>Sản phẩm:</span>
                                             <select name="Type" id="Type" class="form-select">
                                                 <option value="JIG">JIG</option>
@@ -201,14 +227,14 @@
                                         </div>
 
                                         <!-- Model sản phẩm -->
-                                        <div class="col-sm-6 col-xl-4 mb-3">
+                                        <div class="col-sm-4 col-xl-4 mb-3">
                                             <span>Model:</span>
                                             <select name="Model" id="Model" class="form-select">
                                             </select>
                                         </div>
 
                                         <!-- Code Purchase -->
-                                        <div class="col-sm-6 col-xl-4 mb-3">
+                                        <div class="col-sm-4 col-xl-4 mb-3">
                                             <span>Code Purchase:</span>
                                             <input name="Code_Purchase" type="text" id="Code_Purchase"
                                                 class="form-control" placeholder="Code mua hàng...">
@@ -222,7 +248,7 @@
                                         </div>
 
                                         <!-- Giới hạn tồn kho -->
-                                        <div class="col-sm-6 col-xl-3 mb-3">
+                                        <div class="col-sm-3 col-xl-3 mb-3">
                                             <span>Giới hạn tồn:</span>
                                             <input name="stock_limit" type="number" id="stock_limit"
                                                 class="form-control" placeholder="Nhập giới hạn tồn kho..."
@@ -266,6 +292,7 @@
 @endsection
 
 @section('admin-js')
+<script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
     <script>
         $(document).ready(function() {
             var table_name = 'Product';
@@ -328,10 +355,10 @@
                     success: function(response) {
 
                         $('#Model').empty();
-                        $('#Model').append($('<option>', {
-                            value: "",
-                            text: "All",
-                        }));
+                        // $('#Model').append($('<option>', {
+                        //     value: "",
+                        //     text: "All",
+                        // }));
                         $('#Model_search').append($('<option>', {
                             value: "",
                             text: "All",
@@ -428,7 +455,15 @@
                 select: {
                     style: 'single',
                 }, // Tự động điều chỉnh chiều rộng của cột
-
+                dom: 'Bfrtip', // Chỉ định vị trí của các thành phần: buttons, filters, table...
+                            buttons: [{
+                                extend: 'excelHtml5',
+                                text: 'Tải Excel', // Text của nút
+                                title: 'Lịch sử tồn kho', // Tiêu đề của file Excel
+                                exportOptions: {
+                                    columns: ':visible' // Chỉ xuất các cột đang hiển thị
+                                }
+                            }]
             });
 
 
