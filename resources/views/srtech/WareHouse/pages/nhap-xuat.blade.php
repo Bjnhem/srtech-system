@@ -1,6 +1,5 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 @section('content')
-    {{-- <div class="tab-pane fade show active" id="check-list" role="tabpanel" aria-labelledby="check-list-1" tabindex="0"> --}}
     <div class="card" style="border: none">
         <!-- Header -->
         <div class="card-header">
@@ -31,24 +30,10 @@
                     <!-- Product Information -->
                     <div class="col-md-9">
                         <div class="row">
-                            <!-- Type -->
-                            {{-- <div class="col-md-4">
-                                <label for="Type" class="form-label">Phân Loại</label>
-                                <select name="Type" id="Type" class="form-select">
-                                    <option value="All">All</option>
-                                    <option value="JIG">JIG</option>
-                                    <option value="MRO">MRO</option>
-                                    <option value="Spare part">Spare part</option>
-                                    <option value="SET">SET</option>
-                                    <option value="TSCD">TSCD</option>
-                                </select>
-                            </div> --}}
 
-                            <!-- Code ID -->
                             <div class="col-md-4">
                                 <label for="ID_SP" class="form-label">Code ID</label>
                                 <select name="ID_SP" id="ID_SP" class="form-select">
-                                    {{-- <option value="">Chọn Code</option> --}}
                                 </select>
                             </div>
 
@@ -69,6 +54,12 @@
                                     <!-- Dynamic Content -->
                                 </select>
                             </div>
+                            {{-- <div class="col-md-3">
+                                <label for="status" class="form-label">Tình trạng</label>
+                                <select name="status" id="status" class="form-select">
+                                    <!-- Dynamic Content -->
+                                </select>
+                            </div> --}}
 
                             <!-- Warehouse Receive -->
                             <div class="col-md-4">
@@ -87,7 +78,7 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="d-flex gap-2" style="justify-content: end">
+                        <div class="d-flex gap-2 mt-3" style="justify-content: end">
                             <button type="button" class="btn btn-primary" id="add-product">Thêm</button>
                             <button type="button" class="btn btn-success save-transfer" id="save">Lưu</button>
                         </div>
@@ -115,31 +106,9 @@
                 </table>
             </div>
 
-            {{-- <!-- History Section -->
-            <div class="mt-5">
-                <h5 class="text-primary">Lịch Sử Nhập/Xuất Kho</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover" id="table-history">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Ngày</th>
-                                <th>Nhập/Xuất</th>
-                                <th>Mã ID_SP</th>
-                                <th>Sản Phẩm</th>
-                                <th>Kho</th>
-                                <th>Remark</th>
-                                <th>Số Lượng</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Dynamic Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div> --}}
+
         </div>
     </div>
-    {{-- </div> --}}
 @endsection
 
 @section('admin-js')
@@ -323,6 +292,59 @@
                 },
             });
 
+            // $('#status').select2({
+            //     placeholder: "Tình trạng",
+            //     allowClear: true,
+            //     ajax: {
+            //         url: "{{ route('get_status') }}", // API để lấy dữ liệu sản phẩm
+            //         dataType: 'json',
+            //         delay: 250, // Thời gian trễ khi gõ (ms)
+            //         data: function(params) {
+            //             const page = params.page || 1;
+            //             const warehouse_id = $('#warehouse_1').val();
+            //             return {
+            //                 search: params.term || '',
+            //                 page: page,
+            //                 pageSize: 10,
+            //                 warehouse_id: warehouse_id,
+
+            //             };
+            //         },
+            //         processResults: function(data, params) {
+            //             params.page = params.page || 1;
+            //             if ($action == 'Import') {
+            //                 return {
+            //                     results: data.status.map(product => ({
+            //                         id: product.id,
+            //                         text: product.name,
+                                   
+
+            //                     })),
+            //                     pagination: {
+            //                         more: data.hasMore_1 // Kiểm tra nếu có thêm dữ liệu
+            //                     }
+            //                 };
+            //             } else {
+            //                 return {
+            //                     results: data.status.map(product => ({
+            //                         id: product.id,
+            //                         text: product.name,
+            //                         quantity: 0,
+
+            //                     })),
+            //                     pagination: {
+            //                         more: data.hasMore_1 // Kiểm tra nếu có thêm dữ liệu
+            //                     }
+            //                 };
+            //             }
+
+
+
+            //         },
+            //         cache: true
+            //     },
+
+            // });
 
             function forceFocusFn() {
                 const searchInput = document.querySelector('.select2-container--open .select2-search__field');

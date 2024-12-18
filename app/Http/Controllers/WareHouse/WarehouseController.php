@@ -153,6 +153,37 @@ class WarehouseController extends Controller
         ]);
     }
 
+    // show data master warehouse search
+    function get_status(Request $request)
+    {
+        $search = $request->input('search');
+        $warehouse_id = $request->input('warehouse_id', null);
+        $page = $request->input('page', 1);
+        $pageSize = $request->input('pageSize', 10);
+        $offset = ($page - 1) * $pageSize;
+
+
+        $join_stock_view = DB::table('stock_view')
+            ->join('warehouses', 'stock_view.warehouse_id', '=', 'warehouses.id')
+            ->select('stock_view.*', 'warehouses.name', 'warehouses.id');
+
+        // Tìm kiếm với tên kho (search) nếu có
+        if ($search) {
+            $join_stock_view->where('warehouses.name', 'like', "%{$search}%");
+        }
+
+        $warehouse_1 = $join_stock_view->where('warehouse_id', 'like', "%{$warehouse_id}%")
+            ->offset($offset)->limit($pageSize)->get();
+
+        $totalCount1 = $join_stock_view->where('warehouse_id', 'like', "%{$warehouse_id}%")->count();
+
+        return response()->json([
+            'status' => $warehouse_1,
+            'hasMore_1' => ($page * $pageSize) < $totalCount1,
+
+        ]);
+    }
+
 
     //  save data transfer history
     public function history_transfer(Request $request)

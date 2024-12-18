@@ -781,7 +781,7 @@ img.company-logo:hover {
 }
 
 .card-body {
-    padding: 1.25rem 0.5rem;
+    padding: 1.25rem 1rem;
 }
 
 .table-result th,
@@ -996,9 +996,7 @@ button:hover {
     border-top-right-radius: 8px;
 }
 
-.card-body {
-    padding: 30px;
-}
+
 
 /* Master Plan & Data Input Section */
 

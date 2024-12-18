@@ -982,9 +982,9 @@ button:hover {
 
 .row {
     display: flex;
-    justify-content: space-between; /* Giãn đều khoảng cách giữa các cột */
+    justify-content:flex-start; /* Giãn đều khoảng cách giữa các cột */
     align-items: center; /* Căn giữa theo trục dọc */
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 .col-sm-6 {
@@ -1269,6 +1269,15 @@ canvas {
     border-radius: 5px;
 }
 
+.master-plan-product {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
 .data-loi-input {
     flex: 1;
     background-color: #f9f9f9;
@@ -1314,7 +1323,7 @@ canvas {
 }
 
 #button-save {
-    margin-top: 72px;
+    margin-top: 114px;
     display: flex;
     gap: 10px;
     justify-content: end;

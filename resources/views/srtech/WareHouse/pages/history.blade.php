@@ -73,41 +73,6 @@
         </div>
     </div>
 
-
-    </div>
-
-    <!-- Modal hiển thị lịch sử nhập/xuất -->
-    <div class="modal fade" id="historyModal_product" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen"> <!-- modal-xl để modal rộng hơn -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="historyModalLabel">Chi tiết Lịch Sử Nhập/Xuất</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Lịch Sử Nhập/Xuất -->
-                    <div class="card-body table-responsive">
-                        <table class="table table-bordered table-hover table-sm mt-2" id="table-history-detail"
-                            style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Ngày</th>
-                                    <th>Type</th>
-                                    <th>Mã SP</th>
-                                    <th>Sản Phẩm</th>
-                                    <th>Kho</th>
-                                    <th>Remark</th>
-                                    <th>Số Lượng</th>
-                                </tr>
-                            </thead>
-
-                        </table>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('admin-js')

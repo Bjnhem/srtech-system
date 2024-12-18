@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WareHouse;
 
 use App\Exports\ErrorExport;
 use App\Http\Controllers\Controller;
+use App\Imports\ProductImport;
 use App\Imports\WarehouseImport;
 use App\Models\Model_master;
 use App\Models\WareHouse\Product;
@@ -214,13 +215,20 @@ class UpdateDataWarehouseController extends Controller
                     // Nếu có ảnh mới, tải lên ảnh mới
                     $imageName = $this->handleImageUpload($request);
                 }
+                if ($type != $product->Type) {
+                    $ID_SP = $this->created_ID_SP($type);
+                } else {
+                    $ID_SP = $request->input('ID_SP');
+                }
                 $product->update([
                     'Type' => $type,
                     'Model' => $modelName,
-                    'ID_SP' => $request->input('ID_SP'),
+                    'ID_SP' => $ID_SP,
                     'name' => $request->input('name'),
                     'Code_Purchase' => $request->input('Code_Purchase'),
                     'stock_limit' => $request->input('stock_limit'),
+                    'vendor' => $request->input('vendor'),
+                    'version' => $request->input('version'),
                     'Image' => $imageName, // Xử lý ảnh nếu có
                 ]);
                 return redirect()->back()->with('success', 'Product updated successfully!');
@@ -228,34 +236,41 @@ class UpdateDataWarehouseController extends Controller
                 return redirect()->back()->with('error', 'Product not found.');
             }
         } else {
-            // Nếu không có ID, tạo mới sản phẩm
-            // Generate new ID_SP
-            $lastId = Product::where('Type', $type)->latest('ID_SP')->first(); // Get the latest ID_SP for the selected Type
 
-            $newId = '';
-            if ($lastId) {
-                // Nếu có sản phẩm trước đó, tăng giá trị ID_SP
-                preg_match('/(\d+)$/', $lastId->ID_SP, $matches);
-                $newNumber = intval($matches[0]) + 1;
-                $newId = "EQM-" . strtoupper($type) . "-" . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
-            } else {
-                // Nếu không có sản phẩm, tạo ID_SP bắt đầu từ EQM-TYPE-10000
-                $newId = "EQM-" . strtoupper($type) . "-10000";
-            }
+            $ID_SP = $this->created_ID_SP($type);
 
             // Tạo mới bản ghi sản phẩm
             $product = Product::create([
-                'ID_SP' => $newId,
+                'ID_SP' => $ID_SP,
                 'Type' => $type,
                 'Model' => $modelName,
                 'name' => $request->input('name'),
                 'Code_Purchase' => $request->input('Code_Purchase'),
                 'stock_limit' => $request->input('stock_limit'),
+                'vendor' => $request->input('vendor'),
+                'version' => $request->input('version'),
                 'Image' => $this->handleImageUpload($request), // Xử lý ảnh nếu có
             ]);
 
             return redirect()->back()->with('success', 'Product saved successfully!');
         }
+    }
+
+    function created_ID_SP($type)
+    {
+        $lastId = Product::where('Type', $type)->latest('ID_SP')->first(); // Get the latest ID_SP for the selected Type
+
+        $newId = '';
+        if ($lastId) {
+            // Nếu có sản phẩm trước đó, tăng giá trị ID_SP
+            preg_match('/(\d+)$/', $lastId->ID_SP, $matches);
+            $newNumber = intval($matches[0]) + 1;
+            $newId = "EQM-" . strtoupper($type) . "-" . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        } else {
+            // Nếu không có sản phẩm, tạo ID_SP bắt đầu từ EQM-TYPE-10000
+            $newId = "EQM-" . strtoupper($type) . "-10000";
+        }
+        return $newId;
     }
 
     // Hàm xử lý việc upload ảnh
@@ -354,7 +369,7 @@ class UpdateDataWarehouseController extends Controller
                     $location = isset($row[1]) ? trim($row[1]) : '';
                     $status = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
                     // Kiểm tra giá trị trống
-                    if (empty($location) || empty($name)|| empty($status)) {
+                    if (empty($location) || empty($name) || empty($status)) {
                         $errors[] = [
                             'row' => $index + 1,  // Dòng bị lỗi
                             'error' => 'Dữ liệu thiếu thông tin quan trọng',
@@ -405,77 +420,93 @@ class UpdateDataWarehouseController extends Controller
         }
     }
 
+
     public function updateFromExcel_product(Request $request)
     {
         $request->validate([
             'excel_file' => 'required|file|mimes:xlsx,xls',
         ]);
-        $errors = []; // Mảng chứa các dòng lỗi
 
+        $errors = []; // Mảng chứa các lỗi
         try {
-            // Chuyển đổi dữ liệu từ file Excel thành mảng
-            $data = Excel::toArray(new WarehouseImport, $request->file('excel_file'));
+            // Chuyển file Excel thành mảng
+            $data = Excel::toArray(new ProductImport, $request->file('excel_file'));
 
-            // Kiểm tra dữ liệu đã được chuyển thành mảng chưa
             if (is_array($data) && count($data) > 0) {
                 foreach ($data[0] as $index => $row) {
                     if ($index == 0) {
-                        continue;  // Bỏ qua dòng tiêu đề
+                        continue; // Bỏ qua dòng tiêu đề
                     }
 
-                    // Kiểm tra các trường cần thiết (category, name)
-                    $name = isset($row[0]) ? trim($row[0]) : '';
-                    $location = isset($row[1]) ? trim($row[1]) : '';
-                    $status = isset($row[2]) ? trim($row[2]) : '';  // remark có thể có hoặc không
-                    // Kiểm tra giá trị trống
-                    if (empty($location) || empty($name)|| empty($status)) {
+                    // Lấy các cột từ file Excel
+                    $name = $row[1] ?? null;
+                    $type = $row[0] ?? null; // SKU là khóa chính hoặc duy nhất
+                    $ID_SP = $row[3] ?? null;
+
+                    // Kiểm tra dữ liệu cần thiết
+                    if (empty($name) || empty($type)) {
                         $errors[] = [
-                            'row' => $index + 1,  // Dòng bị lỗi
-                            'error' => 'Dữ liệu thiếu thông tin quan trọng',
+                            'row' => $index + 1,
+                            'error' => 'Dữ liệu thiếu trường bắt buộc (name hoặc SKU)',
                             'data' => $row,
                         ];
-                        continue; // Bỏ qua dòng này nếu thiếu dữ liệu quan trọng
+                        continue;
                     }
 
-                    // Kiểm tra xem bản ghi đã tồn tại chưa
-                    $existingRecord = DB::table('warehouses')
-                        ->where('location', $location)
-                        ->where('status', $status)
-                        ->where('name', $name)
+                    // Kiểm tra xem sản phẩm đã tồn tại chưa
+                    $existingProduct = DB::table('products')
+                        ->where('ID_SP', $ID_SP)
                         ->first();
 
-                    if ($existingRecord) {
-                        // Nếu đã tồn tại thì cập nhật bản ghi
-                        DB::table('warehouses')
-                            ->where('id', $existingRecord->id)
+                    if ($existingProduct) {
+                        // Cập nhật bản ghi nếu đã tồn tại
+                        DB::table('products')
+                            ->where('ID_SP', $ID_SP)
                             ->update([
-                                'location' => $location,
-                                'name' => $name,
-                                'status' => $status,
+                                'Type'        => $row[0] ?? null,  // Cột đầu tiên là name
+                                'name'        => $row[1] ?? null,  // Cột Type
+                                'Code_Purchase'     => $row[2] ?? null,  // Cột Part_ID
+                                'ID_SP' => $ID_SP ?? null, // Cột Code_Purchase
+                                'Part_ID'       => $row[4] ?? null,  // Cột ID_SP
+                                'Model'       => $row[5] ?? null,
+                                'vendor'      => $row[6] ?? null,
+                                'version'     => $row[7] ?? null,
+                                'stock_limit' => $row[8] ?? null,
+                                'Image'       => $row[9] ?? null,
+                                'updated_at' => now(),
                             ]);
                     } else {
-                        // Nếu chưa tồn tại thì thêm mới bản ghi
-                        DB::table('warehouses')
-                            ->insert([
-                                'location' => $location,
-                                'name' => $name,
-                                'status' => $status,
-                            ]);
+                        // Thêm mới bản ghi
+                        $ID_SP = $this->created_ID_SP($type);
+                        DB::table('products')->insert([
+                            'Type'        => $row[0] ?? null,  // Cột đầu tiên là name
+                            'name'        => $row[1] ?? null,  // Cột Type
+                            'Code_Purchase'     => $row[2] ?? null,  // Cột Part_ID
+                            'ID_SP' =>   $ID_SP, // Cột Code_Purchase
+                            'Part_ID'       => $row[4] ?? null,  // Cột ID_SP
+                            'Model'       => $row[5] ?? null,
+                            'vendor'      => $row[6] ?? null,
+                            'version'     => $row[7] ?? null,
+                            'stock_limit' => $row[8] ?? null,
+                            'Image'       => $row[9] ?? null,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
                     }
                 }
 
-                // Nếu có lỗi, xuất file Excel chứa lỗi
+                // Nếu có lỗi, trả file Excel lỗi
                 if (!empty($errors)) {
                     return Excel::download(new ErrorExport($errors), 'errors.xlsx');
                 }
 
-                return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công từ file Excel.');
-            } else {
-                return redirect()->back()->with('error', 'Dữ liệu trong file không hợp lệ.');
+                return redirect()->back()->with('success', 'Cập nhật dữ liệu thành công.');
             }
+
+            return redirect()->back()->with('error', 'File Excel không chứa dữ liệu hợp lệ.');
         } catch (\Exception $e) {
             \Log::error('Excel import error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi xử lý file: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
 }

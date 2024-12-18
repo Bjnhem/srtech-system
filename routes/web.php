@@ -184,6 +184,7 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
 
     Route::get('/api/get-products', [WarehouseController::class, 'get_search'])->name('get_search');
     Route::get('/api/get-warehouse', [WarehouseController::class, 'get_warehouse'])->name('get_warehouse');
+    Route::get('/api/get-status', [WarehouseController::class, 'get_status'])->name('get_status');
 });
 
 
@@ -195,6 +196,7 @@ Route::prefix('WareHouse/Master')->group(function () {
     Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
     Route::post('/upload-csv', [UpdateDataWarehouseController::class, 'update_table'])->name('Warehouse.table.update.data');
     Route::post('/upload-kho-item', [UpdateDataWarehouseController::class, 'updateFromExcel_kho'])->name('warehouse.update.kho');
+    Route::post('/upload-product-item', [UpdateDataWarehouseController::class, 'updateFromExcel_product'])->name('warehouse.update.product');
 
     // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
 

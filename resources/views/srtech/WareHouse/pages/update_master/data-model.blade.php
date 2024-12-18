@@ -199,22 +199,27 @@
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
                 $('#title_modal_data').text(title_edit);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'none'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'unset'; // Ẩn button
+                $('#save').hide(); // Ẩn nút Save
+                $('#update').show();
                 id = $(this).val();
 
-                rowSelected = tables.rows('.selected').indexes();
-                // console.log(rowSelected[1]);
-                if (rowSelected.length > 0) {
-                    var rowData = tables.row(rowSelected[0]).data();
-                    // Lấy dữ liệu của dòng đầu tiên được chọn
-                    // console.log(rowData[1]);
-                    $('#model').val(rowData[1]);
+                // rowSelected = tables.rows('.selected').indexes();
+                //               if (rowSelected.length > 0) {
+                //     var rowData = tables.row(rowSelected[0]).data();
+                  
+                //     $('#model').val(rowData[1]);
+                //     $('#Name').val(rowData[2]);
+                //     $('#Status').val(rowData[3]);
+                // }
+                
+                var rowcont = tables.rows('.selected').indexes();
+                if (rowcont[0] != null) {
+                    rowSelected = rowcont[0];
+                }
+                var rowData = tables.row(rowSelected).data();
+                $('#model').val(rowData[1]);
                     $('#Name').val(rowData[2]);
                     $('#Status').val(rowData[3]);
-                }
                 $('#modal-created').modal('show');
             });
 

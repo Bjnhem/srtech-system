@@ -36,7 +36,7 @@
     {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/custom-admin.css') }}" /> --}}
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/icon.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('smart-ver2/css/bootstrap.css') }}" type="text/css" />
+    {{-- <link rel="stylesheet" href="{{ asset('smart-ver2/css/bootstrap.css') }}" type="text/css" /> --}}
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/swiper.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/font-icons.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/animate.css') }}" type="text/css" />
@@ -57,6 +57,7 @@
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/toastr.min.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/css/select-boxes.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/css/components/datepicker.css') }}" type="text/css" />
+    {{-- <link rel="stylesheet" href="{{ asset('SR-TECH/css/warehouse.css') }}" /> --}}
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/overview.css') }}" />
 
 

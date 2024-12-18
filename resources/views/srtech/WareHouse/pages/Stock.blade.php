@@ -10,21 +10,7 @@
             <!-- Form -->
             <div id="form-search" class="mt-2">
                 <form id="searchForm">
-                    <!-- Radio buttons to select search type -->
-                    {{-- <div class="radio-buttons text-center">
-                        <label class="radio-button mx-3">
-                            <input type="radio" name="item_search" value="product" checked />
-                            <span class="radio-icon"><i class="fas fa-box"></i></span>
-                            <span class="radio-text">Sản phẩm</span>
-                        </label>
-                        <label class="radio-button mx-3">
-                            <input type="radio" name="item_search" value="warehouse" />
-                            <span class="radio-icon"><i class="fas fa-warehouse"></i></span>
-                            <span class="radio-text">Kho</span>
-                        </label>
-                    </div> --}}
-
-                    <!-- Search fields for products -->
+                  
                     <div class="row product-fields">
                         <div class="col-md-2 mb-3">
                             <label for="Type">Phân loại:</label>
@@ -70,7 +56,7 @@
                     </div>
 
                     <!-- Results Table for Products -->
-                    <div class="card-body table-responsive">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover table-sm mt-4" id="table-result-stock"
                             style="width:100%">
                             <thead class="table-success">
@@ -236,7 +222,7 @@
             });
 
             $('#warehouse').select2({
-                placeholder: "Chọn kho chuyển",
+                placeholder: "Chọn kho",
                 allowClear: true,
                 ajax: {
                     url: "{{ route('get_warehouse_stock') }}", // API để lấy dữ liệu sản phẩm
@@ -380,11 +366,7 @@
                         var data_table = [];
                         data.products.forEach(function(stock) {
                             var typeCell = '';
-                            // var button =
-                            //     '<button class="btn btn-warning btn-sm history-product" id="' +
-                            //     stock.product_id + '">History</button>';
-
-                            var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
+                                                       var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
                                 .Image :
                                 "{{ asset('checklist-ilsung/image/gallery.png') }}";
 
@@ -393,8 +375,7 @@
                                     '</span>';
 
                             } else {
-                                // typeCell = '<span style="color: green;">' + stock.stock_quantity +
-                                //     '</span>';
+                               
                                 typeCell = stock.stock_quantity;
                             }
 
@@ -405,7 +386,7 @@
 
                             data_table.push([
                                 '<img src="' + imageUrl +
-                                '" alt="Hình ảnh sản phẩm" width="40">',
+                                '" alt="Image" width="40">',
                                 stock.ID_SP,
                                 stock.product_name,
                                 stock.warehouse_name,
@@ -435,300 +416,7 @@
                     }
                 });
             }
-
-
-         
-
-
             show_stock_by_product();
-
-            // function loadFilters() {
-            //     let currentType = $('#Type').val();
-            //     let currentProductID = $('#ID_SP').val();
-            //     let currentName = $('#name').val();
-            //     let currentWarehouse = $('#warehouse').val();
-            //     $.ajax({
-            //         url: "{{ route('warehouse.stock.data') }}",
-            //         method: 'GET',
-            //         data: {
-            //             type: currentType,
-            //             product_id: currentProductID,
-            //             name: currentName,
-            //             warehouse: currentWarehouse
-            //         },
-            //         success: function(data) {
-            //             // console.log(data);
-            //             let warehouseOptions = [];
-            //             let typeOption = [];
-            //             let productID = [];
-            //             let productName = [];
-            //             allProducts = Object.values(data.products);
-            //             // Cập nhật lại danh sách kho
-            //             data.warehouses.forEach(function(warehouse) {
-            //                 warehouseOptions.push({
-            //                     id: warehouse.warehouse_id,
-            //                     text: warehouse.name
-            //                 });
-
-            //             });
-            //             // Cập nhật lại danh sách sản phẩm
-
-            //             data.products.forEach(function(product) {
-            //                 productID.push({
-            //                     id: product.product_id,
-            //                     text: product.ID_SP
-            //                 });
-            //                 productName.push({
-            //                     id: product.product_id,
-            //                     text: product.name
-            //                 });
-            //             });
-
-            //             // Hàm hiển thị kết quả stock vào DataTable
-            //             let stockRows = [];
-            //             let stockRows_kho = [];
-            //             if (selectedSearchType === "product") {
-            //                 data.stock.forEach(function(stock) {
-            //                     var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
-            //                         .Image :
-            //                         "{{ asset('checklist-ilsung/image/gallery.png') }}";
-
-            //                     var stockValue = Number(stock.stock);
-            //                     var stockLimitValue = Number(stock.stock_limit);
-            //                     console.log(stockValue);
-            //                     console.log(stockLimitValue);
-            //                     var stockCell = stockValue < stockLimitValue ?
-            //                         '<span style="color: red; font-weight: bold;">' +
-            //                         stockValue + '</span>' :
-            //                         stockValue;
-            //                     stockRows.push([
-            //                         '<img src="' + imageUrl +
-            //                         '" alt="Hình ảnh sản phẩm" width="40">',
-            //                         stock.ID_SP,
-            //                         stock.product_name,
-            //                         stock.warehouses,
-            //                         stockCell,
-            //                         '<button class="btn btn-warning btn-sm history-product" id="' +
-            //                         stock.product_id + '">History</button>'
-            //                     ]);
-            //                 });
-
-            //                 // Khởi tạo DataTable cho bảng sản phẩm
-            //                 $('#table-result').DataTable({
-            //                     data: stockRows,
-            //                     destroy: true, // Xóa bảng cũ để không bị trùng lặp
-            //                     columns: [{
-            //                             title: 'Hình ảnh'
-            //                         },
-            //                         {
-            //                             title: 'Mã ID'
-            //                         },
-            //                         {
-            //                             title: 'Tên sản phẩm'
-            //                         },
-            //                         {
-            //                             title: 'Kho'
-            //                         },
-            //                         {
-            //                             title: 'Số lượng'
-            //                         },
-            //                         {
-            //                             title: 'Tùy chọn'
-            //                         }
-            //                     ],
-            //                     dom: 'Bfrtip', // Thêm nút tải xuống
-            //                     buttons: [{
-            //                         extend: 'excelHtml5',
-            //                         text: 'Tải Excel',
-            //                         title: 'Dữ liệu tồn kho theo sản phẩm', // Tiêu đề file Excel
-            //                         exportOptions: {
-            //                             columns: ':visible' // Chỉ xuất các cột visible
-            //                         }
-            //                     }]
-            //                 });
-            //             } else if (selectedSearchType === "warehouse") {
-            //                 data.stock_kho.forEach(function(stock) {
-
-            //                     var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
-            //                         .Image :
-            //                         "{{ asset('checklist-ilsung/image/gallery.png') }}";
-
-
-            //                     stockRows_kho.push([
-            //                         stock.warehouse_name,
-            //                         '<img src="' + imageUrl +
-            //                         '" alt="Hình ảnh sản phẩm" width="40">',
-            //                         stock.ID_SP,
-            //                         stock.product_name,
-            //                         stock.stock
-            //                     ]);
-            //                 });
-
-            //                 // Khởi tạo DataTable cho bảng kho
-            //                 $('#table-result-warehouse').DataTable({
-            //                     data: stockRows_kho,
-            //                     destroy: true, // Xóa bảng cũ để không bị trùng lặp
-            //                     columns: [{
-            //                             title: 'Kho'
-            //                         },
-            //                         {
-            //                             title: 'Hình ảnh'
-            //                         },
-            //                         {
-            //                             title: 'Mã ID'
-            //                         },
-            //                         {
-            //                             title: 'Tên sản phẩm'
-            //                         },
-            //                         {
-            //                             title: 'Số lượng'
-            //                         }
-            //                     ],
-            //                     dom: 'Bfrtip', // Thêm nút tải xuống
-            //                     buttons: [{
-            //                         extend: 'excelHtml5',
-            //                         text: 'Tải Excel',
-            //                         title: 'Dữ liệu tồn kho theo kho', // Tiêu đề file Excel
-            //                         exportOptions: {
-            //                             columns: ':visible' // Chỉ xuất các cột visible
-            //                         }
-            //                     }]
-            //                 });
-            //             }
-
-            //             if (product_change == 'change') {
-            //                 $('#ID_SP, #name').empty().append($('<option>', {
-            //                     value: '',
-            //                     text: '-- Chọn kho --'
-            //                 }));
-
-            //                 // Gắn danh sách vào dropdown
-            //                 $('#ID_SP').select2({
-            //                     placeholder: "Tìm kiếm ID",
-            //                     allowClear: true,
-            //                     data: productID
-
-            //                 });
-
-            //                 // Gắn danh sách vào dropdown
-            //                 $('#name').select2({
-            //                     placeholder: "Tìm kiếm sản phẩm",
-            //                     allowClear: true,
-            //                     data: productName
-
-            //                 });
-            //             }
-            //             if (type_change == 'change') {
-            //                 $('#Type').empty().append($('<option>', {
-            //                     value: 'All',
-            //                     text: 'All'
-            //                 }));
-            //                 data.Type.forEach(function(product) {
-            //                     $('#Type').append($('<option>', {
-            //                         value: product.type,
-            //                         text: product.type
-            //                     }));
-
-            //                 });
-            //             }
-
-            //             $('#warehouse').select2({
-            //                 placeholder: "Chọn kho",
-            //                 allowClear: true,
-            //                 data: warehouseOptions,
-            //             });
-
-
-
-            //         }
-            //     });
-            // }
-
-            // // Đồng bộ name và ID_SP
-            // function setupProductSelectionEvents() {
-
-            //     $('#name').on('select2:select', function(e) {
-            //         let selectedID = e.params.data.id;
-            //         // let matchedProduct = allProducts.find(p => p.id === parseInt(              selectedID));
-
-            //         $('#ID_SP').val(selectedID).trigger('change');
-            //     });
-
-            //     $('#ID_SP').on('select2:select', function(e) {
-            //         let selectedID = e.params.data.id;
-            //         // let matchedProduct = allProducts.find(p => p.id === parseInt(
-            //         //     selectedID));
-            //         $('#name').val(selectedID).trigger('change');
-            //     });
-
-            //     // Khi xóa sản phẩm theo tên
-            //     $('#name').on('select2:unselect', function(e) {
-            //         $('#ID_SP').val(null).trigger('change'); // Xóa dữ liệu ở ID_SP
-            //     });
-
-            //     // Khi xóa sản phẩm theo ID
-            //     $('#ID_SP').on('select2:unselect', function(e) {
-            //         $('#name').val(null).trigger('change'); // Xóa dữ liệu ở name
-            //     });
-
-            //     let forceFocusFn = function() {
-            //         // Gets the search input of the opened select2
-            //         var searchInput = document.querySelector('.select2-container--open .select2-search__field');
-            //         // If exists
-            //         if (searchInput)
-            //             searchInput.focus(); // focus
-            //     };
-
-            //     // Every time a select2 is opened
-            //     $(document).on('select2:open', () => {
-            //         // We use a timeout because when a select2 is already opened and you open a new one, it has to wait to find the appropiate
-            //         setTimeout(() => forceFocusFn(), 200);
-            //     });
-            // }
-
-            // $("input[name='item_search']").on("change", function() {
-            //     const selectedValue = $("input[name='item_search']:checked").val();
-
-            //     if (selectedValue === "product") {
-            //         $(".product-fields,.body-product").show();
-            //         $(".warehouse-fields,#table-result-kho").hide();
-            //     } else if (selectedValue === "warehouse") {
-            //         $(".product-fields,.body-product").hide();
-            //         $(".warehouse-fields,#table-result-kho").show();
-
-            //     }
-            //     selectedSearchType = $(this).val();
-            //     // $(".product-fields").toggle(selectedSearchType === "product");
-            //     // $(".warehouse-fields").toggle(selectedSearchType === "warehouse");
-            //     loadFilters();
-
-            // });
-            // // Xử lý khi thay đổi bộ lọc
-            // $("#Type").on("change", function() {
-            //     $('#ID_SP').val('').trigger('change');
-            //     $('#name').val('').trigger('change');
-            //     type_change = 'none';
-            //     product_change = 'change';
-            //     loadFilters();
-            // });
-
-            // // Xử lý khi thay đổi bộ lọc
-            // $("#warehouse").on("change", function() {
-            //     loadFilters();
-            // });
-
-            // $('#name,#ID_SP').on("change", function() {
-            //     type_change = 'none';
-            //     product_change = 'none';
-            //     loadFilters();
-            // });
-
-            // loadFilters();
-            // setupProductSelectionEvents();
-
-            // Xử lý nút "History"
-
-
         });
     </script>
 @endsection
