@@ -180,191 +180,6 @@
             </div>
         </div>
     </div>
-
-    {{-- <div class="card table-responsive" style="border: none">
-        <div class="card-header">
-            <button type="button" id="Home" class="btn btn-success"
-                onclick="window.location='{{ route('WareHouse.update.master') }}'"><span
-                    class="icon-home"></span></button>
-            <button type="button" id="creat" class="btn btn-primary">Add</button>
-
-        </div>
-        <div class="card-body ">
-            <div class="row">
-                <div class="col-sm-4 col-xl-4 mb-3 bottommargin-sm">
-                    <label for="">Code sản phẩm</label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Code sản phẩm" aria-label="Nhập ID SP"
-                            aria-describedby="Code_machine" id="ID_SP_search">
-                        <button class="btn btn-outline-secondary btn-primary" type="button"
-                            id="Scan_QR">Search</button>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-xl-4 mb-3">
-                    <span>Sản phẩm:</span>
-                    <select name="Type" id="Type_search" class="form-select">
-                        <option value="All">All</option>
-                        <option value="JIG">JIG</option>
-                        <option value="MRO">MRO</option>
-                        <option value="Spare part">Spare part</option>
-                        <option value="SET">SET</option>
-                        <option value="TSCD">TSCD</option>
-                    </select>
-                </div>
-
-                <div class="col-sm-4 col-xl-4 mb-3">
-                    <span>Model:</span>
-                    <select name="Model" id="Model_search" class="form-select">
-                    </select>
-                </div>
-            </div>
-            <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
-                <thead class="table-success">
-                    <tr>
-                                        <th>Image</th>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Code Purchase</th>
-                        <th>Model</th>
-                        <th>Stock limit</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div> --}}
-    {{-- 
-    <div class="modal" id="modal-created">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <!-- Tiêu đề bên trái -->
-                    <h5 class="text-primary mx-3" id="title_modal_data">
-                    </h5>
-
-                    <div>
-                        <button type="button" id="save" class="btn btn-success">Save</button>
-                        <button type="button" id="update" class="btn btn-success">Update</button>
-                        <button type="button" id="close-model"
-                            class="btn btn-warning close-model-checklist">Close</button>
-                    </div>
-                </div>
-                <div class="modal-body" style="background-color: white">
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row align-items-center" style="display: contents">
-                                <!-- Phần tải file mẫu -->
-                                <div class="col-md-3 text-start">
-                                    <a href="#" id="download-template" class="btn btn-primary">
-                                        <i class="icon-download"></i> Tải file mẫu
-                                    </a>
-                                </div>
-
-                                <!-- Phần upload file -->
-                                <div class="col-md-9">
-                                    <form action="{{ route('OQC.update.loss.item') }}" method="post" id="form-upload"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="input-group">
-                                            <input class="form-control" type="file" name="excel_file"
-                                                accept=".xlsx, .xls" id="file-upload">
-                                            <button class="btn btn-success" type="submit">
-                                                <i class="icon-line-upload"></i> Upload
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- </div> -->
-                        </div>
-
-                        <div class="card-body">
-                            <div class="col-12">
-                                <!-- Phần Thêm sản phẩm bằng Form -->
-                                <form action="{{ route('product.save') }}" method="post" id="form_data"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="row">
-                                        <input name="id" type="hidden" id="id" class="form-control"
-                                            value="">
-                                        <input name="ID_SP" type="hidden" id="ID_SP" class="form-control">
-
-                                        <!-- Loại sản phẩm -->
-                                        <div class="col-sm-4 col-xl-4 mb-3">
-                                            <span>Sản phẩm:</span>
-                                            <select name="Type" id="Type" class="form-select">
-                                                <option value="JIG">JIG</option>
-                                                <option value="MRO">MRO</option>
-                                                <option value="Spare part">Spare part</option>
-                                                <option value="SET">SET</option>
-                                                <option value="TSCD">TSCD</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Model sản phẩm -->
-                                        <div class="col-sm-4 col-xl-4 mb-3">
-                                            <span>Model:</span>
-                                            <select name="Model" id="Model" class="form-select">
-                                            </select>
-                                        </div>
-
-                                        <!-- Code Purchase -->
-                                        <div class="col-sm-4 col-xl-4 mb-3">
-                                            <span>Code Purchase:</span>
-                                            <input name="Code_Purchase" type="text" id="Code_Purchase"
-                                                class="form-control" placeholder="Code mua hàng...">
-                                        </div>
-
-                                        <!-- Tên sản phẩm -->
-                                        <div class="col-sm-12 col-xl-12 mb-3">
-                                            <span>Sản phẩm:</span>
-                                            <input name="name" id="name" type="text" class="form-control"
-                                                placeholder="Tên sản phẩm...">
-                                        </div>
-
-                                        <!-- Giới hạn tồn kho -->
-                                        <div class="col-sm-3 col-xl-3 mb-3">
-                                            <span>Giới hạn tồn:</span>
-                                            <input name="stock_limit" type="number" id="stock_limit"
-                                                class="form-control" placeholder="Nhập giới hạn tồn kho..."
-                                                min="0" value="1">
-                                        </div>
-
-                                        <!-- Hình ảnh sản phẩm -->
-                                        <div class="form-group col-5">
-                                            <label for="" class="control-label">Image</label>
-                                            <div class="input-group">
-                                                <input class="form-control" type="file" name="Image"
-                                                    id="Image">
-                                            </div>
-                                        </div>
-
-                                        <!-- Hiển thị ảnh trước khi upload -->
-                                        <div class="form-group col-4 d-flex justify-content-center">
-                                            <img src="" alt="" id="cimg"
-                                                class="img-fluid img-thumbnail">
-                                        </div>
-                                    </div>
-
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    <style>
-        img#cimg {
-            height: 210px;
-            width: 250px;
-            object-fit: cover;
-            /* border-radius: 100% 100%; */
-        }
-    </style>
 @endsection
 
 @section('admin-js')
@@ -414,8 +229,11 @@
                             }
                             toastr.success('Thành công');
                             show_data_table(table_name);
-                            $('#modal-created').modal('hide');
                             document.getElementById('form_data').reset();
+                            $('#save').show();
+                            $('#update').hide();
+                            $('#title-product').text(title_add);
+                            $('#cimg').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
                         },
                         error: function() {
                             toastr.success('Có lỗi - vui lòng thực hiện lại');
@@ -571,27 +389,16 @@
             });
 
 
-            $(document).on('click', '#creat', function(e) {
-                e.preventDefault();
-                $('#title_modal_data').text(title_add);
-                $('#save').show(); // Ẩn nút Save
-                $('#update').hide();
-                // $('#modal-created').modal('show');
-                id = "";
-            });
-
             $(document).on('click', '#save', function(e) {
                 e.preventDefault();
                 document.getElementById('form_data').submit();
                 $('#cimg').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
-
-
+                id = "";
             });
 
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
-                $('#title-product').text('Chỉnh sửa sản phẩm');
-
+                $('#title-product').text(title_edit);
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show(); // Hiển thị nút Update
 
@@ -623,21 +430,17 @@
                         'default-image.png');
 
                 }
-
-                // Hiển thị modal
-                // $('#modal-created').modal('show');
             });
 
             $(document).on('click', '#update', function(e) {
                 e.preventDefault();
                 document.getElementById('form_data').submit();
-
+                id = "";
             });
 
 
             $(document).on('click', '#delete', function() {
                 const id = $(this).val(); // Lấy ID của checklist từ nút
-
                 const row = $(this).closest('tr'); // Lưu tham chiếu đến dòng chứa nút
                 if (confirm('Bạn có chắc chắn muốn xóa không?')) {
                     $.ajax({
@@ -672,11 +475,10 @@
 
             $(document).on('click', '#close-model', function(e) {
                 e.preventDefault();
-                // $('#modal-created').modal('hide');
                 document.getElementById('form_data').reset();
-                $('#save').show(); // Ẩn nút Save
+                $('#save').show();
                 $('#update').hide();
-                $('#title-product').text('Thêm sản phẩm');
+                $('#title-product').text(title_add);
                 $('#cimg').attr('src', "{{ asset('checklist-ilsung/image/gallery.png') }}");
 
 

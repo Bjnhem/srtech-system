@@ -17,6 +17,23 @@ use Maatwebsite\Excel\Facades\Excel;
 class WarehouseController extends Controller
 {
 
+
+
+    public function getPendingUsers()
+    {
+        // Truy vấn danh sách username có trạng thái pending
+        $pendingUsers = DB::table('users')
+            ->where('status', 'pending')
+            ->select('username', 'updated_at')
+            ->get();
+
+        $count = $pendingUsers->count(); // Đếm số lượng thông báo
+
+        return response()->json([
+            'notifications' => $pendingUsers,
+            'count' => $count,
+        ]);
+    }
     // controller view nhập xuất
 
     // show data master product search
@@ -442,12 +459,18 @@ class WarehouseController extends Controller
                 'products.Type as product_type',
                 'products.name as product_name',
                 'warehouses.name as warehouse_name',
+                'warehouses.location as warehouse_status',
             )
             ->orderBy('transfer_history.created_at', 'desc');
 
         // Lọc theo type (loại sản phẩm)
         if ($request->has('type') && $request->type != 'All') {
             $history->where('products.Type', $request->type);
+        }
+
+         // Lọc theo tình trạng sản phẩm
+        if ($request->has('status') && $request->status != 'All') {
+            $history->where('warehouse.location', $request->status);
         }
 
         // Lọc theo warehouse_id (ID kho)

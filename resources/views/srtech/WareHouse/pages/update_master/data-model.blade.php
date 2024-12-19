@@ -1,19 +1,53 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
-    <div class="tab-content mt-4" id="nav-tabContent">
-        {{-- =====  Hoạt động nổi bật ===== --}}
+    <div class="card" style="border: none;">
+        <div class="card-header">
+            <h3 class="header-title">Danh sách Model</h3>
+        </div>
+        <div class="card-body">
+            <div class="row content-top">
+                <div class="col-4 master-plan">
+                    <h4 class="section-title" id="title-add">Thêm Model</h4>
+                    <div class="row">
 
-        <div class="tab-pane fade show active " id="check-list" role="tabpanel" aria-labelledby="check-list-1" tabindex="0">
-            <div class="card table-responsive" style="border: none">
-                <div class="card-header">
-                    <button type="button" id="Home" class="btn btn-success"
-                        onclick="window.location='{{ route('WareHouse.update.master') }}'"><span class="icon-home"></span></button>
-                    <button type="button" id="creat" class="btn btn-primary">Add</button>
+                        <div class="col-12 mt-5">
+                            <form action="" method="post" id="form_data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label>Model:</label>
+                                        <input name="model" type="text" id="model" class="form-control"
+                                            placeholder="Nhập model...">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label>Model name:</label>
+                                        <input name="Name" type="text" id="Name" class="form-control"
+                                            placeholder="Nhập model name...">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label>Status:</label>
+                                        <select name="Status" id="Status" class="form-select">
+                                            <option value="Use">Use</option>
+                                            <option value="Not Use">Not Use</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-xl-12" id="button-save">
+                                        <button type="button" id="close-model"
+                                            class="btn btn-warning close-model-checklist">Reset</button>
+                                        <button type="button" id="save" class="btn btn-success">Save</button>
+                                        <button type="button" id="update" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body ">
+
+                <div class="col-8 data-loi-input">
+                    <h4 class="section-title">Danh sách model</h4>
                     <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
-                        {{-- <thead class="table-success"></thead> --}}
                         <thead class="table-success">
                             <tr>
                                 <th>STT</th>
@@ -25,63 +59,14 @@
                         </thead>
                     </table>
                 </div>
-            </div>
-        </div>
 
-
-    </div>
-
-
-
-    <div class="modal" id="modal-created">
-        <div class="modal-dialog modal-dialog-scrollable modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <!-- Tiêu đề bên trái -->
-                    <h5 class="text-primary mx-3" id="title_modal_data">
-
-                    </h5>
-                    <div>
-                        <button type="button" id="save" class="btn btn-success">Save</button>
-                        <button type="button" id="update" class="btn btn-success">Update</button>
-                        <button type="button" id="close-model" class="btn btn-warning close-model-checklist">Close</button>
-                    </div>
-                </div>
-                <div class="modal-body" style="background-color: white">
-                    <form action="" method="post" id="form_data">
-                        @csrf
-                        <div class="row">
-                            <div class="col-sm-12 col-xl-4 mb-3">
-                                <span>Model:</span>
-                                <input name="model" type="text" id="model" class="form-control"
-                                    placeholder="Nhập model...">
-                            </div>
-                            <div class="col-sm-12 col-xl-4 mb-3">
-                                <span>Model name:</span>
-                                <input name="Name" type="text" id="Name" class="form-control"
-                                    placeholder="Nhập model name...">
-                            </div>
-                            <div class="col-sm-12 col-xl-4 mb-3">
-                                <span>Status:</span>
-                                <select name="Status" id="Status" class="form-select">
-                                    <option value="Use">Use</option>
-                                    <option value="Not Use">Not Use</option>
-                                </select>
-                            </div>
-
-                        </div>
-                    </form>
-
-                    <br>
-
-                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @section('admin-js')
-<script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
+    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
     <script>
         $(document).ready(function() {
             var table_name = 'Model_master';
@@ -90,8 +75,8 @@
             let id;
             let title_add = "Add new Model";
             let title_edit = "Edit Model";
+            $('#update').hide();
 
-            // data_table_view(table);
             show_data_table(table_name);
 
             function show_data_table(tab) {
@@ -106,7 +91,7 @@
                     success: function(response) {
                         var data = [];
                         var count = 0;
-                              $.each(response.data, function(index, value) {
+                        $.each(response.data, function(index, value) {
                             count++;
                             id = value.id;
 
@@ -151,21 +136,11 @@
                 });
             }
 
-            $(document).on('click', '#creat', function(e) {
-                e.preventDefault();
-                $('#title_modal_data').text(title_add);
-                const button1 = document.getElementById('save');
-                button1.style.display = 'unset'; // Ẩn button
-                const button2 = document.getElementById('update');
-                button2.style.display = 'none'; // Ẩn button
-                $('#modal-created').modal('show');
-            });
-            $(document).on('click', '#save', function(e) {
-                e.preventDefault();
+            function save_update_data() {
                 const data = new FormData(document.getElementById('form_data'));
                 data.append('table', table_name);
-                data.append('id', "");
-                if (data.get('model') == "" || data.get('Name') == "") {
+                data.append('id', id);
+                if (data.get('Name') == "" || data.get('model') == "") {
                     return alert(
                         "Vui lòng điền đầy đủ thông tin");
                 } else {
@@ -179,85 +154,49 @@
                         contentType: false,
                         success: function(response) {
                             if (response.status === 400) {
-                                toastr.danger('Có lỗi khi add - vui lòng thực hiện lại');
+                                toastr.danger('Có lỗi - vui lòng thực hiện lại');
                             }
-                            toastr.success('Add model thành công');
+
+                            toastr.success(response.success);
                             show_data_table(table_name);
-                            $('#modal-created').modal('hide');
+                            $('#save').show(); // Ẩn nút Save
+                            $('#update').hide();
                             document.getElementById('form_data').reset();
+                            $('#title-add').text(title_add);
                         },
                         error: function() {
                             toastr.success('Có lỗi - vui lòng thực hiện lại');
                         }
                     });
                 }
+            }
 
-
-
+            $(document).on('click', '#save', function(e) {
+                e.preventDefault();
+                save_update_data();
             });
 
+          
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
-                $('#title_modal_data').text(title_edit);
+                $('#title-add').text(title_edit);
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show();
-                id = $(this).val();
 
-                // rowSelected = tables.rows('.selected').indexes();
-                //               if (rowSelected.length > 0) {
-                //     var rowData = tables.row(rowSelected[0]).data();
-                  
-                //     $('#model').val(rowData[1]);
-                //     $('#Name').val(rowData[2]);
-                //     $('#Status').val(rowData[3]);
-                // }
-                
+                id = $(this).val();
                 var rowcont = tables.rows('.selected').indexes();
                 if (rowcont[0] != null) {
                     rowSelected = rowcont[0];
                 }
                 var rowData = tables.row(rowSelected).data();
                 $('#model').val(rowData[1]);
-                    $('#Name').val(rowData[2]);
-                    $('#Status').val(rowData[3]);
-                $('#modal-created').modal('show');
+                $('#Name').val(rowData[2]);
+                $('#Status').val(rowData[3]);
             });
 
             $(document).on('click', '#update', function(e) {
                 e.preventDefault();
-                const data = new FormData(document.getElementById('form_data'));
-                data.append('table', table_name);
-                data.append('id', id);
-                console.log(id);
-                if (data.get('model') == "" || data.get('Name') == "") {
-                    return alert(
-                        "Vui lòng điền đầy đủ thông tin");
-                } else {
-                    // Gửi yêu cầu AJAX với cả hai dữ liệu
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('update.add.data') }}",
-                        dataType: 'json',
-                        data: data,
-                        processData: false, // Không xử lý dữ liệu (FormData tự xử lý)
-                        contentType: false,
-                        success: function(response) {
-                            if (response.status === 400) {
-                                toastr.danger('Có lỗi khi add - vui lòng thực hiện lại');
-                            }
-                            toastr.success('Update thành công');
-                            show_data_table(table_name);
-                            $('#modal-created').modal('hide');
-                            document.getElementById('form_data').reset();
-                        },
-                        error: function() {
-                            toastr.success('Có lỗi - vui lòng thực hiện lại');
-                        }
-                    });
-                }
-
-
-
+                save_update_data();
             });
 
 

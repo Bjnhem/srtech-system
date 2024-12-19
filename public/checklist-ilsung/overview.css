@@ -618,7 +618,7 @@ img.company-logo:hover {
 
 #form-search {
     /* background: #f9f9f9; */
-    padding: 15px;
+    /* padding: 15px; */
     /* border-radius: 10px; */
     /* / box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
 }
@@ -982,7 +982,7 @@ button:hover {
 
 .row {
     display: flex;
-    justify-content:flex-start; /* Giãn đều khoảng cách giữa các cột */
+    justify-content: flex-start; /* Giãn đều khoảng cách giữa các cột */
     align-items: center; /* Căn giữa theo trục dọc */
     /* margin-bottom: 20px; */
 }
@@ -1242,6 +1242,7 @@ canvas {
     background-color: #f9f9f9;
     margin-bottom: 20px;
     box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+    height: 630px;
 }
 
 .data-detail {
@@ -1323,7 +1324,7 @@ canvas {
 }
 
 #button-save {
-    margin-top: 114px;
+    /* margin-top: 114px; */
     display: flex;
     gap: 10px;
     justify-content: end;
@@ -1339,4 +1340,25 @@ canvas {
 .btn-success:hover {
     background-color: #218838;
     color: white;
+}
+
+img#cimg {
+    height: 210px;
+    width: 250px;
+    object-fit: cover;
+    /* border-radius: 100% 100%; */
+}
+
+.dots {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
 }

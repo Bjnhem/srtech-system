@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WareHouse;
 
 use App\Http\Controllers\Controller;
+use App\Models\Model_master;
 use App\Models\WareHouse\Product;
 use App\Models\WareHouse\Warehouse;
 use Illuminate\Http\Request;
@@ -33,14 +34,13 @@ class HomeWareHouseController extends Controller
 
     public function index_master()
     {
-        return view('srtech.WareHouse.pages.update_master.index-data');
-    }
+        $modelCount = Model_master::count();
+        $warehouseCount = Warehouse::count();
+        $productCount = Product::count();
 
-
-
-    public function index_user()
-    {
-        return view('srtech.warehouse.pages.user.user');
+        // Truyền dữ liệu vào view
+        return view('srtech.WareHouse.pages.Master-data', compact('modelCount', 'warehouseCount', 'productCount'));
+      
     }
 
 }

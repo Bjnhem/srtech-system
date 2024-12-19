@@ -6,6 +6,7 @@ use App\Http\Controllers\admin_check_list_controller;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DataTbaleController;
 use App\Http\Controllers\AdminController as ControllersAdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\checklist\ChecklistController;
 use App\Http\Controllers\checklist\HomeChecklistController;
 use App\Http\Controllers\checklist\HomeController as ChecklistHomeController;
@@ -45,46 +46,37 @@ Route::get('/storage', function () {
     Artisan::call('storage:link');
 });
 
-//UI Pages Routs
-// Route::get('/', [HomeController::class, 'uisheet'])->name('uisheet');
-
-
 // Home controller
 Route::group(['middleware' => 'auth'], function () {
     //router home
-    Route::get('/', [HomeController::class, 'Home_index'])->name('Home.index');
-    Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])->name('Home.WareHouse');
-    Route::get('/OQC', [OQCLosssController::class, 'showSummary'])->name('Home.OQC');
-    Route::get('/Checklist', [HomeController::class, 'Home_checklist'])->name('Home.checklist');
-
+    Route::get('/', [HomeController::class, 'Home_index'])
+        ->name('Home.index');
+    Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])
+        ->name('Home.WareHouse');
+    Route::get('/OQC', [OQCLosssController::class, 'showSummary'])
+        ->middleware('role:admin')
+        ->name('Home.OQC');
+    Route::get('/Checklist', [HomeController::class, 'Home_checklist'])
+        ->middleware('role:admin')
+        ->name('Home.checklist');
 
     Route::get('/change-language/{language}', [HomeController::class, 'changeLanguage'])->name('change-language'); // router change ngôn ngữ
 
-    // Permission Module
-    Route::get('/role-permission', [RolePermission::class, 'index'])->name('role.permission.list');
-    Route::resource('permission', PermissionController::class);
-    Route::resource('role', RoleController::class);
-
-    // Dashboard Routes
-    Route::get('/dashboard', [HomeController::class, 'Home_index'])->name('dashboard');
-
-    // Users Module
-    Route::resource('users', UserController::class);
 });
+
 
 // Route checklist
 
-Route::middleware('auth')->prefix('Checklist')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('Checklist')->group(function () {
     // Route::get('/overview', [HomeController::class, 'Home_checklist'])->name('checklist.overview');
     Route::get('/Overview-data', [HomeChecklistController::class, 'overview_data'])->name('checklist.overview.data');
     Route::get('/Check', [HomeChecklistController::class, 'index_checklist'])->name('Check.checklist');
     Route::get('/Plan', [HomeChecklistController::class, 'index_plan'])->name('Plan.checklist');
     Route::get('/Master', [HomeChecklistController::class, 'index_master'])->name('update.master');
-    Route::get('/User', [HomeChecklistController::class, 'index_user'])->name('user.checklist');
 });
 
 
-Route::prefix('Checklist/Check')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('Checklist/Check')->group(function () {
     Route::get('show/{line}', [ChecklistController::class, 'index_checklist_show'])->name('show.checklist');
     Route::get('/checklist-masster', [ChecklistController::class, 'check_list_masster'])->name('check.list.masster');  // show model search
     Route::get('/item-check', [ChecklistController::class, 'Machine_ID_search'])->name('item.checklist.search');  // show model search
@@ -111,7 +103,7 @@ Route::prefix('Checklist/Check')->group(function () {
     Route::get('/delete-check-list', [ChecklistController::class, 'delete_row'])->name('check.list.delete');
 });
 
-Route::prefix('Checklist/Plan')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('Checklist/Plan')->group(function () {
     Route::post('/add-plan', [PlanController::class, 'created_plan_checklist'])->name('add.plan.checklist');
     Route::post('/delete-plan', [PlanController::class, 'delete_plan_checklist'])->name('delete.plan.checklist');
     Route::post('/show-plan', [PlanController::class, 'show_plan_checklist'])->name('show.plan.checklist');
@@ -151,7 +143,7 @@ Route::prefix('Checklist/Master')->group(function () {
 
 // Route WareHouse
 
-Route::middleware('auth')->prefix('WareHouse')->group(function () {
+Route::middleware('role')->prefix('WareHouse')->group(function () {
 
     // Route nhập xuất
     Route::get('/nhap-xuat', [HomeWareHouseController::class, 'index_nhap_xuat'])->name('WareHouse.chuyen.kho');
@@ -165,10 +157,8 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
     Route::get('/stock-data', [WarehouseController::class, 'getStock_product'])->name('warehouse.stock.data');
 
 
-
-    // Route::get('/stock-data-detail', [WarehouseController::class, 'getHistory'])->name('warehouse.stock.data.history');
     Route::get('/stock-data-history', [WarehouseController::class, 'History'])->name('warehouse.data.history');
-
+ 
 
 
     // Route history
@@ -179,8 +169,6 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
 
 
     // router update master
-    Route::get('/Master', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
-    Route::get('/User', [HomeWareHouseController::class, 'index_user'])->name('user.warehouse');
 
     Route::get('/api/get-products', [WarehouseController::class, 'get_search'])->name('get_search');
     Route::get('/api/get-warehouse', [WarehouseController::class, 'get_warehouse'])->name('get_warehouse');
@@ -188,9 +176,9 @@ Route::middleware('auth')->prefix('WareHouse')->group(function () {
 });
 
 
+Route::middleware('role:admin,leader')->prefix('WareHouse/Master')->group(function () {
 
-Route::prefix('WareHouse/Master')->group(function () {
-
+    Route::get('/', [HomeWareHouseController::class, 'index_master'])->name('WareHouse.update.master');
     Route::get('/data-sanpham', [UpdateDataWarehouseController::class, 'data_sanpham'])->name('Warehouse.update.data.sanpham');
     Route::get('/data-kho', [UpdateDataWarehouseController::class, 'data_kho'])->name('Warehouse.update.data.kho');
     Route::get('/data-model', [UpdateDataWarehouseController::class, 'data_model'])->name('Warehouse.update.data.model');
@@ -198,28 +186,35 @@ Route::prefix('WareHouse/Master')->group(function () {
     Route::post('/upload-kho-item', [UpdateDataWarehouseController::class, 'updateFromExcel_kho'])->name('warehouse.update.kho');
     Route::post('/upload-product-item', [UpdateDataWarehouseController::class, 'updateFromExcel_product'])->name('warehouse.update.product');
 
-    // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
 
-    Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
-    Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
-
-
-
-    Route::get('/data-checklist-item', [UpdateDataWarehouseController::class, 'data_checklist_item'])->name('update.data.checklist.item');
-    Route::get('/show-data-table-checklist-item', [UpdateDataWarehouseController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
-    Route::get('/data-checklist-item_search', [UpdateDataWarehouseController::class, 'data_item_master'])->name('update.data.item_check');
-
-
-
-    Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
     Route::get('/show-data-table-product', [UpdateDataWarehouseController::class, 'showData'])->name('Warehouse.update.show.data.product');
     Route::post('/product/save', [UpdateDataWarehouseController::class, 'store_products'])->name('product.save');
-    Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
-    Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
     Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');
     Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
     Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
+
+
+
+    // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
+
+    // Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
+    // Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
+
+
+    // Route::get('/data-checklist-item', [UpdateDataWarehouseController::class, 'data_checklist_item'])->name('update.data.checklist.item');
+    // Route::get('/show-data-table-checklist-item', [UpdateDataWarehouseController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
+    // Route::get('/data-checklist-item_search', [UpdateDataWarehouseController::class, 'data_item_master'])->name('update.data.item_check');
+
+
+
+    // Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
+
+    // Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
+    // Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
+
+
 });
+
 
 // Route OQC
 
@@ -306,66 +301,31 @@ Route::prefix('OQC/Master')->group(function () {
 
 
 
+// route User
+Route::middleware('role:admin,leader')->prefix('User')->group(function () {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//App Details Page => 'Dashboard'], function() {
-Route::group(['prefix' => 'menu-style'], function () {
-    //MenuStyle Page Routs
-    Route::get('horizontal', [HomeController::class, 'horizontal'])->name('menu-style.horizontal');
-    Route::get('dual-horizontal', [HomeController::class, 'dualhorizontal'])->name('menu-style.dualhorizontal');
-    Route::get('dual-compact', [HomeController::class, 'dualcompact'])->name('menu-style.dualcompact');
-    Route::get('boxed', [HomeController::class, 'boxed'])->name('menu-style.boxed');
-    Route::get('boxed-fancy', [HomeController::class, 'boxedfancy'])->name('menu-style.boxedfancy');
+    Route::get('/', [UserController::class, 'index_user'])->name('user.index');
+    Route::get('/show-data-table', [UserController::class, 'show_data_table'])->name('User.update.show.data');
+    Route::post('/add-data-table', [UserController::class, 'add_data_row_table'])->name('User.update.add.data');
+    Route::post('/delete-data-table', [UserController::class, 'delete_data_row_table'])->name('User.delete.data');
+    Route::get('/notifications/pending-users', [WarehouseController::class, 'getPendingUsers'])->name('show.messing');
 });
 
-//App Details Page => 'special-pages'], function() {
-Route::group(['prefix' => 'special-pages'], function () {
-    //Example Page Routs
-    Route::get('billing', [HomeController::class, 'billing'])->name('special-pages.billing');
-    Route::get('calender', [HomeController::class, 'calender'])->name('special-pages.calender');
-    Route::get('kanban', [HomeController::class, 'kanban'])->name('special-pages.kanban');
-    Route::get('pricing', [HomeController::class, 'pricing'])->name('special-pages.pricing');
-    Route::get('rtl-support', [HomeController::class, 'rtlsupport'])->name('special-pages.rtlsupport');
-    Route::get('timeline', [HomeController::class, 'timeline'])->name('special-pages.timeline');
-});
 
-//Widget Routs
-Route::group(['prefix' => 'widget'], function () {
-    Route::get('widget-basic', [HomeController::class, 'widgetbasic'])->name('widget.widgetbasic');
-    Route::get('widget-chart', [HomeController::class, 'widgetchart'])->name('widget.widgetchart');
-    Route::get('widget-card', [HomeController::class, 'widgetcard'])->name('widget.widgetcard');
-});
 
-//Maps Routs
-Route::group(['prefix' => 'maps'], function () {
-    Route::get('google', [HomeController::class, 'google'])->name('maps.google');
-    Route::get('vector', [HomeController::class, 'vector'])->name('maps.vector');
-});
 
 //Auth pages Routs
-Route::group(['prefix' => 'auth'], function () {
-    Route::get('signin', [HomeController::class, 'signin'])->name('auth.signin');
-    Route::get('signup', [HomeController::class, 'signup'])->name('auth.signup');
-    Route::get('confirmmail', [HomeController::class, 'confirmmail'])->name('auth.confirmmail');
-    Route::get('lockscreen', [HomeController::class, 'lockscreen'])->name('auth.lockscreen');
-    Route::get('recoverpw', [HomeController::class, 'recoverpw'])->name('auth.recoverpw');
-    Route::get('userprivacysetting', [HomeController::class, 'userprivacysetting'])->name('auth.userprivacysetting');
+Route::group(['prefix' => '/'], function () {
+    Route::get('login', [AuthController::class, 'signin'])->name('auth.signin');
+    Route::POST('login', [AuthController::class, 'submit_login'])->name('auth.submit.signin');
+    Route::get('register', [AuthController::class, 'signup'])->name('auth.signup');
+    Route::POST('register', [AuthController::class, 'submit_register'])->name('auth.submit.signup');
+    Route::POST('logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+    Route::get('confirmmail', [AuthController::class, 'confirmmail'])->name('auth.confirmmail');
+    Route::get('lockscreen', [AuthController::class, 'lockscreen'])->name('auth.lockscreen');
+    Route::get('recoverpw', [AuthController::class, 'recoverpw'])->name('auth.recoverpw');
+    Route::get('userprivacysetting', [AuthController::class, 'userprivacysetting'])->name('auth.userprivacysetting');
 });
 
 //Error Page Route
@@ -375,28 +335,6 @@ Route::group(['prefix' => 'errors'], function () {
     Route::get('maintenance', [HomeController::class, 'maintenance'])->name('errors.maintenance');
 });
 
-
-//Forms Pages Routs
-Route::group(['prefix' => 'forms'], function () {
-    Route::get('element', [HomeController::class, 'element'])->name('forms.element');
-    Route::get('wizard', [HomeController::class, 'wizard'])->name('forms.wizard');
-    Route::get('validation', [HomeController::class, 'validation'])->name('forms.validation');
-});
-
-
-//Table Page Routs
-Route::group(['prefix' => 'table'], function () {
-    Route::get('bootstraptable', [HomeController::class, 'bootstraptable'])->name('table.bootstraptable');
-    Route::get('datatable', [HomeController::class, 'datatable'])->name('table.datatable');
-});
-
-//Icons Page Routs
-Route::group(['prefix' => 'icons'], function () {
-    Route::get('solid', [HomeController::class, 'solid'])->name('icons.solid');
-    Route::get('outline', [HomeController::class, 'outline'])->name('icons.outline');
-    Route::get('dualtone', [HomeController::class, 'dualtone'])->name('icons.dualtone');
-    Route::get('colored', [HomeController::class, 'colored'])->name('icons.colored');
-});
 //Extra Page Routs
 Route::get('privacy-policy', [HomeController::class, 'privacypolicy'])->name('pages.privacy-policy');
 Route::get('terms-of-use', [HomeController::class, 'termsofuse'])->name('pages.term-of-use');

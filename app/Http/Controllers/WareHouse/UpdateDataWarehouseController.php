@@ -39,7 +39,7 @@ class UpdateDataWarehouseController extends Controller
 
     public function show_data_table(Request $request)
     {
-        if ($request->input('table') == "Model_master") {
+        if ($request->input('table') == "Model_master"||$request->input('table') == "User") {
             $table = 'App\Models\\' . $request->input('table');
         } else {
             $table = 'App\Models\WareHouse\\' . $request->input('table');
