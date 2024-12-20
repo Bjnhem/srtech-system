@@ -1,9 +1,8 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 @section('content')
-    <div class="card">
-        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center"
-            style="background: linear-gradient(90deg, #1e3a8a, #4f46e5); box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-            <h3 class="mb-0" style="font-weight: bold; letter-spacing: 1px; color:white">LỊCH SỬ NHẬP XUẤT</h3>
+    <div class="card form-card">
+        <div class="card-header">
+            <h3 class="mb-0">LỊCH SỬ NHẬP XUẤT</h3>
         </div>
 
         <div class="card-body">
@@ -51,8 +50,8 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="table-history-detail">
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered table-hover" id="table-history-detail" style="width:100%">
                     <thead class="table-dark">
                         <tr>
                             <th>Ngày</th>
@@ -66,13 +65,11 @@
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
-                        <!-- Dynamic Rows -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('admin-js')

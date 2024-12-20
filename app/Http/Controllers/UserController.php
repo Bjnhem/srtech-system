@@ -16,7 +16,7 @@ class UserController extends Controller
 
     public function index_user()
     {
-        return view('users.user-index');
+        return view('srtech.users.user-index');
     }
 
     public function show_data_table(Request $request)

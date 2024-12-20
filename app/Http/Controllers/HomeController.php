@@ -16,8 +16,8 @@ class HomeController extends Controller
     public function Home_index()
     {
 
-        return view('ilsung.Warehouse.pages.Home.Home_index');
-        // return view('ilsung.pages.Overview-checklist');
+        return view('srtech.Home_index');
+      
     }
 
     public function Home_checklist()

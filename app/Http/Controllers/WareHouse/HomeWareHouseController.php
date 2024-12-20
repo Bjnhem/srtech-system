@@ -39,7 +39,7 @@ class HomeWareHouseController extends Controller
         $productCount = Product::count();
 
         // Truyền dữ liệu vào view
-        return view('srtech.WareHouse.pages.Master-data', compact('modelCount', 'warehouseCount', 'productCount'));
+        return view('srtech.WareHouse.pages.master-data', compact('modelCount', 'warehouseCount', 'productCount'));
       
     }
 

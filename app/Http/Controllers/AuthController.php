@@ -11,25 +11,29 @@ class AuthController extends Controller
 {
     public function signin(Request $request)
     {
-        return view('users.login');
+        return view('srtech.users.login');
     }
 
     function submit_login(Request $request)
     {
         $user = $request->input('username') . '@gmail.com';
         $password = $request->input('password');
+
         if (Auth::attempt([
             'email' => $user,
             'password' => $password
         ])) {
             $Users = User::where('email', $user)->first();
-            Auth::login($Users);
+            if ($Users->status != 'pending') {
+                Auth::login($Users);
 
-            if(Auth::user()->user_type=='admin'){
-                return redirect()->route('Home.index');
-
-            }else{
-                return redirect()->route('WareHouse.chuyen.kho');
+                if (Auth::user()->user_type == 'admin') {
+                    return redirect()->route('Home.index');
+                } else {
+                    return redirect()->route('WareHouse.chuyen.kho');
+                }
+            } else {
+                return redirect()->route('auth.signin')->with('error', 'Tài khoản chưa được phê duyệt-liên hệ Admin để phê duyệt!');
             }
         }
         return redirect()->back();
@@ -38,7 +42,7 @@ class AuthController extends Controller
 
     public function signup(Request $request)
     {
-        return view('users.register');
+        return view('srtech.users.register');
     }
 
 

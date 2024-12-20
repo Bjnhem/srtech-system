@@ -1,9 +1,8 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 @section('content')
-    <div class="card" style="border: none">
-        <!-- Header -->
-        <div class="card-header">
-            <h3 class="header-title">QUẢN LÝ NHẬP XUẤT</h3>
+    <div class="card form-card">
+        <div class="card-header header-nhap-xuat">
+            <h3 class="mb-0">QUẢN LÝ NHẬP XUẤT</h3>
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-light action-btn active" data-action="Import">Nhập
                     Kho</button>
@@ -15,30 +14,30 @@
 
         <!-- Form Content -->
         <div class="card-body">
+           
             <form action="" method="POST">
                 @csrf
                 <input type="hidden" name="id" value="">
-
                 <!-- Form Fields -->
                 <div class="row gy-3">
                     <!-- Image Preview -->
-                    <div class="col-md-3 text-center">
+                    <div class="col-2 text-center">
                         <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="Product Image" id="image_prod"
-                            class="img-thumbnail w-75">
+                            class="img-thumbnail w-100">
                     </div>
 
                     <!-- Product Information -->
-                    <div class="col-md-9">
+                    <div class="col-10">
                         <div class="row">
 
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <label for="ID_SP" class="form-label">Code ID</label>
                                 <select name="ID_SP" id="ID_SP" class="form-select">
                                 </select>
                             </div>
 
                             <!-- Product Name -->
-                            <div class="col-md-8">
+                            <div class="col-8">
                                 <label for="name" class="form-label">Tên Sản Phẩm</label>
                                 <select name="name" id="name" class="form-select">
                                     {{-- <option value="">Chọn sản phẩm</option> --}}
@@ -47,30 +46,20 @@
                         </div>
 
                         <div class="row mt-3">
-                            <!-- Warehouse Transfer -->
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <label for="warehouse_1" class="form-label">Kho Chuyển</label>
                                 <select name="warehouse_1" id="warehouse_1" class="form-select">
-                                    <!-- Dynamic Content -->
                                 </select>
                             </div>
-                            {{-- <div class="col-md-3">
-                                <label for="status" class="form-label">Tình trạng</label>
-                                <select name="status" id="status" class="form-select">
-                                    <!-- Dynamic Content -->
-                                </select>
-                            </div> --}}
 
-                            <!-- Warehouse Receive -->
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <label for="warehouse_2" class="form-label">Kho Nhận</label>
                                 <select name="warehouse_2" id="warehouse_2" class="form-select">
-                                    <!-- Dynamic Content -->
                                 </select>
                             </div>
 
                             <!-- Quantity -->
-                            <div class="col-md-4">
+                            <div class="col-4">
                                 <label for="quantity" class="form-label" id="stock_title">Số Lượng</label>
                                 <input type="number" name="quantity" id="quantity" class="form-control" required
                                     value="1">
@@ -317,7 +306,7 @@
             //                     results: data.status.map(product => ({
             //                         id: product.id,
             //                         text: product.name,
-                                   
+
 
             //                     })),
             //                     pagination: {

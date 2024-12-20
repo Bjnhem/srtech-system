@@ -1,16 +1,14 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 @section('content')
-    <div class="card">
-        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center"
-            style="background: linear-gradient(90deg, #1e3a8a, #4f46e5); box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-            <h3 class="mb-0" style="font-weight: bold; letter-spacing: 1px; color:white">Quản lý tồn kho</h3>
+    <div class="card form-card">
+        <div class="card-header">
+            <h3 class="mb-0">QUẢN LÝ TỒN KHO</h3>
         </div>
 
         <div class="card-body">
             <!-- Form -->
             <div id="form-search" class="mt-2">
                 <form id="searchForm">
-                  
                     <div class="row product-fields">
                         <div class="col-md-2 mb-3">
                             <label for="Type">Phân loại:</label>
@@ -66,10 +64,10 @@
                                     <th>Name</th>
                                     <th>Kho</th>
                                     <th>Q'ty</th>
-                                    
+
                                 </tr>
                             </thead>
-                           
+
                         </table>
                     </div>
                 </form>
@@ -366,7 +364,7 @@
                         var data_table = [];
                         data.products.forEach(function(stock) {
                             var typeCell = '';
-                                                       var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
+                            var imageUrl = stock.Image ? "{{ asset('') }}/" + stock
                                 .Image :
                                 "{{ asset('checklist-ilsung/image/gallery.png') }}";
 
@@ -375,7 +373,7 @@
                                     '</span>';
 
                             } else {
-                               
+
                                 typeCell = stock.stock_quantity;
                             }
 
