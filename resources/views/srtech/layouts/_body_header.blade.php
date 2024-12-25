@@ -6,7 +6,7 @@
                 <li class="nav-item dropdown">
                     <a href="#" class="search-toggle nav-link" id="dropdownMenuButton2" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ asset('images/Flag/VN.PNG') }}" class="img-fluid rounded-circle" alt="user"
+                        <img src="{{ asset('images/Flag/VN.png') }}" class="img-fluid rounded-circle" alt="user"
                             style="height: 30px; min-width: 30px; width: 30px;">
                         <span class="bg-primary"></span>
                     </a>
@@ -15,7 +15,7 @@
                             <div class="p-0 ">
                                 <ul class="list-group list-group-flush">
                                     <li class="iq-sub-card list-group-item"><a class="p-0" href="#"><img
-                                                src="{{ asset('images/Flag/EN.JPG') }}" alt="img-flaf"
+                                                src="{{ asset('images/Flag/EN.jpg') }}" alt="img-flaf"
                                                 class="img-fluid me-2"
                                                 style="width: 15px;height: 15px;min-width: 15px;" />English</a></li>
                                     <li class="iq-sub-card list-group-item"><a class="p-0" href="#"><img
