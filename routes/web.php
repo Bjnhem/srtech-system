@@ -185,7 +185,7 @@ Route::middleware('role:admin,leader')->prefix('WareHouse/Master')->group(functi
     Route::post('/upload-kho-item', [UpdateDataWarehouseController::class, 'updateFromExcel_kho'])->name('warehouse.update.kho');
     Route::post('/upload-product-item', [UpdateDataWarehouseController::class, 'updateFromExcel_product'])->name('warehouse.update.product');
 
-
+    Route::get('/model-masster', [UpdateDataWarehouseController::class, 'check_list_masster'])->name('model.masster');  // show model search
     Route::get('/show-data-table-product', [UpdateDataWarehouseController::class, 'showData'])->name('Warehouse.update.show.data.product');
     Route::post('/product/save', [UpdateDataWarehouseController::class, 'store_products'])->name('product.save');
     Route::get('/show-data-table', [UpdateDataWarehouseController::class, 'show_data_table'])->name('Warehouse.update.show.data');

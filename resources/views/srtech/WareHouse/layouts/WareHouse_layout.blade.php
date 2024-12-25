@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ env('APP_NAME') }}</title>
-    <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" />
+    {{-- <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" /> --}}
     <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}">
 

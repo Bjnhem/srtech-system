@@ -265,15 +265,11 @@
             function show_model_check() {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('check.list.masster') }}",
+                    url: "{{ route('model.masster') }}",
                     dataType: "json",
                     success: function(response) {
 
                         $('#Model').empty();
-                        // $('#Model').append($('<option>', {
-                        //     value: "",
-                        //     text: "All",
-                        // }));
                         $('#Model_search').append($('<option>', {
                             value: "",
                             text: "All",

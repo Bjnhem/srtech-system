@@ -527,4 +527,14 @@ class UpdateDataWarehouseController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
+    public function check_list_masster(Request $request)
+    {
+        $model = Model_master::all();
+        return response()->json(
+            [
+                'model' => $model,
+            ]
+        );
+    }
 }
