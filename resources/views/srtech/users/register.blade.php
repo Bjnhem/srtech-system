@@ -1,4 +1,4 @@
-@extends('users.user-layout')
+@extends('srtech.users.user-layout')
 
 @section('content')
     <section class="login-content">
@@ -11,8 +11,8 @@
                     <div class="col-md-10">
                         <div class="card card-transparent auth-card shadow-none d-flex justify-content-center mb-0">
                             <div class="card-body">
-                                <h2 class="mb-2 text-center">ĐĂNG KÝ TÀI KHOẢN</h2>
-                                <p class="text-center">WELLCOME TO SR-TECH SYSTEM</p>
+                                <h2 class="mb-5 text-center">ĐĂNG KÝ TÀI KHOẢN</h2>
+                                {{-- <p class="text-center">WELLCOME TO SR-TECH SYSTEM</p> --}}
                                 @if (session('status'))
                                     <div class="font-medium text-sm text-green-600 mb-4">
                                         {{ session('status') }}
@@ -33,6 +33,8 @@
                                                 <label for="username" class="form-label">Tên đăng nhập</label>
                                                 <input id="username" type="text" name="username" value=""
                                                     class="form-control" placeholder="" required autofocus>
+                                                <small id="username-feedback" class="text-danger"></small>
+                                                <!-- Hiển thị thông báo -->
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -55,9 +57,10 @@
                                                 <label for="confirm-password" class="form-label">Confirm Password</label>
                                                 <input id="password_confirmation" class="form-control" type="password"
                                                     placeholder=" " name="password_confirmation" required>
+                                                <small id="password-feedback" class="text-danger"></small>
                                             </div>
                                         </div>
-                                       
+
                                     </div>
                                     <div class="d-flex justify-content-center">
                                         <button type="submit" class="btn btn-primary"> Đăng ký</button>
@@ -92,22 +95,66 @@
                         </div>
                     </div>
                 </div>
-                <div class="sign-bg sign-bg-right">
-                    <svg width="280" height="230" viewBox="0 0 431 398" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <g opacity="0.05">
-                            <rect x="-157.085" y="193.773" width="543" height="77.5714" rx="38.7857"
-                                transform="rotate(-45 -157.085 193.773)" fill="#3B8AFF" />
-                            <rect x="7.46875" y="358.327" width="543" height="77.5714" rx="38.7857"
-                                transform="rotate(-45 7.46875 358.327)" fill="#3B8AFF" />
-                            <rect x="61.9355" y="138.545" width="310.286" height="77.5714" rx="38.7857"
-                                transform="rotate(45 61.9355 138.545)" fill="#3B8AFF" />
-                            <rect x="62.3154" y="-190.173" width="543" height="77.5714" rx="38.7857"
-                                transform="rotate(45 62.3154 -190.173)" fill="#3B8AFF" />
-                        </g>
-                    </svg>
-                </div>
+
             </div>
         </div>
     </section>
+@endsection
+@section('admin-js')
+    <script>
+        $(document).ready(function() {
+            $('#username').on('blur', function() {
+                var username = $(this).val();
+                var feedback = $('#username-feedback');
+
+                if (username.length > 0) {
+                    $.ajax({
+                        url: "{{ route('auth.check.username') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            username: username
+                        },
+                        success: function(response) {
+                            if (response.exists) {
+                                feedback.text(
+                                    'Tài khoản đã tồn tại.');
+                                feedback.removeClass('text-success').addClass('text-danger');
+                            } else {
+                                feedback.text('Tên đăng nhập có thể sử dụng.');
+                                feedback.removeClass('text-danger').addClass('text-success');
+                            }
+                        },
+                        error: function() {
+                            feedback.text('Đã xảy ra lỗi khi kiểm tra. Vui lòng thử lại sau.');
+                            feedback.removeClass('text-success').addClass('text-danger');
+                        }
+                    });
+                } else {
+                    feedback.text('');
+                }
+            });
+
+            $('#password_confirmation').on('blur', function() {
+                var password_feedback = $(this).val();
+                var password = $('#password').val();
+                var feedback = $('#password-feedback');
+
+                if (password.length > 0 && password_feedback.length > 0) {
+
+                    if (password_feedback != password) {
+                        feedback.text('Confirm password không đúng. Vui lòng kiểm tra lại.');
+                        feedback.removeClass('text-success').addClass('text-danger');
+                    } else {
+                        feedback.text('Confirm password OK.');
+                        feedback.removeClass('text-danger').addClass('text-success');
+                    }
+
+                } else {
+                    feedback.text('');
+                }
+            });
+
+        });
+    </script>
 @endsection

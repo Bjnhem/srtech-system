@@ -9,7 +9,7 @@ class StockMovement extends Model
 {
     use HasFactory;
     protected $table = 'transfer_history';
-    protected $fillable = ['product_id', 'warehouse_id', 'type', 'quantity','quantity_sumary', 'target_warehouse_id', 'Remark'];
+    protected $fillable = ['product_id', 'warehouse_id', 'user','type', 'quantity','quantity_sumary', 'target_warehouse_id', 'Remark'];
 
     public function product()
     {

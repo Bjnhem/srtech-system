@@ -254,9 +254,7 @@
     /* border-color: #6c757d; */
 }
 
-.content-inner {
-    padding: calc(var(--bs-gutter-x, 0.4rem) * 3);
-}
+
 
 .nav .search-input {
     display: none !important;
@@ -1214,9 +1212,9 @@ canvas {
     padding: 20px;
     border-radius: 5px;
     background-color: #f9f9f9;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-    height: 630px;
+    height: 610px;
 }
 
 .master-data .card-body {
@@ -1251,12 +1249,12 @@ canvas {
 
 .content-top {
     display: flex;
-    gap: 20px;
+    /* gap: 20px; */
     align-items: flex-start;
 }
 
 .master-plan {
-    flex: 0.5;
+    /* flex: 0.5; */
     background-color: #f9f9f9;
     padding: 20px;
     border: 1px solid #ddd;
@@ -1273,7 +1271,7 @@ canvas {
 }
 
 .data-loi-input {
-    flex: 1;
+    /* flex: 1; */
     background-color: #f9f9f9;
     padding: 20px;
     border: 1px solid #ddd;
@@ -1315,7 +1313,7 @@ canvas {
 }
 
 .form-card{
- margin-bottom: 0 !important;
+ margin-bottom: 1rem !important;
 }
 
 #button-save {
@@ -1365,6 +1363,7 @@ img#cimg {
     padding-right: 20px !important;
 }
 
-.footer {
-    padding-left: 16.2rem !important;
+
+.img-thumbnail {
+    max-width: 80%;
 }

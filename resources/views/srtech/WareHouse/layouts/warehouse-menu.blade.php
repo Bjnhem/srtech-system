@@ -1,11 +1,4 @@
-<ul class="navbar-nav iq-main-menu" id="sidebar">
-    {{-- <li class="nav-item static-item">
-        <a class="nav-link static-item disabled" href="#" tabindex="-1">
-            <span class="default-icon">Home</span>
-            <span class="mini-icon">-</span>
-        </a>
-    </li> --}}
-  
+<ul class="navbar-nav iq-main-menu" id="sidebar"> 
     <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('WareHouse.chuyen.kho')) }}" aria-current="page"
             href="{{ route('WareHouse.chuyen.kho') }}">

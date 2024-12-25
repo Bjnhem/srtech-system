@@ -132,10 +132,10 @@
                         $.each(response.data, function(index, value) {
                             count++;
                             id = value.id;
-                            var edit = '<button type="button" value="' + id +
-                                '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
-                            var deleted = '<button type="button" value="' + id +
-                                '" data-bs-toggle="modal" data-bs-target="#DeleteModal" class="btn btn-danger editbtn btn-sm" id="delete"><span class="icon-trash1"></span></button>';
+                            var edit = '<a href="#" value="' + id +
+                                '" id="edit" class="text-success mx-1 editIcon"><i class="bi-pencil-square h4"  style="font-size:1.5rem; color: #06b545;"></i></a>';
+                            var deleted = '<a href="#" value="' + id +
+                                '" id="delete"class="text-danger mx-1 deleteIcon"><i class="bi-trash h4"  style="font-size:1.5rem; color: #ff0000;"></i></a>';
 
                             data.push([
                                 count,
@@ -219,7 +219,7 @@
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show();
 
-                id = $(this).val();
+                id = $(this).attr('value');
                 var rowcont = tables.rows('.selected').indexes();
                 if (rowcont[0] != null) {
                     rowSelected = rowcont[0];
@@ -238,7 +238,7 @@
 
 
             $(document).on('click', '#delete', function() {
-                const id = $(this).val(); // Lấy ID của checklist từ nút
+                const  id = $(this).attr('value'); // Lấy ID của checklist từ nút
                 const row = $(this).closest('tr'); // Lưu tham chiếu đến dòng chứa nút
                 if (confirm('Bạn có chắc chắn muốn xóa không?')) {
                     $.ajax({

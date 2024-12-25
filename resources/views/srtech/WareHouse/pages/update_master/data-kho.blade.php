@@ -1,79 +1,87 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
-    <div class="card" style="border: none;">
+    <div class="card form-card">
         <div class="card-header">
             <h3 class="header-title">Danh sách kho</h3>
         </div>
         <div class="card-body">
-            <!-- Master Plan & Data Input -->
             <div class="row content-top">
-                <!-- Master Plan Section -->
-                <div class="col-4 master-plan">
-                    <h4 class="section-title" id="title-add">Thêm kho mới</h4>
-                    <div class="row">
-                        <div class="col-12 mt-4">
-                            <form action="{{ route('warehouse.update.kho') }}" method="post" id="form-upload"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="input-group">
-                                    <input class="form-control" type="file" name="excel_file" accept=".xlsx, .xls"
-                                        id="file-upload">
-                                    <button class="btn btn-success" type="submit">
-                                        <i class="icon-line-upload"></i> Upload
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-12 mt-5">
-                            <form action="" method="post" id="form_data">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-sm-12 col-xl-12 mb-4">
-                                        <span>Tên kho:</span>
-                                        <input name="name" type="text" id="name" class="form-control"
-                                            placeholder="Nhập tên kho...">
+                <div class="col-4">
+                    <div class="master-plan">
+                        <h4 class="section-title" id="title-add">Thêm kho mới</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <a href="#" id="download-template"
+                                    class="btn btn-primary">
+                                    <i class="icon-download"></i> Tải file mẫu
+                                </a>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <form action="{{ route('warehouse.update.kho') }}" method="post" id="form-upload"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="input-group">
+                                        <input class="form-control" type="file" name="excel_file" accept=".xlsx, .xls"
+                                            id="file-upload">
+                                        <button class="btn btn-success" type="submit">
+                                            <i class="icon-line-upload"></i> Upload
+                                        </button>
                                     </div>
-                                    <div class="col-sm-12 col-xl-12 mb-4">
-                                        <span>Location:</span>
-                                        <input name="location" type="text" id="location" class="form-control"
-                                            placeholder="Nhập vị trí...">
-                                    </div>
-                                    <div class="col-12 mb-4">
-                                        <span>Phân loại:</span>
-                                        <select name="status" id="status" class="form-select">
-                                            <option value="IN">Nội bộ</option>
-                                            <option value="OUT">Bên ngoài</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-12 col-xl-12" id="button-save">
-                                        <button type="button" id="close-model"
-                                            class="btn btn-warning close-model-checklist">Reset</button>
-                                        <button type="button" id="save" class="btn btn-success">Save</button>
-                                        <button type="button" id="update" class="btn btn-primary">Update</button>
-                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-12 mt-5">
+                                <form action="" method="post" id="form_data">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-sm-12 col-xl-12 mb-4">
+                                            <span>Tên kho:</span>
+                                            <input name="name" type="text" id="name" class="form-control"
+                                                placeholder="Nhập tên kho...">
+                                        </div>
+                                        <div class="col-sm-12 col-xl-12 mb-4">
+                                            <span>Location:</span>
+                                            <input name="location" type="text" id="location" class="form-control"
+                                                placeholder="Nhập vị trí...">
+                                        </div>
+                                        <div class="col-12 mb-4">
+                                            <span>Phân loại:</span>
+                                            <select name="status" id="status" class="form-select">
+                                                <option value="IN">Nội bộ</option>
+                                                <option value="OUT">Bên ngoài</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-12 col-xl-12" id="button-save">
+                                            <button type="button" id="close-model"
+                                                class="btn btn-warning close-model-checklist">Reset</button>
+                                            <button type="button" id="save" class="btn btn-success">Save</button>
+                                            <button type="button" id="update" class="btn btn-primary">Update</button>
+                                        </div>
 
-                                </div>
-                            </form>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-8 data-loi-input">
-                    <h4 class="section-title">Danh sách kho</h4>
-                    <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
-                        <thead class="table-success">
-                            <tr>
-                                <th>STT</th>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Phân loại</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                <div class="col-8">
+                    <div class="data-loi-input">
+                        <h4 class="section-title">Danh sách kho</h4>
+                        <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Name</th>
+                                    <th>Location</th>
+                                    <th>Phân loại</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
@@ -81,6 +89,16 @@
 
 @section('admin-js')
     <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var fileName = 'warehouse_format_form.xlsx'; // Bạn có thể thay đổi tên file ở đây nếu cần
+            // Tạo URL với tham số file_name
+            var url = "{{ route('warehouse.download.template', ['file_name' => '__FILE_NAME__']) }}";
+            url = url.replace('__FILE_NAME__', fileName); // Thay __FILE_NAME__ bằng tên file thực tế
+            // Cập nhật href của thẻ a
+            document.getElementById('download-template').setAttribute('href', url);
+        });
+    </script>
     <script>
         $(document).ready(function() {
             var table_name = 'Warehouse';
@@ -105,13 +123,16 @@
                     success: function(response) {
                         var data = [];
                         var count = 0;
-                        console.log(response.data);
+                        // console.log(response.data);
                         $.each(response.data, function(index, value) {
                             count++;
                             id = value.id;
 
-                            var view = '<button type="button" value="' + id +
-                                '" data-bs-toggle="modal" data-bs-target="#modal-show" class="btn btn-primary editbtn btn-sm" id="view"><span class="icon-eye2"></span></button>';
+                            var edit1 = '<a href="#" value="' + id +
+                                '" id="edit" class="text-success mx-1 editIcon"><i class="bi-pencil-square h4"  style="font-size:1.5rem; color: #06b545;"></i></a>';
+                            var deleted1 = '<a href="#" value="' + id +
+                                '" id="delete"class="text-danger mx-1 deleteIcon"><i class="bi-trash h4"  style="font-size:1.5rem; color: #ff0000;"></i></a>';
+
 
                             var edit = '<button type="button" value="' + id +
                                 '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
@@ -123,7 +144,7 @@
                                 value.name,
                                 value.location,
                                 value.status,
-                                edit + deleted,
+                                edit1 + deleted1,
                             ]);
 
                         });
@@ -207,7 +228,8 @@
                 $('#title-add').text(title_edit);
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show();
-                id = $(this).val();
+                id = $(this).attr('value');
+                console.log(id);
 
 
                 var rowcont = tables.rows('.selected').indexes();
@@ -220,7 +242,7 @@
                 $('#status').val(rowData[3]);
             });
 
-            
+
             $(document).on('click', '#update', function(e) {
                 e.preventDefault();
                 save_update_data();
@@ -228,7 +250,7 @@
 
 
             $(document).on('click', '#delete', function() {
-                const id = $(this).val(); // Lấy ID của checklist từ nút
+                const id = $(this).attr('value'); // Lấy ID của checklist từ nút
 
                 const row = $(this).closest('tr'); // Lưu tham chiếu đến dòng chứa nút
                 if (confirm('Bạn có chắc chắn muốn xóa không?')) {

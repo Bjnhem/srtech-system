@@ -23,9 +23,19 @@
                         </div>
 
                         <div class="col-md-2 mb-3">
+                            <label for="warehouse_location">Loại hàng:</label>
+                            <select name="warehouse_location" id="warehouse_location" class="form-select">
+                                <option value="All">All</option>
+                                <option value="Kho OK">Hàng OK</option>
+                                <option value="Kho NG">Hàng NG</option>
+                                <option value="Kho Hủy">Hàng Hủy</option>
+                                <option value="Kho Mượn">Hàng cho mượn</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 mb-3">
                             <label for="warehouse">Chọn kho:</label>
                             <select name="warehouse" id="warehouse" class="form-select">
-                                {{-- <option value="">-- Chọn kho --</option> --}}
                             </select>
                         </div>
 
@@ -35,7 +45,7 @@
                                 <option value="">Chọn Code</option>
                             </select>
                         </div>
-                        <div class="col-md-5 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label for="name">Tên sản phẩm:</label>
                             <select name="name" id="name" class="form-select">
                                 <option value="">Chọn sản phẩm</option>
@@ -76,64 +86,6 @@
 
 
     </div>
-
-    <!-- Modal hiển thị lịch sử nhập/xuất -->
-    <div class="modal fade" id="historyModal_product" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen"> <!-- modal-xl để modal rộng hơn -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="historyModalLabel">Chi tiết Lịch Sử Nhập/Xuất</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{-- <!-- Chi tiết Tồn Kho -->
-                    <div class="mb-4">
-                        <h5 class="text-success">Chi Tiết Tồn Kho</h5>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-sm mt-2" id="table-result-detail-kho"
-                                style="width:100%">
-                                <thead class="table-success">
-                                    <tr>
-                                        <th>Hình Ảnh</th>
-                                        <th>Mã Sản Phẩm (ID)</th>
-                                        <th>Tên Sản Phẩm</th>
-                                        <th>Kho</th>
-                                        <th>Số Lượng</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="historywarehouse">
-                                    <!-- Dữ liệu sẽ được render bằng JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div> --}}
-
-                    <!-- Lịch Sử Nhập/Xuất -->
-
-                    {{-- <h5 class="text-primary">Lịch Sử Nhập/Xuất Kho</h5> --}}
-                    {{-- <div class="card-body body-product"> --}}
-                    <div class="card-body table-responsive">
-                        <table class="table table-bordered table-hover table-sm mt-2" id="table-history-detail"
-                            style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Ngày</th>
-                                    <th>Type</th>
-                                    <th>Mã SP</th>
-                                    <th>Sản Phẩm</th>
-                                    <th>Kho</th>
-                                    <th>Remark</th>
-                                    <th>Số Lượng</th>
-                                </tr>
-                            </thead>
-
-                        </table>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('admin-js')
@@ -148,6 +100,7 @@
             let allProducts = [];
             let action = "Export";
             let product_id = '';
+            var warehouse_location = 'All';
             // Hàm tải dữ liệu từ server và hiển thị
 
 
@@ -229,6 +182,7 @@
                     data: function(params) {
                         const page = params.page || 1;
                         product_id = $('#name').val();
+                        warehouse_location = $('#warehouse_loaction').val();
                         return {
                             search: params.term || '',
                             page: page,
@@ -319,6 +273,13 @@
                 show_stock_by_product();
             });
 
+            // Xử lý khi thay đổi bộ lọc
+            $("#warehouse_location").on("change", function() {
+                $('#ID_SP,#name,#warehouse').val(null).trigger('change'); // Xóa dữ liệu ở ID_SP
+                console.log('a');
+                show_stock_by_product();
+            });
+
 
 
             $("input[name='item_search']").on("change", function() {
@@ -349,6 +310,8 @@
                 type = $('#Type').val();
                 let product_id = $('#ID_SP').val();
                 let warehouse = $('#warehouse').val();
+                warehouse_location = $('#warehouse_location').val();
+                console.log(warehouse_location);
                 // Gửi yêu cầu lấy lịch sử
                 $.ajax({
                     url: "{{ route('warehouse.stock.data') }}",
@@ -356,7 +319,8 @@
                     data: {
                         type: type,
                         product_id: product_id,
-                        warehouse_id: warehouse
+                        warehouse_id: warehouse,
+                        warehouse_location: warehouse_location,
                     },
                     success: function(data) {
                         // Xử lý dữ liệu và hiển thị trong modal
@@ -406,7 +370,10 @@
                                 exportOptions: {
                                     columns: ':visible' // Chỉ xuất các cột đang hiển thị
                                 }
-                            }]
+                            }],
+                            language: {
+                                emptyTable: "Không có dữ liệu phù hợp" // Văn bản tùy chỉnh khi bảng không có dữ liệu
+                            }
                         });
                     },
                     error: function() {

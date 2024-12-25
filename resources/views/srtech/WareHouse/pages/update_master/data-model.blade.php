@@ -1,65 +1,70 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 
 @section('content')
-    <div class="card" style="border: none;">
+    {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.10.25/datatables.min.css" /> --}}
+    <div class="card form-card">
         <div class="card-header">
             <h3 class="header-title">Danh sách Model</h3>
         </div>
         <div class="card-body">
             <div class="row content-top">
-                <div class="col-4 master-plan">
-                    <h4 class="section-title" id="title-add">Thêm Model</h4>
-                    <div class="row">
+                <div class="col-4">
+                    <div class="master-plan">
+                        <h4 class="section-title" id="title-add">Thêm Model</h4>
+                        <div class="row">
 
-                        <div class="col-12 mt-5">
-                            <form action="" method="post" id="form_data">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-12 mb-3">
-                                        <label>Model:</label>
-                                        <input name="model" type="text" id="model" class="form-control"
-                                            placeholder="Nhập model...">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label>Model name:</label>
-                                        <input name="Name" type="text" id="Name" class="form-control"
-                                            placeholder="Nhập model name...">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label>Status:</label>
-                                        <select name="Status" id="Status" class="form-select">
-                                            <option value="Use">Use</option>
-                                            <option value="Not Use">Not Use</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-12 col-xl-12" id="button-save">
-                                        <button type="button" id="close-model"
-                                            class="btn btn-warning close-model-checklist">Reset</button>
-                                        <button type="button" id="save" class="btn btn-success">Save</button>
-                                        <button type="button" id="update" class="btn btn-primary">Update</button>
-                                    </div>
+                            <div class="col-12 mt-5">
+                                <form action="" method="post" id="form_data">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label>Model:</label>
+                                            <input name="model" type="text" id="model" class="form-control"
+                                                placeholder="Nhập model...">
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label>Model name:</label>
+                                            <input name="Name" type="text" id="Name" class="form-control"
+                                                placeholder="Nhập model name...">
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label>Status:</label>
+                                            <select name="Status" id="Status" class="form-select">
+                                                <option value="Use">Use</option>
+                                                <option value="Not Use">Not Use</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-12 col-xl-12" id="button-save">
+                                            <button type="button" id="close-model"
+                                                class="btn btn-warning close-model-checklist">Reset</button>
+                                            <button type="button" id="save" class="btn btn-success">Save</button>
+                                            <button type="button" id="update" class="btn btn-primary">Update</button>
+                                        </div>
 
-                                </div>
-                            </form>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-8 data-loi-input">
-                    <h4 class="section-title">Danh sách model</h4>
-                    <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
-                        <thead class="table-success">
-                            <tr>
-                                <th>STT</th>
-                                <th>Model</th>
-                                <th>Model Name</th>
-                                <th>Tình trạng</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                <div class="col-8">
+                    <div class="data-loi-input">
+                        <h4 class="section-title">Danh sách model</h4>
+                        <table class="table table-bordered table-hover table-sm " id="table-result" style="width:100%">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Model</th>
+                                    <th>Model Name</th>
+                                    <th>Tình trạng</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
@@ -95,20 +100,26 @@
                             count++;
                             id = value.id;
 
+                            var edit1 = '<a href="#" value="' + id +
+                                '" id="edit" class="text-success mx-1 editIcon"><i class="bi-pencil-square h4"  style="font-size:1.5rem; color: #06b545;"></i></a>';
+                            var deleted1 = '<a href="#" value="' + id +
+                                '" id="delete"class="text-danger mx-1 deleteIcon"><i class="bi-trash h4"  style="font-size:1.5rem; color: #ff0000;"></i></a>';
+
+
                             var view = '<button type="button" value="' + id +
                                 '" data-bs-toggle="modal" data-bs-target="#modal-show" class="btn btn-primary editbtn btn-sm" id="view"><span class="icon-eye2"></span></button>';
 
                             var edit = '<button type="button" value="' + id +
-                                '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><span class="icon-pencil2"></span></button>';
+                                '"class="btn btn-success editbtn btn-sm" style="margin-right:5px" id="edit"><i class="bi-pencil-square h4"></i></button>';
                             var deleted = '<button type="button" value="' + id +
-                                '" data-bs-toggle="modal" data-bs-target="#DeleteModal" class="btn btn-danger editbtn btn-sm" id="delete"><span class="icon-trash1"></span></button>';
+                                '" data-bs-toggle="modal" data-bs-target="#DeleteModal" class="btn btn-danger editbtn btn-sm" id="delete"><i class="bi-trash h4"></i></button>';
 
                             data.push([
                                 count,
                                 value.model,
                                 value.Name,
                                 value.Status,
-                                edit + deleted,
+                                edit1 + deleted1,
                             ]);
 
                         });
@@ -126,6 +137,15 @@
                                 select: {
                                     style: 'single',
                                 },
+                                dom: 'Bfrtip', // Chỉ định vị trí của các thành phần: buttons, filters, table...
+                                buttons: [{
+                                    extend: 'excelHtml5',
+                                    text: 'Tải Excel', // Text của nút
+                                    title: 'Danh sách model', // Tiêu đề của file Excel
+                                    exportOptions: {
+                                        columns: ':visible' // Chỉ xuất các cột đang hiển thị
+                                    }
+                                }]
                             });
                         }
 
@@ -176,14 +196,14 @@
                 save_update_data();
             });
 
-          
+
             $(document).on('click', '#edit', function(e) {
                 e.preventDefault();
                 $('#title-add').text(title_edit);
                 $('#save').hide(); // Ẩn nút Save
                 $('#update').show();
 
-                id = $(this).val();
+                id = $(this).attr('value');
                 var rowcont = tables.rows('.selected').indexes();
                 if (rowcont[0] != null) {
                     rowSelected = rowcont[0];
@@ -201,7 +221,7 @@
 
 
             $(document).on('click', '#delete', function() {
-                const id = $(this).val(); // Lấy ID của checklist từ nút
+                const  id = $(this).attr('value'); // Lấy ID của checklist từ nút
 
                 const row = $(this).closest('tr'); // Lưu tham chiếu đến dòng chứa nút
                 if (confirm('Bạn có chắc chắn muốn xóa không?')) {

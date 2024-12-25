@@ -54,14 +54,15 @@
                 <table class="table table-bordered table-hover" id="table-history-detail" style="width:100%">
                     <thead class="table-dark">
                         <tr>
-                            <th>Ngày</th>
+                            <th>Date</th>
                             <th>Type</th>
-                            <th>Nhập/Xuất</th>
-                            <th>Mã ID_SP</th>
+                            <th>Status</th>
+                            <th>ID_SP</th>
                             <th>Sản Phẩm</th>
                             <th>Kho</th>
                             <th>Remark</th>
-                            <th>Số Lượng</th>
+                            <th>Q'ty</th>
+                            <th>User</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
@@ -323,6 +324,7 @@
                                 stock.warehouse_name,
                                 stock.Remark,
                                 stock.quantity,
+                                stock.user,
                             ]);
                         });
 
@@ -345,9 +347,6 @@
                                 emptyTable: "Không có dữ liệu phù hợp" // Văn bản tùy chỉnh khi bảng không có dữ liệu
                             }
                         });
-                        // } else {
-                        //     alert('Không có lịch sử nhập xuất nào phù hợp.');
-                        // }
                     },
                     error: function(xhr, status, error) {
                         console.error('Lỗi khi tải lịch sử:', error);

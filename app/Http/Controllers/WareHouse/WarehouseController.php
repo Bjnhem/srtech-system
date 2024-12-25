@@ -8,6 +8,7 @@ use App\Models\WareHouse\Product_warehouse;
 use App\Models\WareHouse\StockMovement;
 use App\Models\WareHouse\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -230,6 +231,7 @@ class WarehouseController extends Controller
                         'quantity_sumary' => '-' . $product['quantity'],  // Số lượng nhập
                         'Remark' => 'Chuyển đi ' . $target_warehouse, // Số lượng nhập
                         'target_warehouse_id' => null, // Kho nhận (To)
+                        'user' => Auth::user()->username, // Người chuyển
                     ]);
 
                     StockMovement::create([
@@ -240,6 +242,8 @@ class WarehouseController extends Controller
                         'quantity_sumary' => $product['quantity'],  // Số lượng nhập
                         'Remark' => 'Nhận từ ' . $target_warehouse_1, // Số lượng nhập
                         'target_warehouse_id' => null, // Kho nhận (To)
+                        'user' => Auth::user()->username, // Người chuyển
+
                     ]);
                 } else {
                     if ($action == 'Import') {
@@ -260,6 +264,8 @@ class WarehouseController extends Controller
                         'quantity_sumary' => $quantity, // Số lượng nhập
                         'Remark' => $remark, // Số lượng nhập
                         'target_warehouse_id' => $target_warehouse_id, // Kho nhận (To)
+                        'user' => Auth::user()->username, // Người chuyển
+
                     ]);
                 }
             }
@@ -308,10 +314,14 @@ class WarehouseController extends Controller
 
         $join_stock_view = DB::table('stock_view')
             ->join('warehouses', 'stock_view.warehouse_id', '=', 'warehouses.id')
-            ->select('stock_view.*', 'warehouses.name', 'warehouses.id');
+            ->select('stock_view.*', 'warehouses.name', 'warehouses.id','warehouses.location');
 
         if ($request->has('type') && $request->type != 'All') {
             $join_stock_view->where('stock_view.type', $request->type);
+        }
+
+        if ($request->has('warehouse_location') && $request->warehouse_location != 'All') {
+            $join_stock_view->where('warehouses.location', $request->warehouse_location);
         }
         if ($request->has('product_id') && $request->product_id) {
             $join_stock_view->where('product_id', 'like', "%{$product_id}%"); // Lọc theo product_id
@@ -339,6 +349,7 @@ class WarehouseController extends Controller
             ->orderBy('stock_view.product_id', 'asc')
             ->select(
                 'stock_view.product_id', // Đảm bảo có product_id trong select
+                'warehouses.location', // Đảm bảo có product_id trong select
                 // DB::raw('GROUP_CONCAT(warehouses.name, " - ", stock_view.stock_quantity ORDER BY warehouses.name ASC SEPARATOR ", ") as warehouse_name'), // Kết hợp kho và số lượng
                 DB::raw('SUM(stock_view.stock_quantity) as stock_quantity'), // Tính tổng số lượng
                 'products.name as product_name',
@@ -346,7 +357,7 @@ class WarehouseController extends Controller
                 'products.Image as Image',
                 'warehouses.name as warehouse_name'
             )
-            ->groupBy('stock_view.product_id', 'products.name', 'products.ID_SP', 'products.Image', 'warehouses.name') // Nhóm theo các trường này
+            ->groupBy('stock_view.product_id', 'products.name', 'products.ID_SP', 'products.Image', 'warehouses.name', 'warehouses.location') // Nhóm theo các trường này
             ->havingRaw('SUM(stock_view.stock_quantity) >= 0'); // Điều kiện lọc stock > 0
 
 
@@ -354,6 +365,11 @@ class WarehouseController extends Controller
         if ($request->has('type') && $request->type != 'All') {
             $products->where('stock_view.type', $request->type);
         }
+
+        if ($request->has('warehouse_location')  && $request->warehouse_location != 'All') {
+            $products->where('warehouses.location', $request->warehouse_location); // Lọc theo product_id
+        }
+
 
         if ($request->has('warehouse_id') && $request->warehouse_id) {
             $products->where('stock_view.warehouse_id', $request->warehouse_id); // Lọc theo product_id
@@ -365,15 +381,77 @@ class WarehouseController extends Controller
         }
 
         // Lấy kết quả stock
-        $products = $products
-
-            ->get();
+        $products = $products->get();
 
         // Trả về kết quả và các trường lọc
         return response()->json([
             'products' => $products,
         ]);
     }
+
+
+    
+    // controller history
+    public function History(Request $request)
+    {
+        // Lấy lịch sử nhập/xuất của sản phẩm
+        $history = DB::table('transfer_history')
+            ->join('products', 'transfer_history.product_id', '=', 'products.id')
+            ->join('warehouses', 'transfer_history.warehouse_id', '=', 'warehouses.id')
+            ->select(
+                'transfer_history.*',
+                'products.ID_SP',
+                'products.Type as product_type',
+                'products.name as product_name',
+                'warehouses.name as warehouse_name',
+                'warehouses.location as warehouse_status',
+            )
+            ->orderBy('transfer_history.created_at', 'desc');
+
+        // Lọc theo type (loại sản phẩm)
+        if ($request->has('type') && $request->type != 'All') {
+            $history->where('products.Type', $request->type);
+        }
+
+        // Lọc theo tình trạng sản phẩm
+        if ($request->has('status') && $request->status != 'All') {
+            $history->where('warehouse.location', $request->status);
+        }
+
+        // Lọc theo warehouse_id (ID kho)
+        if ($request->has('warehouse_id') && $request->warehouse_id) {
+            $history->where('transfer_history.warehouse_id', $request->warehouse_id);
+        }
+
+        // Lọc theo product_id (ID sản phẩm)
+        if ($request->has('product_id') && $request->product_id) {
+            $history->where('transfer_history.product_id', $request->product_id);
+        }
+
+        // Lọc theo ngày từ và đến (date_from, date_to)
+        if ($request->has('date_from') && $request->date_from) {
+            $history->whereDate('transfer_history.created_at', '>=', $request->date_from);
+        }
+
+        if ($request->has('date_to') && $request->date_to) {
+            $history->whereDate('transfer_history.created_at', '<=', $request->date_to);
+        }
+
+        // Lấy kết quả lịch sử
+        $history = $history->get();
+
+        // Trả về kết quả và các trường lọc
+        return response()->json([
+            'history' => $history,
+        ]);
+    }
+
+
+
+
+
+
+
 
     public function getStock_warehouse(Request $request)
     {
@@ -398,6 +476,7 @@ class WarehouseController extends Controller
         if ($request->has('type') && $request->type != 'All') {
             $products->where('stock_view.type', $request->type);
         }
+
 
         // Lọc theo product_id (ID sản phẩm)
         if ($request->has('product_id') && $request->product_id) {
@@ -446,60 +525,6 @@ class WarehouseController extends Controller
 
 
 
-    // controller history
-    public function History(Request $request)
-    {
-        // Lấy lịch sử nhập/xuất của sản phẩm
-        $history = DB::table('transfer_history')
-            ->join('products', 'transfer_history.product_id', '=', 'products.id')
-            ->join('warehouses', 'transfer_history.warehouse_id', '=', 'warehouses.id')
-            ->select(
-                'transfer_history.*',
-                'products.ID_SP',
-                'products.Type as product_type',
-                'products.name as product_name',
-                'warehouses.name as warehouse_name',
-                'warehouses.location as warehouse_status',
-            )
-            ->orderBy('transfer_history.created_at', 'desc');
-
-        // Lọc theo type (loại sản phẩm)
-        if ($request->has('type') && $request->type != 'All') {
-            $history->where('products.Type', $request->type);
-        }
-
-         // Lọc theo tình trạng sản phẩm
-        if ($request->has('status') && $request->status != 'All') {
-            $history->where('warehouse.location', $request->status);
-        }
-
-        // Lọc theo warehouse_id (ID kho)
-        if ($request->has('warehouse_id') && $request->warehouse_id) {
-            $history->where('transfer_history.warehouse_id', $request->warehouse_id);
-        }
-
-        // Lọc theo product_id (ID sản phẩm)
-        if ($request->has('product_id') && $request->product_id) {
-            $history->where('transfer_history.product_id', $request->product_id);
-        }
-
-        // Lọc theo ngày từ và đến (date_from, date_to)
-        if ($request->has('date_from') && $request->date_from) {
-            $history->whereDate('transfer_history.created_at', '>=', $request->date_from);
-        }
-
-        if ($request->has('date_to') && $request->date_to) {
-            $history->whereDate('transfer_history.created_at', '<=', $request->date_to);
-        }
-
-        // Lấy kết quả lịch sử
-        $history = $history->get();
-
-        // Trả về kết quả và các trường lọc
-        return response()->json([
-            'history' => $history,
-        ]);
-    }
 
 
 

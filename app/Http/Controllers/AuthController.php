@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -13,31 +14,40 @@ class AuthController extends Controller
     {
         return view('srtech.users.login');
     }
-
     function submit_login(Request $request)
     {
-        $user = $request->input('username') . '@gmail.com';
+        // Lấy dữ liệu từ form
+        $username = $request->input('username');
+        $user = $username . '@gmail.com';
         $password = $request->input('password');
 
-        if (Auth::attempt([
-            'email' => $user,
-            'password' => $password
-        ])) {
-            $Users = User::where('email', $user)->first();
-            if ($Users->status != 'pending') {
-                Auth::login($Users);
-
-                if (Auth::user()->user_type == 'admin') {
-                    return redirect()->route('Home.index');
-                } else {
-                    return redirect()->route('WareHouse.chuyen.kho');
-                }
-            } else {
-                return redirect()->route('auth.signin')->with('error', 'Tài khoản chưa được phê duyệt-liên hệ Admin để phê duyệt!');
-            }
+        // Kiểm tra tên đăng nhập trước
+        $Users = User::where('email', $user)->first();
+        if (!$Users) {
+            // Nếu tên đăng nhập không tồn tại
+            return redirect()->back()->with('error', 'Tên đăng nhập không tồn tại.');
         }
-        return redirect()->back();
+
+        // Kiểm tra mật khẩu
+        if (!Auth::attempt(['email' => $user, 'password' => $password])) {
+            // Nếu mật khẩu sai
+            return redirect()->back()->with('error', 'Mật khẩu không chính xác.');
+        }
+
+        // Kiểm tra trạng thái tài khoản
+        if ($Users->status == 'pending') {
+            return redirect()->route('auth.signin')->with('error', 'Tài khoản chưa được phê duyệt - liên hệ Admin để phê duyệt!');
+        }
+
+        // Đăng nhập và chuyển hướng
+        Auth::login($Users);
+        if (Auth::user()->user_type == 'admin') {
+            return redirect()->route('Home.index');
+        } else {
+            return redirect()->route('WareHouse.chuyen.kho');
+        }
     }
+
 
 
     public function signup(Request $request)
@@ -74,5 +84,16 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect()->route('auth.signin')->with('success', 'Đăng xuất thành công!');
+    }
+
+    public function checkUsername(Request $request)
+    {
+        // Kiểm tra xem username đã tồn tại chưa
+        $exists = User::where('username', $request->username)->exists();
+
+        // Trả về phản hồi JSON
+        return response()->json([
+            'exists' => $exists
+        ]);
     }
 }

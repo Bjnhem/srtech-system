@@ -14,16 +14,17 @@
 
         <!-- Form Content -->
         <div class="card-body">
-           
+
             <form action="" method="POST">
                 @csrf
-                <input type="hidden" name="id" value="">
+                {{-- <input type="hidden" name="id" value=""> --}}
                 <!-- Form Fields -->
                 <div class="row gy-3">
                     <!-- Image Preview -->
                     <div class="col-2 text-center">
+                        <label for="Image" class="form-label">Image</label>
                         <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="Product Image" id="image_prod"
-                            class="img-thumbnail w-100">
+                            class="img-thumbnail">
                     </div>
 
                     <!-- Product Information -->
@@ -66,11 +67,12 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="d-flex gap-2 mt-3" style="justify-content: end">
-                            <button type="button" class="btn btn-primary" id="add-product">Thêm</button>
-                            <button type="button" class="btn btn-success save-transfer" id="save">Lưu</button>
-                        </div>
+
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 mt-3" style="justify-content: end">
+                        <button type="button" class="btn btn-primary" id="add-product">Thêm</button>
+                        <button type="button" class="btn btn-success save-transfer" id="save">Lưu</button>
                     </div>
                 </div>
             </form>
@@ -280,60 +282,6 @@
                     cache: true
                 },
             });
-
-            // $('#status').select2({
-            //     placeholder: "Tình trạng",
-            //     allowClear: true,
-            //     ajax: {
-            //         url: "{{ route('get_status') }}", // API để lấy dữ liệu sản phẩm
-            //         dataType: 'json',
-            //         delay: 250, // Thời gian trễ khi gõ (ms)
-            //         data: function(params) {
-            //             const page = params.page || 1;
-            //             const warehouse_id = $('#warehouse_1').val();
-            //             return {
-            //                 search: params.term || '',
-            //                 page: page,
-            //                 pageSize: 10,
-            //                 warehouse_id: warehouse_id,
-
-            //             };
-            //         },
-            //         processResults: function(data, params) {
-            //             params.page = params.page || 1;
-            //             if ($action == 'Import') {
-            //                 return {
-            //                     results: data.status.map(product => ({
-            //                         id: product.id,
-            //                         text: product.name,
-
-
-            //                     })),
-            //                     pagination: {
-            //                         more: data.hasMore_1 // Kiểm tra nếu có thêm dữ liệu
-            //                     }
-            //                 };
-            //             } else {
-            //                 return {
-            //                     results: data.status.map(product => ({
-            //                         id: product.id,
-            //                         text: product.name,
-            //                         quantity: 0,
-
-            //                     })),
-            //                     pagination: {
-            //                         more: data.hasMore_1 // Kiểm tra nếu có thêm dữ liệu
-            //                     }
-            //                 };
-            //             }
-
-
-
-            //         },
-            //         cache: true
-            //     },
-
-            // });
 
             function forceFocusFn() {
                 const searchInput = document.querySelector('.select2-container--open .select2-search__field');
@@ -556,8 +504,8 @@
                         '<td data-warehouse-id="' + warehouse_2_id + '">' + warehouse_2 + '</td>' +
                         '<td>' + quantity + '</td>' +
                         '<td>' +
-                        '<button class="btn btn-warning btn-sm edit-product">Sửa</button> ' +
-                        '<button class="btn btn-danger btn-sm remove-product">Xóa</button>' +
+                        '<a href="#" id="edit" class="text-success mx-1 editIcon edit-product"><i class="bi-pencil-square h4"  style="font-size:1.5rem; color: #06b545;"></i></a>' +
+                        '<a href="#" id="delete"class="text-danger mx-1 deleteIcon remove-product"><i class="bi-trash h4"  style="font-size:1.5rem; color: #ff0000;"></i></a>' +
                         '</td>' +
                         '</tr>';
                     $('#table-result tbody').append(newRow);
@@ -635,36 +583,45 @@
             });
 
             // Sửa dòng trong bảng
+            // Sự kiện click vào nút sửa sản phẩm
             $(document).on('click', '.edit-product', function(e) {
-                event.preventDefault();
+                e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
+
+                // Lấy dòng hiện tại (tr) được click
                 var row = $(this).closest('tr');
-                var product_id = row.find('td').eq(1).data('product-id'); // Lấy ID 
-                var warehouse_1 = row.find('td').eq(3).data('warehouse-id'); // Lấy ID kho chuyển
-                var warehouse_2 = row.find('td').eq(4).data('warehouse-id'); // Lấy ID kho nhận
-                var quantity = row.find('td').eq(5).text();
 
+                // Lấy dữ liệu từ các cột trong dòng
+                var product_id = row.find('td').eq(1).data('product-id'); // ID sản phẩm
+                var warehouse_1 = row.find('td').eq(3).data('warehouse-id'); // ID kho chuyển
+                var warehouse_2 = row.find('td').eq(4).data('warehouse-id'); // ID kho nhận
+                var quantity = row.find('td').eq(5).text(); // Số lượng
+                var image = row.find('td img').attr('src'); // Lấy src của ảnh trong cột đầu tiên
 
-                var selectedProduct = allProducts.find(product => product.id === product_id);
-                // console.log(selectedProduct);
+                // console.log('Dòng hiện tại:', row);
+                // console.log('ID sản phẩm:', product_id);
+                // console.log('Kho chuyển:', warehouse_1);
+                // console.log('Kho nhận:', warehouse_2);
+                // console.log('Số lượng:', quantity);
+                // console.log('Ảnh sản phẩm:', image);
 
-                if (selectedProduct) {
-                    // Điền dữ liệu vào form
-                    $('#ID_SP').val(product_id).trigger('change');
-                    $('#name').val(product_id).trigger('change');
-                    $('#Type').val(selectedProduct.Type).trigger(
-                        'change'); // Điền đúng Type vào trường #Type
-                    $('#warehouse_1').val(warehouse_1).trigger('change');
-                    $('#warehouse_2').val(warehouse_2).trigger('change');
-                    $('#quantity').val(quantity);
-                    $('#image_prod').attr('src', selectedProduct.Image ? "{{ asset('') }}/" +
-                        selectedProduct.Image : "{{ asset('checklist-ilsung/image/gallery.png') }}");
-                }
-                // Lưu dòng đang sửa
+                // Điền dữ liệu vào form
+                $('#ID_SP').val(product_id).trigger('change'); // ID sản phẩm
+                $('#name').val(product_id).trigger('change'); // Tên sản phẩm
+                $('#warehouse_1').val(warehouse_1).trigger('change'); // Kho chuyển
+                $('#warehouse_2').val(warehouse_2).trigger('change'); // Kho nhận
+                $('#quantity').val(quantity); // Số lượng
+
+                // Hiển thị ảnh sản phẩm
+                $('#image_prod').attr('src', image ? image :
+                    "{{ asset('checklist-ilsung/image/gallery.png') }}");
+
+                // Lưu dòng đang chỉnh sửa để cập nhật
                 editingRow = row;
 
-                // Thay nút "Thêm sản phẩm" thành "Cập nhật"
+                // Thay đổi nút "Thêm sản phẩm" thành "Cập nhật"
                 $('#add-product').text('Cập nhật');
             });
+
 
             // Xóa dòng trong bảng
             $(document).on('click', '.remove-product', function() {

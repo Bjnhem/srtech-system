@@ -39,7 +39,7 @@ class UpdateDataWarehouseController extends Controller
 
     public function show_data_table(Request $request)
     {
-        if ($request->input('table') == "Model_master"||$request->input('table') == "User") {
+        if ($request->input('table') == "Model_master" || $request->input('table') == "User") {
             $table = 'App\Models\\' . $request->input('table');
         } else {
             $table = 'App\Models\WareHouse\\' . $request->input('table');
@@ -277,12 +277,30 @@ class UpdateDataWarehouseController extends Controller
     protected function handleImageUpload(Request $request)
     {
         if ($request->hasFile('Image')) {
-            $imageName = time() . '.' . $request->Image->extension();
-            $request->Image->move(public_path('storage/photos/Jig_Des_Images'), $imageName);
-            return 'storage/photos/Jig_Des_Images/' . $imageName;
+            $type = $request->input('Type');
+            $name = $this->created_ID_SP($type);
+            $imageName =  $name . '.' . $request->Image->extension();
+            $request->Image->move(public_path('SR-TECH/image/warehouse'), $imageName);
+            return 'SR-TECH/image/warehouse/' . $imageName;
         }
         return ''; // Nếu không có ảnh, trả về chuỗi rỗng
     }
+
+    public function downloadTemplate($file_name)
+    {
+        // Đường dẫn file trong thư mục public
+        $filePath = public_path('sr-tech/templates/' . $file_name);
+
+        // Kiểm tra xem file có tồn tại không
+        if (!file_exists($filePath)) {
+            // Trả về lỗi nếu file không tồn tại
+            return response()->json(['error' => 'File mẫu không tồn tại'], 404);
+        }
+
+        // Trả về file cho người dùng tải về
+        return response()->download($filePath, $file_name);
+    }
+
 
 
     public function delete_data_row_table(Request $request)

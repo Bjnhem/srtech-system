@@ -155,10 +155,8 @@ Route::middleware('role')->prefix('WareHouse')->group(function () {
     Route::get('/stock', [HomeWareHouseController::class, 'index_ton_kho'])->name('warehouse.stock');
     Route::get('get-warehouse-stock', [WarehouseController::class, 'get_warehouse_stock'])->name('get_warehouse_stock');
     Route::get('/stock-data', [WarehouseController::class, 'getStock_product'])->name('warehouse.stock.data');
-
-
     Route::get('/stock-data-history', [WarehouseController::class, 'History'])->name('warehouse.data.history');
- 
+
 
 
     // Route history
@@ -169,10 +167,11 @@ Route::middleware('role')->prefix('WareHouse')->group(function () {
 
 
     // router update master
-
     Route::get('/api/get-products', [WarehouseController::class, 'get_search'])->name('get_search');
     Route::get('/api/get-warehouse', [WarehouseController::class, 'get_warehouse'])->name('get_warehouse');
     Route::get('/api/get-status', [WarehouseController::class, 'get_status'])->name('get_status');
+
+   
 });
 
 
@@ -193,25 +192,8 @@ Route::middleware('role:admin,leader')->prefix('WareHouse/Master')->group(functi
     Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
     Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
 
-
-
-    // Route::get('/show-data-table_machine', [UpdateDataWarehouseController::class, 'show_data_table_machine'])->name('update.show.data.machine');
-
-    // Route::get('/data-checklist-master', [UpdateDataWarehouseController::class, 'data_checklist_master'])->name('update.data.checklist.master');
-    // Route::get('/show-data-table-checklist-master', [UpdateDataWarehouseController::class, 'show_data_table_checklist_master'])->name('update.show.data.checklist.master');
-
-
-    // Route::get('/data-checklist-item', [UpdateDataWarehouseController::class, 'data_checklist_item'])->name('update.data.checklist.item');
-    // Route::get('/show-data-table-checklist-item', [UpdateDataWarehouseController::class, 'show_data_table_checklist_item'])->name('update.show.data.checklist.item');
-    // Route::get('/data-checklist-item_search', [UpdateDataWarehouseController::class, 'data_item_master'])->name('update.data.item_check');
-
-
-
-    // Route::get('/search-product', [UpdateDataWarehouseController::class, 'search'])->name('product.search');
-
-    // Route::get('/show-model', [DataTableController::class, 'show'])->name('update.show.model');
-    // Route::post('/edit-table/{model}', [DataTableController::class, 'edit_table'])->name('update.edit.data');
-
+ // Route upload data excel
+ Route::get('/download-template/{file_name}', [UpdateDataWarehouseController::class, 'downloadTemplate'])->name('warehouse.download.template');
 
 });
 
@@ -321,11 +303,7 @@ Route::group(['prefix' => '/'], function () {
     Route::get('register', [AuthController::class, 'signup'])->name('auth.signup');
     Route::POST('register', [AuthController::class, 'submit_register'])->name('auth.submit.signup');
     Route::POST('logout', [AuthController::class, 'logout'])->name('auth.logout');
-
-    Route::get('confirmmail', [AuthController::class, 'confirmmail'])->name('auth.confirmmail');
-    Route::get('lockscreen', [AuthController::class, 'lockscreen'])->name('auth.lockscreen');
-    Route::get('recoverpw', [AuthController::class, 'recoverpw'])->name('auth.recoverpw');
-    Route::get('userprivacysetting', [AuthController::class, 'userprivacysetting'])->name('auth.userprivacysetting');
+    Route::post('/check-username', [AuthController::class, 'checkUsername'])->name('auth.check.username');
 });
 
 //Error Page Route
