@@ -6,6 +6,8 @@
 
 {{-- <script src="{{asset('js/plugins/circle-progress.js') }}"></script> --}}
 <script src="{{ asset('checklist-ilsung/js/toastr.min.js') }}"></script>
+<script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
+
 <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
 <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
