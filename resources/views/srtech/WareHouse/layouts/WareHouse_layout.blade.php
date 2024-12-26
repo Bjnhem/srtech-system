@@ -206,8 +206,8 @@
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
-    <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 
 
