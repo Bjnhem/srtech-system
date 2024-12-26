@@ -10,10 +10,10 @@
 
     <title>{{ env('APP_NAME') }}</title>
     <link rel="shortcut icon" href="{{ asset('SR-TECH/icon/srtech.png') }}" />
-    <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}" />
+    <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}">
 
-    <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}" />
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}">
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.css') }}" />
@@ -132,33 +132,18 @@
                         document.write(new Date().getFullYear())
                     </script> {{ env('APP_NAME') }}, Made with
                     <span class="text-gray">
-                    </span> by <a href="{{ route('Home.index') }}">Prod.Inno G Design.</a>
+                    </span> by <a href="{{ route('Home.index') }}">Prod.Inno G Design</a>.
                 </div>
             </div>
         </footer>
     </main>
 
 
-    {{-- @include('srtech.layouts._scripts') --}}
+    @include('srtech.layouts._scripts')
 
-    <!-- Backend Bundle JavaScript -->
-    <script src="{{ asset('js/libs.min.js') }}"></script>
-    <script src="{{ asset('js/hope-ui.js') }}"></script>
-
-    <script src="{{ asset('checklist-ilsung/js/toastr.min.js') }}"></script>
-    <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
-    <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
-
-    <script src="{{ asset('smart-ver2/jquery-tabledit/jquery.tabledit.js') }}"></script>
-    <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
-    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>
-    <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
-    <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
-
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const notificationList = document.getElementById("notification-list");
@@ -166,27 +151,14 @@
 
             // Fetch pending users notifications
             fetch("{{ route('show.messing') }}")
-                .then(response => {
-                    // Kiểm tra nếu có lỗi HTTP
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-
-                    // Kiểm tra content-type để đảm bảo trả về JSON
-                    const contentType = response.headers.get("content-type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("Invalid JSON response");
-                    }
-
-                    return response.json(); // Parse JSON response
-                })
+                .then(response => response.json())
                 .then(data => {
                     const {
                         notifications,
                         count
                     } = data;
 
-                    // Cập nhật số lượng thông báo
+                    // Update notification badge count
                     if (count > 0) {
                         notificationBadge.style.display = "inline-block"; // Hiển thị badge
                         notificationBadge.textContent = count; // Cập nhật số lượng
@@ -194,10 +166,9 @@
                         notificationBadge.style.display = "none"; // Ẩn badge nếu không có thông báo
                     }
 
-                    // Cập nhật danh sách thông báo
-                    notificationList.innerHTML = ""; // Xóa danh sách cũ
+                    // Update notification list
+                    notificationList.innerHTML = ""; // Clear the current list
                     if (notifications.length > 0) {
-                        // Duyệt qua các thông báo và thêm vào danh sách
                         notifications.forEach(user => {
                             const notificationItem = `
                         <a href="#" class="iq-sub-card">
@@ -205,26 +176,22 @@
                                  <img class="avatar-40 rounded-pill bg-soft-primary p-1"
                                      src="{{ asset('images/avatars/01.png') }}" alt="Avatar">
                                 <div class="ms-3 w-100">
-                                    <h6 class="mb-0">${user.username}</h6>
+                                    <h6 class="mb-0 ">${user.username}</h6>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="mb-0">Pending approval</p>
+                                       
                                     </div>
                                 </div>
                             </div>
                         </a>
                     `;
-                            notificationList.insertAdjacentHTML('beforeend', notificationItem);
+                            notificationList.innerHTML += notificationItem;
                         });
                     } else {
                         notificationList.innerHTML = `<p class="text-center my-3">No pending notifications</p>`;
                     }
                 })
-                .catch(error => {
-                    // Xử lý lỗi trong quá trình gọi API
-                    console.error('Error fetching notifications:', error);
-                    notificationList.innerHTML =
-                        `<p class="text-center my-3">There was an error loading notifications. Please try again later.</p>`;
-                });
+                .catch(error => console.error('Error fetching notifications:', error));
         });
     </script>
 

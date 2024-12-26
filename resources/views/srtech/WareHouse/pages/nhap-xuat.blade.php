@@ -103,8 +103,9 @@
 @endsection
 
 @section('admin-js')
-
-
+    <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
+    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
+    
     <script>
         $(document).ready(function() {
             let allProducts = []; // Dữ liệu sản phẩm có trong kho
