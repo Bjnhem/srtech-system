@@ -50,6 +50,7 @@ Route::get('/storage', function () {
 Route::group(['middleware' => 'auth'], function () {
     //router home
     Route::get('/', [HomeController::class, 'Home_index'])
+        ->middleware('role:admin')
         ->name('Home.index');
     Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])
         ->name('Home.WareHouse');
@@ -170,8 +171,6 @@ Route::middleware('role')->prefix('WareHouse')->group(function () {
     Route::get('/api/get-products', [WarehouseController::class, 'get_search'])->name('get_search');
     Route::get('/api/get-warehouse', [WarehouseController::class, 'get_warehouse'])->name('get_warehouse');
     Route::get('/api/get-status', [WarehouseController::class, 'get_status'])->name('get_status');
-
-   
 });
 
 
@@ -192,9 +191,8 @@ Route::middleware('role:admin,leader')->prefix('WareHouse/Master')->group(functi
     Route::post('/add-data-table', [UpdateDataWarehouseController::class, 'add_data_row_table'])->name('Warehouse.update.add.data');
     Route::post('/delete-data-table', [UpdateDataWarehouseController::class, 'delete_data_row_table'])->name('Warehouse.update.delete.data');
 
- // Route upload data excel
- Route::get('/download-template/{file_name}', [UpdateDataWarehouseController::class, 'downloadTemplate'])->name('warehouse.download.template');
-
+    // Route upload data excel
+    Route::get('/download-template/{file_name}', [UpdateDataWarehouseController::class, 'downloadTemplate'])->name('warehouse.download.template');
 });
 
 

@@ -15,8 +15,7 @@
 
     <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}">
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
-    <link rel="stylesheet"
-        href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Select-1.7.0/css/select.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/datatables.min.css') }}" />
@@ -108,7 +107,7 @@
                 @include('srtech.WareHouse.layouts.warehouse-menu')
             </div>
         </div>
-        
+
     </aside>
     <main class="main-content">
         <div class="position-relative">
@@ -144,8 +143,9 @@
         </footer>
     </main>
 
-   
+
     @include('srtech.layouts._scripts')
+    
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
