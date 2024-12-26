@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ env('APP_NAME') }}</title>
-    {{-- <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" /> --}}
+    <link rel="shortcut icon" href="{{ asset('SR-TECH/icon/srtech.png') }}" />
     <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}">
 
@@ -151,14 +151,27 @@
 
             // Fetch pending users notifications
             fetch("{{ route('show.messing') }}")
-                .then(response => response.json())
+                .then(response => {
+                    // Kiểm tra nếu có lỗi HTTP
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    // Kiểm tra content-type để đảm bảo trả về JSON
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new Error("Invalid JSON response");
+                    }
+
+                    return response.json(); // Parse JSON response
+                })
                 .then(data => {
                     const {
                         notifications,
                         count
                     } = data;
 
-                    // Update notification badge count
+                    // Cập nhật số lượng thông báo
                     if (count > 0) {
                         notificationBadge.style.display = "inline-block"; // Hiển thị badge
                         notificationBadge.textContent = count; // Cập nhật số lượng
@@ -166,9 +179,10 @@
                         notificationBadge.style.display = "none"; // Ẩn badge nếu không có thông báo
                     }
 
-                    // Update notification list
-                    notificationList.innerHTML = ""; // Clear the current list
+                    // Cập nhật danh sách thông báo
+                    notificationList.innerHTML = ""; // Xóa danh sách cũ
                     if (notifications.length > 0) {
+                        // Duyệt qua các thông báo và thêm vào danh sách
                         notifications.forEach(user => {
                             const notificationItem = `
                         <a href="#" class="iq-sub-card">
@@ -176,22 +190,26 @@
                                  <img class="avatar-40 rounded-pill bg-soft-primary p-1"
                                      src="{{ asset('images/avatars/01.png') }}" alt="Avatar">
                                 <div class="ms-3 w-100">
-                                    <h6 class="mb-0 ">${user.username}</h6>
+                                    <h6 class="mb-0">${user.username}</h6>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="mb-0">Pending approval</p>
-                                       
                                     </div>
                                 </div>
                             </div>
                         </a>
                     `;
-                            notificationList.innerHTML += notificationItem;
+                            notificationList.insertAdjacentHTML('beforeend', notificationItem);
                         });
                     } else {
                         notificationList.innerHTML = `<p class="text-center my-3">No pending notifications</p>`;
                     }
                 })
-                .catch(error => console.error('Error fetching notifications:', error));
+                .catch(error => {
+                    // Xử lý lỗi trong quá trình gọi API
+                    console.error('Error fetching notifications:', error);
+                    notificationList.innerHTML =
+                        `<p class="text-center my-3">There was an error loading notifications. Please try again later.</p>`;
+                });
         });
     </script>
 

@@ -1,9 +1,8 @@
-<ul class="navbar-nav iq-main-menu" id="sidebar"> 
+<ul class="navbar-nav iq-main-menu" id="sidebar">
     <li class="nav-item">
-        <a class="nav-link {{ activeRoute(route('WareHouse.chuyen.kho')) }}" aria-current="page"
-            href="{{ route('WareHouse.chuyen.kho') }}">
-            <img class=" icon" src="{{ asset('SR-TECH/icon/transfer.png') }}" alt="Camera" width="20"
-                height="20">
+        <a class="nav-link {{ request()->routeIs(['WareHouse.chuyen.kho', 'Home.index']) ? 'active' : '' }}"
+            aria-current="page" href="{{ route('WareHouse.chuyen.kho') }}">
+            <img class=" icon" src="{{ asset('SR-TECH/icon/transfer.png') }}" alt="Camera" width="20" height="20">
             <span class="item-name">Nhập xuất</span>
         </a>
     </li>
@@ -40,7 +39,7 @@
 
 
         <li class="nav-item">
-            <a class="nav-link  {{ Request::is('WareHouse/Master*') ? 'active' : '' }}" aria-current="page"
+            <a class="nav-link  {{ Request::is('Master*') ? 'active' : '' }}" aria-current="page"
                 href="{{ route('WareHouse.update.master') }}">
                 <img class=" icon" src="{{ asset('SR-TECH/icon/database-storage.png') }}" alt="Camera"
                     width="20" height="20">
