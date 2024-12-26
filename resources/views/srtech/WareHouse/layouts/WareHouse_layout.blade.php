@@ -10,10 +10,10 @@
 
     <title>{{ env('APP_NAME') }}</title>
     <link rel="shortcut icon" href="{{ asset('SR-TECH/icon/srtech.png') }}" />
-    <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}">
+    <link rel="stylesheet" href="{{ asset('css/libs.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/hope-ui.css?v=1.1.0') }}" />
 
-    <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}">
+    <link rel="stylesheet" href="{{ asset('checklist-ilsung/jquery-ui/auto.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/Buttons-2.4.2/css/buttons.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/RowGroup-1.4.1/css/rowGroup.dataTables.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.css') }}" />
@@ -132,7 +132,7 @@
                         document.write(new Date().getFullYear())
                     </script> {{ env('APP_NAME') }}, Made with
                     <span class="text-gray">
-                    </span> by <a href="{{ route('Home.index') }}">Prod.Inno G Design</a>.
+                    </span> by <a href="{{ route('Home.index') }}">Prod.Inno G Design.</a>
                 </div>
             </div>
         </footer>
@@ -146,17 +146,18 @@
     <script src="{{ asset('js/hope-ui.js') }}"></script>
 
     <script src="{{ asset('checklist-ilsung/js/toastr.min.js') }}"></script>
-    <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
-
-    <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
     <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
 
     <script src="{{ asset('smart-ver2/jquery-tabledit/jquery.tabledit.js') }}"></script>
-
+    <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
+    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
+    <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

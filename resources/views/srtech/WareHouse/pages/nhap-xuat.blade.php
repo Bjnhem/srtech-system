@@ -103,9 +103,7 @@
 @endsection
 
 @section('admin-js')
-    <script src="{{ asset('checklist-ilsung/html5.min.js') }}"></script>
-    <script src="{{ asset('SR-TECH/js/exceljs.min.js') }}"></script>>
-    <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
+
 
     <script>
         $(document).ready(function() {
