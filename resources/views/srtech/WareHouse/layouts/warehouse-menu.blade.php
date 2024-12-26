@@ -8,6 +8,13 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link {{ activeRoute(route('WareHouse.chuyen.kho.excel')) }}" aria-current="page" href="{{ route('WareHouse.chuyen.kho.excel') }}">
+            <img class=" icon" src="{{ asset('SR-TECH/icon/transfer.png') }}" alt="Camera" width="20" height="20">
+            <span class="item-name">Nhập xuất excel</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('WareHouse.history')) }}" aria-current="page"
             href="{{ route('WareHouse.history') }}">
             <img class=" icon" src="{{ asset('SR-TECH/icon/checklist.png') }}" alt="Camera" width="20"

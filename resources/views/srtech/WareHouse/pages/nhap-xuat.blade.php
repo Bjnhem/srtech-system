@@ -1,80 +1,76 @@
 @extends('srtech.WareHouse.layouts.WareHouse_layout')
 @section('content')
     <div class="card form-card">
-        <div class="card-header header-nhap-xuat">
-            <h3 class="mb-0">QUẢN LÝ NHẬP XUẤT</h3>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-light action-btn active" data-action="Import">Nhập
-                    Kho</button>
-                <button type="button" class="btn btn-outline-light action-btn" data-action="Export">Xuất Kho</button>
-                <button type="button" class="btn btn-outline-light action-btn" data-action="Transfer">Chuyển
-                    Kho</button>
-            </div>
+        <div class="card-header">
+            <h3 class="mb-0" id="title-header">NHẬP KHO</h3>
+
         </div>
 
         <!-- Form Content -->
         <div class="card-body">
 
+            <div class="header-nhap-xuat">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-light action-btn active" data-action="Import">Nhập
+                        Kho</button>
+                    <button type="button" class="btn btn-outline-light action-btn" data-action="Export">Xuất Kho</button>
+                    <button type="button" class="btn btn-outline-light action-btn" data-action="Transfer">Chuyển
+                        Kho</button>
+                </div>
+            </div>
             <form action="" method="POST">
                 @csrf
-                {{-- <input type="hidden" name="id" value=""> --}}
-                <!-- Form Fields -->
                 <div class="row gy-3">
-                    <!-- Image Preview -->
-                    <div class="col-2 text-center">
+                    <div class="col-12 col-md-2 text-center">
                         <label for="Image" class="form-label">Image</label>
                         <img src="{{ asset('checklist-ilsung/image/gallery.png') }}" alt="Product Image" id="image_prod"
                             class="img-thumbnail">
                     </div>
-
-                    <!-- Product Information -->
-                    <div class="col-10">
+                    <div class="col-12 col-md-10">
                         <div class="row">
-
-                            <div class="col-4">
+                            <div class="col-12 col-md-4">
                                 <label for="ID_SP" class="form-label">Code ID</label>
                                 <select name="ID_SP" id="ID_SP" class="form-select">
                                 </select>
                             </div>
 
-                            <!-- Product Name -->
-                            <div class="col-8">
+                            <div class="col-12 col-md-8">
                                 <label for="name" class="form-label">Tên Sản Phẩm</label>
                                 <select name="name" id="name" class="form-select">
-                                    {{-- <option value="">Chọn sản phẩm</option> --}}
+
                                 </select>
                             </div>
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-4">
+                            <div class="col-12 col-md-4">
                                 <label for="warehouse_1" class="form-label">Kho Chuyển</label>
                                 <select name="warehouse_1" id="warehouse_1" class="form-select">
                                 </select>
                             </div>
 
-                            <div class="col-4">
+                            <div class="col-12 col-md-4">
                                 <label for="warehouse_2" class="form-label">Kho Nhận</label>
                                 <select name="warehouse_2" id="warehouse_2" class="form-select">
                                 </select>
                             </div>
 
-                            <!-- Quantity -->
-                            <div class="col-4">
-                                <label for="quantity" class="form-label" id="stock_title">Số Lượng</label>
+                            <div class="col-12 col-md-4">
+                                <label for="quantity" class="form-label" id="stock_title">Số lượng: </label>
                                 <input type="number" name="quantity" id="quantity" class="form-control" required
                                     value="1">
+                                <small id="quantity-error" style="color: red; display: none;">Số lượng vượt quá tồn
+                                    kho</small>
                             </div>
                         </div>
-
-
                     </div>
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2 mt-3" style="justify-content: end">
+
+                    <div class="d-flex gap-2 mt-3 justify-content-end">
                         <button type="button" class="btn btn-primary" id="add-product">Thêm</button>
                         <button type="button" class="btn btn-success save-transfer" id="save">Lưu</button>
                     </div>
                 </div>
+
             </form>
 
             <!-- Product Table -->
@@ -108,18 +104,14 @@
 
     <script>
         $(document).ready(function() {
-            let allProducts = []; // Dữ liệu sản phẩm có trong kho
-            let productWarehouses = {}; // Danh sách các kho có chứa sản phẩm
-            let productWarehouses_all = []; // Danh sách các kho có chứa sản phẩm
+
             let editingRow = null; // Lưu trữ dòng đang chỉnh sửa
-            let warehouseArray = [];
             let action = 'Import';
             let product_id = '';
-            var type = $('#Type').val();
-            let Products;
+            var action_title = 'NHẬP KHO';
             let image_path;
-            let maxQuantity = '';
-            // let hasMoreGlobal = true;
+            let maxQuantity = 0;
+
 
 
             $('#ID_SP').select2({
@@ -291,6 +283,50 @@
                 }
             }
 
+            // Hàm kiểm tra giá trị nhập vào trong ô "quantity"
+            function validateQuantity() {
+                // Lấy giá trị từ input và ép kiểu về số
+                var quantityInput = $('#quantity').val().trim(); // Xóa khoảng trắng ở đầu/cuối chuỗi
+                var errorMessage = document.getElementById('quantity-error');
+
+                // Kiểm tra maxQuantity và action đã được định nghĩa chưa
+                if (typeof maxQuantity === 'undefined' || typeof action === 'undefined') {
+                    console.error('maxQuantity hoặc action chưa được định nghĩa!');
+                    return; // Thoát hàm nếu thiếu dữ liệu cần thiết
+                }
+
+                // Nếu input rỗng hoặc không phải số, hiển thị lỗi ngay lập tức
+                if (quantityInput === '' || isNaN(quantityInput)) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'Số lượng phải lớn hơn 0';
+                    return; // Dừng kiểm tra tiếp
+                }
+
+                // Ép kiểu về số sau khi kiểm tra
+                quantityInput = parseFloat(quantityInput);
+
+                // Kiểm tra giá trị nhập vào
+                if (quantityInput == 'NaN') {
+                    // Nếu giá trị là 0 hoặc âm
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = 'Số lượng phải lớn hơn 0'; // Hiển thị thông báo lỗi
+                } else if (action !== 'Import') {
+                    // Nếu không phải 'Import' thì kiểm tra số lượng tồn kho
+                    if (quantityInput > parseFloat(maxQuantity)) {
+                        errorMessage.style.display = 'block';
+                        errorMessage.innerText = 'Số lượng vượt quá tồn kho'; // Hiển thị lỗi tồn kho
+                    } else {
+                        errorMessage.style.display = 'none'; // Ẩn thông báo lỗi
+                    }
+                } else {
+                    // Nếu là 'Import', không kiểm tra giới hạn
+                    errorMessage.style.display = 'none';
+                }
+            }
+
+
+
+
             $(document).on('select2:open', () => {
                 setTimeout(() => forceFocusFn(), 1); // Thời gian trễ nhỏ để đảm bảo Select2 đã render xong
             });
@@ -308,6 +344,7 @@
                     image_path : "{{ asset('checklist-ilsung/image/gallery.png') }}");
                 maxQuantity = '';
                 updateWarehouseDropdown();
+
             });
 
             // Khi chọn sản phẩm từ #ID_SP
@@ -327,36 +364,32 @@
             });
 
             // Khi xóa sản phẩm theo tên
-            $('#name').on('select2:unselect', function(e) {
+            $('#name,#ID_SP').on('select2:unselect', function(e) {
                 $('#ID_SP').val(null).trigger('change'); // Xóa dữ liệu ở ID_SP
+                $('#name').val(null).trigger('change'); // Xóa dữ liệu ở name
+
+                $('#stock_title').text('Số lượng:');
+
             });
 
-            // Khi xóa sản phẩm theo ID
-            $('#ID_SP').on('select2:unselect', function(e) {
-                $('#name').val(null).trigger('change'); // Xóa dữ liệu ở name
-            });
 
             function updateWarehouseDropdown() {
                 event.preventDefault();
-
+                $('#stock_title').text('Số lượng:');
+                document.getElementById('quantity-error').style.display = 'none';
+                $('#quantity').val(1).trigger('input');
                 $('#warehouse_1').val(null).trigger('change');
                 $('#warehouse_2').val(null).trigger('change');
 
                 // Gửi yêu cầu cập nhật lại dữ liệu
                 $('#warehouse_1').select2('data', null); // Clear dữ liệu hiện tại
-                // $('#warehouse_1').select2('open'); // Mở dropdown để load dữ liệu mới (tùy chọn)
-
                 $('#warehouse_2').select2('data', null); // Clear dữ liệu hiện tại
-                // $('#warehouse_2').select2('open');
-
 
                 if (action != 'Import') {
                     $('#warehouse_1').on('select2:select', function(e) {
                         let selectedData = e.params.data;
                         if (action === 'Export' || action === 'Transfer') {
-                            // Lấy giá trị max quantity từ dữ liệu trả về
                             maxQuantity = selectedData.quantity || 0;
-                            console.log(maxQuantity);
                             $('#quantity').attr('max', maxQuantity);
                             $('#stock_title').text('Số lượng tồn: ' + maxQuantity);
                         }
@@ -368,8 +401,6 @@
                 }
             }
 
-
-
             function reset_form() {
 
                 // Reset form sau khi thêm hoặc cập nhật
@@ -380,6 +411,8 @@
                 $('#warehouse_1').val('').trigger('change');
                 $('#warehouse_2').val('').trigger('change');
                 $('#quantity').val('1');
+                $('#stock_title').text('Số lượng:');
+
             }
 
             // show history "History"
@@ -552,11 +585,10 @@
                     success: function(response) {
                         // location.reload();
                         if (response.status == 200) {
-                            var success = action + ' ' + response.success;
+                            var success = action_title + ' ' + response.success;
                             toastr.success(success);
                             reset_form();
                             $('#table-result tbody').html('');
-                            // show_historty();
                         }
                     },
                     error: function() {
@@ -565,17 +597,29 @@
                 });
             }
 
+            document.getElementById('quantity').addEventListener('input', validateQuantity);
 
-            // Thêm sản phẩm vào bảng
+
             $(document).on('click', '.action-btn', function() {
                 $('.action-btn').removeClass('active');
                 $(this).addClass('active');
                 action = $(this).data('action');
+                if (action == 'Import') {
+                    action_title = 'NHẬP KHO';
+                }
+                if (action == 'Export') {
+                    action_title = 'XUẤT KHO';
+                }
+
+                if (action == 'Transfer') {
+                    action_title = 'CHUYỂN KHO';
+                }
+
+                $('#title-header').text(action_title);
                 reset_form();
                 updateWarehouseDropdown();
                 type = $('#Type').val();
 
-                // loadInitialData(action, type);
             });
 
 
@@ -584,10 +628,9 @@
             });
 
             // Sửa dòng trong bảng
-            // Sự kiện click vào nút sửa sản phẩm
+
             $(document).on('click', '.edit-product', function(e) {
                 e.preventDefault(); // Ngăn chặn hành động mặc định của trình duyệt
-
                 // Lấy dòng hiện tại (tr) được click
                 var row = $(this).closest('tr');
 
@@ -598,12 +641,6 @@
                 var quantity = row.find('td').eq(5).text(); // Số lượng
                 var image = row.find('td img').attr('src'); // Lấy src của ảnh trong cột đầu tiên
 
-                // console.log('Dòng hiện tại:', row);
-                // console.log('ID sản phẩm:', product_id);
-                // console.log('Kho chuyển:', warehouse_1);
-                // console.log('Kho nhận:', warehouse_2);
-                // console.log('Số lượng:', quantity);
-                // console.log('Ảnh sản phẩm:', image);
 
                 // Điền dữ liệu vào form
                 $('#ID_SP').val(product_id).trigger('change'); // ID sản phẩm
@@ -635,13 +672,12 @@
                 e.preventDefault(); // Ngăn chặn form submit mặc định
                 if ($('#table-result tbody tr').length === 0) {
                     add_product();
+                    save();
+                } else {
+                    save();
                 }
-                save();
+
             });
-
-
-            // show_historty();
-            // loadInitialData(action, type);
         });
     </script>
 @endsection

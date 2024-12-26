@@ -31,6 +31,8 @@ Route::get('/storage', function () {
     Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
     Route::post('/nhap-xuat', [WarehouseController::class, 'history_transfer'])->name('warehouse.transfer');
 
+    // Route nhập xuất excel
+    Route::get('/nhap-xuat-excel', [HomeWareHouseController::class, 'index_nhap_xuat_excel'])->name('WareHouse.chuyen.kho.excel');
 
     // Route tồn kho
     Route::get('/stock', [HomeWareHouseController::class, 'index_ton_kho'])->name('warehouse.stock');

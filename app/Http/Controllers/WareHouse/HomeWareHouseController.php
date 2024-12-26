@@ -20,10 +20,16 @@ class HomeWareHouseController extends Controller
 
    public function index_nhap_xuat()
    {
-       $products = Product::all();
-       $warehouses = Warehouse::all();
-       return view('srtech.WareHouse.pages.nhap-xuat', compact('products', 'warehouses'));
+
+       return view('srtech.WareHouse.pages.nhap-xuat');
   }
+
+  public function index_nhap_xuat_excel()
+  {
+
+      return view('srtech.WareHouse.pages.nhap-xuat-excel');
+ }
+
 
    public function index_ton_kho()
    {
