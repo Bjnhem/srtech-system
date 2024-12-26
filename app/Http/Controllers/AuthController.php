@@ -42,7 +42,7 @@ class AuthController extends Controller
         // Đăng nhập và chuyển hướng
         Auth::login($Users);
         if (Auth::user()->user_type == 'admin') {
-            return redirect()->route('Home.index');
+            return redirect()->route('WareHouse.chuyen.kho');
         } else {
             return redirect()->route('WareHouse.chuyen.kho');
         }

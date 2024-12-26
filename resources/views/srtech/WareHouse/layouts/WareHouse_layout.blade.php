@@ -87,7 +87,7 @@
 
     <aside class="sidebar sidebar-default navs-rounded-all">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
-            <a href="{{ route('Home.index') }}" class="navbar-brand">
+            <a href="{{ route('WareHouse.chuyen.kho') }}" class="navbar-brand">
                 <img src="{{ asset('SR-TECH/icon/srtech.png') }}" style="height: 30px">
                 <h4 class="logo-title">{{ env('APP_NAME') }}</h4>
             </a>
@@ -204,12 +204,10 @@
     <script src="{{ asset('smart-ver2/js/components/datepicker.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
+
     <script src="{{ asset('smart-ver2/DataTables/jQuery-3.7.0/jquery-3.7.0.min.js') }}"></script>
     <script src="{{ asset('smart-ver2/DataTables/datatables.min.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-
 
 
     @yield('admin-js')
