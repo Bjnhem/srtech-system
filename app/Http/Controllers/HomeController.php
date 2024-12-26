@@ -30,7 +30,6 @@ class HomeController extends Controller
     public function Home_WareHouse()
     {
 
-        // return view('ilsung.pages.Home.Home_index');
         return view('ilsung.WareHouse.pages.Overview');
     }
 

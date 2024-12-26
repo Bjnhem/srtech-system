@@ -49,19 +49,19 @@ Route::get('/storage', function () {
 // Home controller
 Route::group(['middleware' => 'auth'], function () {
     //router home
-    Route::get('/', [HomeController::class, 'Home_WareHouse'])
+    Route::get('/', [HomeWareHouseController::class, 'index_nhap_xuat'])
         // ->middleware('role:admin')
         ->name('Home.index');
-    Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])
-        ->name('Home.WareHouse');
-    Route::get('/OQC', [OQCLosssController::class, 'showSummary'])
-        ->middleware('role:admin')
-        ->name('Home.OQC');
-    Route::get('/Checklist', [HomeController::class, 'Home_checklist'])
-        ->middleware('role:admin')
-        ->name('Home.checklist');
+    // Route::get('/warehouse', [HomeController::class, 'Home_WareHouse'])
+    //     ->name('Home.WareHouse');
+    // Route::get('/OQC', [OQCLosssController::class, 'showSummary'])
+    //     ->middleware('role:admin')
+    //     ->name('Home.OQC');
+    // Route::get('/Checklist', [HomeController::class, 'Home_checklist'])
+    //     ->middleware('role:admin')
+    //     ->name('Home.checklist');
 
-    Route::get('/change-language/{language}', [HomeController::class, 'changeLanguage'])->name('change-language'); // router change ngôn ngữ
+    // Route::get('/change-language/{language}', [HomeController::class, 'changeLanguage'])->name('change-language'); // router change ngôn ngữ
 
 });
 
