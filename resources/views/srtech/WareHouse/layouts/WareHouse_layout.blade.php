@@ -144,7 +144,7 @@
     <script src="{{ asset('checklist-ilsung/js/select-boxes.js') }}"></script>
     <script src="{{ asset('laravel-filemanager/js/stand-alone-button.js') }}"></script>
     <script src="{{ asset('jquery-ui/auto.js') }}"></script>
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             const notificationList = document.getElementById("notification-list");
             const notificationBadge = document.querySelector("#notification-drop .dots");
@@ -193,7 +193,7 @@
                 })
                 .catch(error => console.error('Error fetching notifications:', error));
         });
-    </script>
+    </script> --}}
 
     @yield('admin-js')
 </body>
