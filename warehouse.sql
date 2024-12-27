@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 24, 2024 lúc 07:42 AM
+-- Thời gian đã tạo: Th12 27, 2024 lúc 11:35 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -20,6 +20,57 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `warehouse`
 --
+
+DELIMITER $$
+--
+-- Thủ tục
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateStockViews` ()   BEGIN
+    -- Cập nhật stock_by_product chỉ với product_id bị thay đổi
+    INSERT INTO stock_by_product (product_id, type, stock_quantity)
+    SELECT 
+        th.product_id,
+        p.type,
+        SUM(th.quantity_sumary) AS stock_quantity
+    FROM 
+        transfer_history th
+    JOIN 
+        products p ON th.product_id = p.id
+    GROUP BY 
+        th.product_id, p.type
+    ON DUPLICATE KEY UPDATE 
+        stock_quantity = VALUES(stock_quantity); -- Cập nhật nếu đã tồn tại
+
+    -- Cập nhật stock_by_warehouse chỉ với warehouse_id bị thay đổi
+    INSERT INTO stock_by_warehouse (warehouse_id, total_quantity)
+    SELECT 
+        th.warehouse_id,
+        SUM(th.quantity_sumary) AS total_quantity
+    FROM 
+        transfer_history th
+    GROUP BY 
+        th.warehouse_id
+    ON DUPLICATE KEY UPDATE
+        total_quantity = VALUES(total_quantity); -- Cập nhật nếu đã tồn tại
+
+    -- Cập nhật stock_by_detail với cả product_id và warehouse_id
+    INSERT INTO stock_by_detail (product_id, warehouse_id, type, stock_quantity)
+    SELECT 
+        th.product_id,
+        th.warehouse_id,
+        p.type,
+        SUM(th.quantity_sumary) AS stock_quantity
+    FROM 
+        transfer_history th
+    JOIN 
+        products p ON th.product_id = p.id
+    GROUP BY 
+        th.product_id, th.warehouse_id, p.type
+    ON DUPLICATE KEY UPDATE
+        stock_quantity = VALUES(stock_quantity); -- Cập nhật nếu đã tồn tại
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -5979,15 +6030,38 @@ INSERT INTO `products` (`id`, `Type`, `ID_SP`, `Part_ID`, `Code_Purchase`, `name
 -- --------------------------------------------------------
 
 --
--- Cấu trúc đóng vai cho view `stock_view`
--- (See below for the actual view)
+-- Cấu trúc bảng cho bảng `stock_by_detail`
 --
-CREATE TABLE `stock_view` (
-`product_id` bigint(20) unsigned
-,`warehouse_id` bigint(20) unsigned
-,`type` text
-,`stock_quantity` decimal(32,0)
-);
+
+CREATE TABLE `stock_by_detail` (
+  `product_id` int(11) NOT NULL,
+  `warehouse_id` int(11) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `stock_quantity` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `stock_by_product`
+--
+
+CREATE TABLE `stock_by_product` (
+  `product_id` int(11) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `stock_quantity` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `stock_by_warehouse`
+--
+
+CREATE TABLE `stock_by_warehouse` (
+  `warehouse_id` int(11) NOT NULL,
+  `total_quantity` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -6022,6 +6096,28 @@ INSERT INTO `transfer_history` (`id`, `product_id`, `warehouse_id`, `user`, `typ
 (39, 3, 22, NULL, 'Transfer', 15, 15, 'Nhận từ Line 04', NULL, '2024-12-16 03:31:04', '2024-12-16 03:31:04'),
 (40, 2, 20, 'binhem', 'Import', 1, 1, 'Nhập từ Newone', NULL, '2024-12-23 00:57:28', '2024-12-23 00:57:28'),
 (41, 2, 20, 'binhem', 'Import', 2, 2, 'Nhập từ Newone', NULL, '2024-12-23 19:35:12', '2024-12-23 19:35:12');
+
+--
+-- Bẫy `transfer_history`
+--
+DELIMITER $$
+CREATE TRIGGER `after_transfer_history_delete` AFTER DELETE ON `transfer_history` FOR EACH ROW BEGIN
+    CALL UpdateStockViews();
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_transfer_history_insert` AFTER INSERT ON `transfer_history` FOR EACH ROW BEGIN
+    CALL UpdateStockViews();
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `after_transfer_history_update` AFTER UPDATE ON `transfer_history` FOR EACH ROW BEGIN
+    CALL UpdateStockViews();
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -6739,15 +6835,6 @@ INSERT INTO `warehouses` (`id`, `name`, `location`, `status`, `created_at`, `upd
 (664, 'www', 'wwww', 'IN', '2024-11-19 01:29:55', '2024-11-19 01:48:38'),
 (665, 'SEVT', 'Vendor', 'OUT', NULL, NULL);
 
--- --------------------------------------------------------
-
---
--- Cấu trúc cho view `stock_view`
---
-DROP TABLE IF EXISTS `stock_view`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `stock_view`  AS SELECT `th`.`product_id` AS `product_id`, `th`.`warehouse_id` AS `warehouse_id`, `p`.`Type` AS `type`, sum(`th`.`quantity_sumary`) AS `stock_quantity` FROM (`srtech_system`.`transfer_history` `th` join `srtech_system`.`products` `p` on(`th`.`product_id` = `p`.`id`)) GROUP BY `th`.`product_id`, `th`.`warehouse_id`, `p`.`Type` ;
-
 --
 -- Chỉ mục cho các bảng đã đổ
 --
@@ -6763,6 +6850,24 @@ ALTER TABLE `model`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `stock_by_detail`
+--
+ALTER TABLE `stock_by_detail`
+  ADD PRIMARY KEY (`product_id`,`warehouse_id`);
+
+--
+-- Chỉ mục cho bảng `stock_by_product`
+--
+ALTER TABLE `stock_by_product`
+  ADD PRIMARY KEY (`product_id`);
+
+--
+-- Chỉ mục cho bảng `stock_by_warehouse`
+--
+ALTER TABLE `stock_by_warehouse`
+  ADD PRIMARY KEY (`warehouse_id`);
 
 --
 -- Chỉ mục cho bảng `transfer_history`
