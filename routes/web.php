@@ -34,7 +34,8 @@ Route::middleware('role')->prefix('nhap-xuat')->group(function () {
     Route::post('/nhap-xuat', [WarehouseController::class, 'history_transfer'])->name('warehouse.transfer');
 
     // Route nhập xuất excel
-    Route::get('/nhap-xuat-excel', [HomeWareHouseController::class, 'index_nhap_xuat_excel'])->name('WareHouse.chuyen.kho.excel');
+    Route::get('/nhap-xuat-excel', [HomeWareHouseController::class, 'index_nhap_xuat_excel'])->name('WareHouse.chuyen.kho.excel')
+        ->middleware('role:admin');
 
 
     // Route::get('/show-master-transfer', [WarehouseController::class, 'show_master_transfer'])->name('WareHouse.show.master.transfer');
