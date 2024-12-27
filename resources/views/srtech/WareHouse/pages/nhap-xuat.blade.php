@@ -104,14 +104,12 @@
 
     <script>
         $(document).ready(function() {
-
             let editingRow = null; // Lưu trữ dòng đang chỉnh sửa
             let action = 'Import';
             let product_id = '';
             var action_title = 'NHẬP KHO';
             let image_path;
             let maxQuantity = 0;
-
 
 
             $('#ID_SP').select2({
@@ -324,9 +322,6 @@
                 }
             }
 
-
-
-
             $(document).on('select2:open', () => {
                 setTimeout(() => forceFocusFn(), 1); // Thời gian trễ nhỏ để đảm bảo Select2 đã render xong
             });
@@ -415,72 +410,73 @@
 
             }
 
+
             // show history "History"
-            function show_historty() {
-                type = $('#Type').val();
-                // Gửi yêu cầu lấy lịch sử
-                $.ajax({
-                    url: "{{ route('warehouse.data.history') }}",
-                    method: 'get',
-                    data: {
-                        action: action,
-                        type: type
-                    },
-                    success: function(data) {
-                        // Xử lý dữ liệu và hiển thị trong modal
-                        let historyRows = '';
-                        var data_table = [];
-                        data.history.forEach(function(stock) {
-                            var typeCell = '';
-                            switch (stock.type) {
-                                case 'Import':
-                                    typeCell = '<span style="color: green;">' + stock.type +
-                                        '</span>';
-                                    break;
-                                case 'Export':
-                                    typeCell = '<span style="color: red;">' + stock.type +
-                                        '</span>';
-                                    break;
-                                case 'Transfer':
-                                    typeCell = '<span style="color: blue;">' + stock.type +
-                                        '</span>';
-                                    break;
-                                default:
-                                    typeCell = stock
-                                        .type; // Nếu không có loại nào phù hợp, giữ nguyên
-                            }
-                            data_table.push([
-                                stock.created_at,
-                                typeCell,
-                                stock.ID_SP,
-                                stock.product_name,
-                                stock.warehouse_name,
-                                stock.Remark,
-                                stock.quantity,
-                            ])
-                        });
+            // function show_historty() {
+            //     type = $('#Type').val();
+            //     // Gửi yêu cầu lấy lịch sử
+            //     $.ajax({
+            //         url: "{{ route('warehouse.data.history') }}",
+            //         method: 'get',
+            //         data: {
+            //             action: action,
+            //             type: type
+            //         },
+            //         success: function(data) {
+            //             // Xử lý dữ liệu và hiển thị trong modal
+            //             let historyRows = '';
+            //             var data_table = [];
+            //             data.history.forEach(function(stock) {
+            //                 var typeCell = '';
+            //                 switch (stock.type) {
+            //                     case 'Import':
+            //                         typeCell = '<span style="color: green;">' + stock.type +
+            //                             '</span>';
+            //                         break;
+            //                     case 'Export':
+            //                         typeCell = '<span style="color: red;">' + stock.type +
+            //                             '</span>';
+            //                         break;
+            //                     case 'Transfer':
+            //                         typeCell = '<span style="color: blue;">' + stock.type +
+            //                             '</span>';
+            //                         break;
+            //                     default:
+            //                         typeCell = stock
+            //                             .type; // Nếu không có loại nào phù hợp, giữ nguyên
+            //                 }
+            //                 data_table.push([
+            //                     stock.created_at,
+            //                     typeCell,
+            //                     stock.ID_SP,
+            //                     stock.product_name,
+            //                     stock.warehouse_name,
+            //                     stock.Remark,
+            //                     stock.quantity,
+            //                 ])
+            //             });
 
-                        // Chèn dữ liệu vào bảng
+            //             // Chèn dữ liệu vào bảng
 
-                        $('#table-history').DataTable({
-                            data: data_table,
-                            destroy: true, // Hủy bảng cũ nếu có để tái tạo lại bảng mới
-                            dom: 'Bfrtip', // Chỉ định vị trí của các thành phần: buttons, filters, table...
-                            buttons: [{
-                                extend: 'excelHtml5',
-                                text: 'Tải Excel', // Text của nút
-                                title: 'Lịch sử tồn kho', // Tiêu đề của file Excel
-                                exportOptions: {
-                                    columns: ':visible' // Chỉ xuất các cột đang hiển thị
-                                }
-                            }]
-                        });
-                    },
-                    error: function() {
-                        alert('Không thể tải lịch sử, vui lòng thử lại.');
-                    }
-                });
-            }
+            //             $('#table-history').DataTable({
+            //                 data: data_table,
+            //                 destroy: true, // Hủy bảng cũ nếu có để tái tạo lại bảng mới
+            //                 dom: 'Bfrtip', // Chỉ định vị trí của các thành phần: buttons, filters, table...
+            //                 buttons: [{
+            //                     extend: 'excelHtml5',
+            //                     text: 'Tải Excel', // Text của nút
+            //                     title: 'Lịch sử tồn kho', // Tiêu đề của file Excel
+            //                     exportOptions: {
+            //                         columns: ':visible' // Chỉ xuất các cột đang hiển thị
+            //                     }
+            //                 }]
+            //             });
+            //         },
+            //         error: function() {
+            //             alert('Không thể tải lịch sử, vui lòng thử lại.');
+            //         }
+            //     });
+            // }
 
             function add_product() {
 
@@ -592,7 +588,7 @@
                         }
                     },
                     error: function() {
-                        alert("Có lỗi - vui lòng kiểm tra lại.");
+                        toastr.error("Có lỗi - vui lòng kiểm tra lại.");
                     }
                 });
             }

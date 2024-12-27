@@ -1,11 +1,114 @@
 tạo bảng stock view
+DROP PROCEDURE IF EXISTS UpdateStockViews;
+DROP TRIGGER IF EXISTS after_transfer_history_insert;
+DROP TRIGGER IF EXISTS after_transfer_history_update;
+DROP TRIGGER IF EXISTS after_transfer_history_delete;
 
-CREATE OR REPLACE VIEW stock_view AS
-SELECT 
-    th.product_id,
-    th.warehouse_id,
-     p.type, -- Lấy type từ bảng products
-   SUM(th.quantity_sumary) AS stock_quantity
-FROM transfer_history th
-JOIN products p ON th.product_id = p.id -- JOIN với bảng products để lấy type
-GROUP BY th.product_id, th.warehouse_id, p.type;
+
+tạo 3 bảong
+
+CREATE TABLE stock_by_product (
+    product_id INT NOT NULL,          -- ID sản phẩm
+    type VARCHAR(255),                -- Loại sản phẩm
+    stock_quantity INT DEFAULT 0,     -- Tổng số lượng tồn kho
+    PRIMARY KEY (product_id)          -- Khóa chính
+);
+
+CREATE TABLE stock_by_warehouse (
+    warehouse_id INT NOT NULL,        -- ID kho
+    total_quantity INT DEFAULT 0,     -- Tổng số lượng tồn kho trong kho
+    PRIMARY KEY (warehouse_id)        -- Khóa chính
+);
+
+CREATE TABLE stock_by_detail (
+    product_id INT NOT NULL,                     -- ID sản phẩm
+    warehouse_id INT NOT NULL,                   -- ID kho
+    type VARCHAR(255),                           -- Loại sản phẩm
+    stock_quantity INT DEFAULT 0,                -- Số lượng tồn kho
+    PRIMARY KEY (product_id, warehouse_id)       -- Khóa chính kết hợp
+);
+
+DELIMITER $$
+
+CREATE PROCEDURE UpdateStockViews()
+BEGIN
+    -- Cập nhật stock_by_product chỉ với product_id bị thay đổi
+    INSERT INTO stock_by_product (product_id, type, stock_quantity)
+    SELECT 
+        th.product_id,
+        p.type,
+        SUM(th.quantity_sumary) AS stock_quantity
+    FROM 
+        transfer_history th
+    JOIN 
+        products p ON th.product_id = p.id
+    GROUP BY 
+        th.product_id, p.type
+    ON DUPLICATE KEY UPDATE 
+        stock_quantity = VALUES(stock_quantity); -- Cập nhật nếu đã tồn tại
+
+    -- Cập nhật stock_by_warehouse chỉ với warehouse_id bị thay đổi
+    INSERT INTO stock_by_warehouse (warehouse_id, total_quantity)
+    SELECT 
+        th.warehouse_id,
+        SUM(th.quantity_sumary) AS total_quantity
+    FROM 
+        transfer_history th
+    GROUP BY 
+        th.warehouse_id
+    ON DUPLICATE KEY UPDATE
+        total_quantity = VALUES(total_quantity); -- Cập nhật nếu đã tồn tại
+
+    -- Cập nhật stock_by_detail với cả product_id và warehouse_id
+    INSERT INTO stock_by_detail (product_id, warehouse_id, type, stock_quantity)
+    SELECT 
+        th.product_id,
+        th.warehouse_id,
+        p.type,
+        SUM(th.quantity_sumary) AS stock_quantity
+    FROM 
+        transfer_history th
+    JOIN 
+        products p ON th.product_id = p.id
+    GROUP BY 
+        th.product_id, th.warehouse_id, p.type
+    ON DUPLICATE KEY UPDATE
+        stock_quantity = VALUES(stock_quantity); -- Cập nhật nếu đã tồn tại
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER after_transfer_history_insert
+AFTER INSERT ON transfer_history
+FOR EACH ROW
+BEGIN
+    CALL UpdateStockViews();
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_transfer_history_update
+AFTER UPDATE ON transfer_history
+FOR EACH ROW
+BEGIN
+    CALL UpdateStockViews();
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_transfer_history_delete
+AFTER DELETE ON transfer_history
+FOR EACH ROW
+BEGIN
+    CALL UpdateStockViews();
+END$$
+
+DELIMITER ;
+

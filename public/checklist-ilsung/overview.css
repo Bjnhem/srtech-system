@@ -531,8 +531,6 @@ img.company-logo:hover {
     line-height: 40px !important;
 }
 
-
-
 .action-btn {
     transition: background-color 0.3s, color 0.3s;
 }
@@ -1101,7 +1099,7 @@ canvas {
 }
 
 /* Định dạng header */
-#table-history-detail thead th {
+.table thead tr th {
     background-color: #2e9de7; /* Màu nền header */
     text-align: center; /* Căn giữa nội dung tiêu đề */
     font-weight: bold; /* In đậm chữ */
@@ -1124,16 +1122,16 @@ canvas {
 }
 
 /* Định dạng các dòng chẵn và lẻ */
-#table-history-detail tbody tr:nth-child(odd) {
+tbody tr:nth-child(odd) {
     background-color: #fafafa; /* Màu nền dòng lẻ */
 }
 
-#table-history-detail tbody tr:nth-child(even) {
+tbody tr:nth-child(even) {
     background-color: #ffffff; /* Màu nền dòng chẵn */
 }
 
 /* Định dạng hình ảnh trong bảng */
-#table-history-detail tbody td img {
+tbody td img {
     display: block;
     margin: auto;
     max-width: 40px; /* Đặt kích thước tối đa cho hình ảnh */
@@ -1149,8 +1147,8 @@ canvas {
 }
 
 /* Nút tải Excel */
-#table-history-detail_wrapper .dt-buttons .buttons-excel,
-#table-result-stock_wrapper .dt-buttons .buttons-excel {
+
+div.dt-buttons > .dt-button:first-child {
     background-color: #4caf50; /* Màu xanh lá */
     color: white;
     border: none;
@@ -1160,8 +1158,7 @@ canvas {
     cursor: pointer;
 }
 
-#table-history-detail_wrapper .dt-buttons .buttons-excel:hover,
-#table-result-stock_wrapper .dt-buttons .buttons-excel:hover {
+div.dt-buttons > .dt-button:first-child:hover {
     background-color: #45a049; /* Màu xanh đậm hơn khi hover */
 }
 
@@ -1354,7 +1351,7 @@ img#cimg {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 20px !important;
+    padding-bottom: 40px !important;
 }
 
 .img-thumbnail {
@@ -1363,4 +1360,45 @@ img#cimg {
 
 .content-inner {
     min-height: calc(98vh - 6.6rem) !important;
+}
+
+.select2-container {
+    width: 100% !important; /* Đảm bảo chiếm hết chiều rộng của thẻ cha */
+}
+
+/* Căn giữa tab menu */
+.nav-tabs {
+    justify-content: center; /* Căn giữa toàn bộ tab */
+    /* border-bottom: 2px solid #ddd;  */
+    margin-bottom: 3rem;
+}
+
+/* Chỉnh sửa từng tab */
+.nav-tabs .nav-item {
+    margin: 0 10px; /* Tạo khoảng cách giữa các tab */
+}
+
+.nav-tabs .nav-link {
+    color: #555; /* Màu chữ mặc định */
+    font-weight: 500; /* Độ đậm của chữ */
+    background-color: #f8f9fa; /* Màu nền mặc định */
+    border: 1px solid #ddd; /* Viền xung quanh */
+    border-radius: 5px 5px 5px 5px; /* Bo góc ở trên */
+    padding: 10px 20px; /* Khoảng cách bên trong */
+    transition: all 0.3s; /* Hiệu ứng chuyển đổi màu sắc */
+    width: 150px;
+    text-align: center;
+}
+
+/* Tab khi được chọn (active) */
+.nav-tabs .nav-link.active {
+    background-color: #2e9de7; /* Màu nền khi active */
+    color: #fff; /* Màu chữ khi active */
+    border: 1px solid #2e9de7; /* Viền màu xanh dương */
+}
+
+/* Hover hiệu ứng */
+.nav-tabs .nav-link:hover {
+    background-color: #f0f0f0; /* Màu nền khi hover */
+    color: #2e9de7; /* Màu chữ khi hover */
 }

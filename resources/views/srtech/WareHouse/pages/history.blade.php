@@ -7,7 +7,7 @@
 
         <div class="card-body">
             <div class="row align-items-end">
-                <div class="col-lg-4 mb-3">
+                <div class="col-lg-6 mb-3">
                     <label for="">Date Search:</label>
                     <div class="input-daterange component-datepicker input-group">
                         <input type="text" value="" class="form-control text-start" id="date_from"
@@ -17,35 +17,30 @@
                             placeholder="YYYY-MM-DD" autocomplete="off">
                     </div>
                 </div>
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-3 mb-3">
                     <label for="Type" class="form-label">Phân loại:</label>
                     <select name="Type" id="Type" class="form-select">
-                        <option value="All">All</option>
-                        <option value="JIG">JIG</option>
-                        <option value="MRO">MRO</option>
-                        <option value="Spare part">Spare part</option>
-                        <option value="SET">SET</option>
-                        <option value="TSCD">TSCD</option>
+
                     </select>
                 </div>
 
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-3 mb-3">
                     <label for="warehouse" class="form-label">Chọn kho:</label>
                     <select name="warehouse" id="warehouse" class="form-select">
-                        {{-- <option value="">-- Chọn kho --</option> --}}
+
                     </select>
                 </div>
 
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-6 mb-3">
                     <label for="ID_SP" class="form-label">Code ID:</label>
                     <select name="ID_SP" id="ID_SP" class="form-select">
                         <option value="">Chọn Code</option>
                     </select>
                 </div>
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-6 mb-3">
                     <label for="name" class="form-label">Tên sản phẩm:</label>
                     <select name="name" id="name" class="form-select w-100">
-                        <option value="">Chọn sản phẩm</option>
+
                     </select>
                 </div>
             </div>
@@ -81,94 +76,28 @@
 
     <script>
         $(document).ready(function() {
-            let action = "Export";
-            let product_id = '';
-            let date_from;
-            let date_to;
-            let type;
             // Hàm tải dữ liệu từ server và hiển thị
             $('.component-datepicker.input-daterange').datepicker({
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
             var currentDate = new Date();
-            var date = currentDate.toISOString().split('T')[0];
-            $('#date_from,#date_to').val(date);
+            var dateTo = currentDate.toISOString().split('T')[0];
+            // Tính ngày 7 ngày trước
+            var pastDate = new Date();
+            pastDate.setDate(currentDate.getDate() - 7); // Giảm 7 ngày từ ngày hiện tại
+            var dateFrom = pastDate.toISOString().split('T')[0];
 
+            // Đặt giá trị cho các trường input
+            $('#date_to').val(dateTo);
+            $('#date_from').val(dateFrom);
 
-            $('#ID_SP').select2({
-                placeholder: "Tìm kiếm ID",
-                allowClear: true,
-                ajax: {
-                    url: "{{ route('get_search') }}", // API để lấy dữ liệu sản phẩm
-                    dataType: 'json',
-                    delay: 250, // Thời gian trễ khi gõ (ms)
-                    data: function(params) {
-                        const page = params.page || 1;
-                        return {
-                            search: params.term || '',
-                            page: page,
-                            pageSize: 10,
-                            action: action
-                        };
-                    },
-                    processResults: function(data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.products.map(product => ({
-                                id: product.id,
-                                text: product.ID_SP,
-                                name: product.name, // Lưu trữ ID_SP trong kết quả trả về
-                                Image: product.Image
-                            })),
-                            pagination: {
-                                more: data.hasMore // Có thêm dữ liệu nữa không
-                            }
-                        };
-                    },
-                    cache: true // Lưu trữ tạm thời kết quả để giảm số lần truy vấn
-                },
-            });
-
-            $('#name').select2({
-                placeholder: "Tìm kiếm sản phẩm",
-                allowClear: true,
-                ajax: {
-                    url: "{{ route('get_search') }}", // API để lấy dữ liệu sản phẩm
-                    dataType: 'json',
-                    delay: 250, // Thời gian trễ khi gõ (ms)
-                    data: function(params) {
-                        const page = params.page || 1;
-                        return {
-                            search: params.term || '',
-                            page: page,
-                            pageSize: 10,
-                            action: action
-                        };
-                    },
-                    processResults: function(data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.products.map(product => ({
-                                id: product.id,
-                                text: product.name,
-                                ID_SP: product.ID_SP, // Lưu trữ ID_SP trong kết quả trả về
-                                Image: product.Image
-                            })),
-                            pagination: {
-                                more: data.hasMore // Có thêm dữ liệu nữa không
-                            }
-                        };
-                    },
-                    cache: true // Lưu trữ tạm thời kết quả để giảm số lần truy vấn
-                },
-            });
 
             $('#warehouse').select2({
                 placeholder: "Chọn kho",
                 allowClear: true,
                 ajax: {
-                    url: "{{ route('get_warehouse_stock') }}", // API để lấy dữ liệu sản phẩm
+                    url: "{{ route('warehouse.get.warehouse.history') }}", // API để lấy dữ liệu sản phẩm
                     dataType: 'json',
                     delay: 250, // Thời gian trễ khi gõ (ms)
                     data: function(params) {
@@ -202,6 +131,103 @@
 
             });
 
+            $('#Type').select2({
+                placeholder: "Chọn loại hàng",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('warehouse.get.type.history') }}", // API để lấy dữ liệu sản phẩm
+                    dataType: 'json',
+                    delay: 250, // Thời gian trễ khi gõ (ms)
+                    data: function(params) {
+                        return {
+                            search: params.term || '',
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data.type, function(item) {
+                                return {
+                                    id: item.Type,
+                                    text: item.Type
+                                };
+                            }),
+
+                        };
+                    },
+                    cache: true // Lưu trữ tạm thời kết quả để giảm số lần truy vấn
+                },
+            });
+
+            $('#ID_SP').select2({
+                placeholder: "Tìm kiếm ID",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('warehouse.get.product.history') }}", // API để lấy dữ liệu sản phẩm
+                    dataType: 'json',
+                    delay: 250, // Thời gian trễ khi gõ (ms)
+                    data: function(params) {
+                        const page = params.page || 1;
+                        const type = $('#Type').val();
+                        return {
+                            search: params.term || '',
+                            page: page,
+                            pageSize: 10,
+                            type: type
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.products.map(product => ({
+                                id: product.id,
+                                text: product.ID_SP,
+                                name: product.name, // Lưu trữ ID_SP trong kết quả trả về
+                                Image: product.Image
+                            })),
+                            pagination: {
+                                more: data.hasMore // Có thêm dữ liệu nữa không
+                            }
+                        };
+                    },
+                    cache: true // Lưu trữ tạm thời kết quả để giảm số lần truy vấn
+                },
+            });
+
+            $('#name').select2({
+                placeholder: "Tìm kiếm sản phẩm",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('warehouse.get.product.history') }}", // API để lấy dữ liệu sản phẩm
+                    dataType: 'json',
+                    delay: 250, // Thời gian trễ khi gõ (ms)
+                    data: function(params) {
+                        const page = params.page || 1;
+                        const type = $('#Type').val();
+                        return {
+                            search: params.term || '',
+                            page: page,
+                            pageSize: 10,
+                            type: type
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.products.map(product => ({
+                                id: product.id,
+                                text: product.name,
+                                ID_SP: product.ID_SP, // Lưu trữ ID_SP trong kết quả trả về
+                                Image: product.Image
+                            })),
+                            pagination: {
+                                more: data.hasMore // Có thêm dữ liệu nữa không
+                            }
+                        };
+                    },
+                    cache: true // Lưu trữ tạm thời kết quả để giảm số lần truy vấn
+                },
+            });
+
             function forceFocusFn() {
                 const searchInput = document.querySelector('.select2-container--open .select2-search__field');
                 if (searchInput) {
@@ -221,10 +247,7 @@
                     value: selectedProduct.id,
                     text: selectedProduct.ID_SP
                 }));
-
-                // updateWarehouseDropdown();
                 show_historty();
-
             });
 
             // Khi chọn sản phẩm từ #ID_SP
@@ -242,7 +265,6 @@
             });
 
             $('#warehouse').on('select2:select', function(e) {
-                // updateWarehouseDropdown();
                 show_historty();
 
             });
@@ -270,13 +292,6 @@
 
             });
 
-            // function updateWarehouseDropdown() {
-            //     event.preventDefault();
-            //     $('#warehouse').val(null).trigger('change');
-            //     $('#warehouse').select2('data', null); // Clear dữ liệu hiện tại
-
-            // }
-
             function show_historty() {
                 var type = $('#Type').val();
                 var product_id = $('#name').val();
@@ -295,8 +310,8 @@
                         date_to: date_to
                     },
                     success: function(data) {
-                        // if (data.history && data.history.length > 0) {
                         var data_table = [];
+                      
                         data.history.forEach(function(stock) {
                             var typeCell = '';
                             switch (stock.type) {
@@ -354,8 +369,6 @@
                     }
                 });
             }
-
-
             show_historty();
 
         });
