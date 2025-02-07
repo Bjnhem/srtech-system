@@ -16,6 +16,8 @@
             </a>
         </li>
     @endif
+
+         
     <li class="nav-item">
         <a class="nav-link {{ activeRoute(route('WareHouse.history')) }}" aria-current="page"
             href="{{ route('WareHouse.history') }}">
@@ -36,12 +38,13 @@
     <li>
         <hr class="hr-horizontal">
     </li>
-
+                                     
     {{-- Master data --}}
     @if (Auth::user()->user_type == 'admin' || auth::user()->user_type == 'leader')
         <li class="nav-item static-item">
             <a class="nav-link static-item disabled" href="#" tabindex="-1">
-                <span class="default-icon">Master data</span>
+                <span class="default-icon">Master data</span>         
+                  
                 <span class="mini-icon">-</span>
             </a>
         </li>

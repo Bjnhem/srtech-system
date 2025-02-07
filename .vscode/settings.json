@@ -1,4 +1,34 @@
 {
     "git.ignoreLimitWarning": true,
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "XAMPP MySQL",
+            "database": "srtech_system",
+            "username": "root",
+            "password": ""
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "mysql.warehouses.io.vn",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "mysql.yourdomain.com",
+            "database": "warehous_srtech",
+            "username": "id_rsa",
+            "password": "Gvg$r$ty}2AB"
+        }
+    ]
 }

@@ -1,0 +1,6 @@
+USE abc;
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) -- Đúng: VARCHAR
+);

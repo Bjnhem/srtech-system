@@ -75,8 +75,8 @@
     </style>
 
 
-</head>
 
+</head>
 
 <body class="">
     @if (session('error'))
